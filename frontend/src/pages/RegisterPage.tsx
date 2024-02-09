@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../config/firebase";
-import { createUserWithEmailAndPassword, AuthError } from "firebase/auth"; // Import AuthError type
+import { createUserWithEmailAndPassword, AuthError } from "firebase/auth";
+import TextField from "@mui/material/TextField"; // Import TextField from Material-UI
 
 const RegisterPage: React.FunctionComponent = () => {
   const [registering, setRegistering] = useState<boolean>(false);
@@ -36,7 +37,7 @@ const RegisterPage: React.FunctionComponent = () => {
 
   return (
     <div>
-      <h2>Register</h2>
+      <h2>Register Account</h2>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -50,39 +51,49 @@ const RegisterPage: React.FunctionComponent = () => {
             alignItems: "left",
           }}
         >
-          <div style={{ marginBottom: "10px" }}>
-            <label>Email:</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
+          <TextField
+            label="Email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            variant="outlined"
+            style={{ marginBottom: "10px" }}
+          />
 
-          <div style={{ marginBottom: "10px" }}>
-            <label>Password:</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <div style={{ marginBottom: "20px" }}>
-            <label>Confirm Password:</label>
-            <input
-              type="password"
-              value={confirm}
-              onChange={(e) => setConfirm(e.target.value)}
-              required
-            />
-          </div>
+          <TextField
+            label="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            variant="outlined"
+            style={{ marginBottom: "10px" }}
+          />
+
+          <TextField
+            label="Confirm Password"
+            type="password"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+            required
+            variant="outlined"
+            style={{ marginBottom: "20px" }}
+          />
         </div>
 
-        <button onClick={() => navigate("/Login")}>Back</button>
+        <button
+          onClick={() => navigate("/Login")}
+          style={{ marginBottom: "1em", backgroundColor: "#EE6B6E" }}
+        >
+          Back
+        </button>
 
-        <button type="submit" disabled={registering}>
+        <button
+          type="submit"
+          disabled={registering}
+          style={{ marginLeft: "1em", backgroundColor: "#6C9A80" }}
+        >
           {registering ? "Registering..." : "Register"}
         </button>
 

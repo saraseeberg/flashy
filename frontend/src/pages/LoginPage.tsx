@@ -6,7 +6,7 @@ import { auth } from "../config/firebase";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { Box } from "@mui/material";
-import loginLogo from "../assets/bilde-Flashy.svg";
+import loginLogo from "../assets/bilde-Flashy.png";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
@@ -51,7 +51,7 @@ export default function Login() {
   return (
     <Container component="main" maxWidth="sm">
       <Box sx={{ display: "flex", alignItems: "center" }}>
-        <img src={loginLogo} alt="logo" style={{ width: "100px" }} />
+        <img src={loginLogo} alt="logo" style={{ maxWidth: "50%" }} />
         <div className="login-components">
           <Typography
             component="h1"
@@ -82,6 +82,7 @@ export default function Login() {
                 autoFocus
                 variant="outlined"
                 onChange={(e) => setEmail(e.target.value)}
+                style={{ marginBottom: "1em" }}
               />
               <TextField
                 required
@@ -93,31 +94,36 @@ export default function Login() {
                 autoComplete="current-password"
                 variant="outlined"
                 onChange={(e) => setPassword(e.target.value)}
+                style={{ marginBottom: "0.5em" }}
               />
-              <Button type="submit" fullWidth variant="contained">
-                Log In
-              </Button>
-              {error && (
-                <Typography
-                  variant="body2"
-                  style={{
-                    textAlign: "center",
-                    marginTop: "20px",
-                    color: "red",
-                    padding: "10px",
-                  }}
+
+              <div>
+                <Button type="submit" fullWidth variant="contained">
+                  Log In
+                </Button>
+                {error && (
+                  <Typography
+                    variant="body2"
+                    style={{
+                      textAlign: "center",
+                      marginTop: "5em",
+                      color: "red",
+                      padding: "10px",
+                    }}
+                  >
+                    {error}
+                  </Typography>
+                )}
+                <Button
+                  type="button"
+                  fullWidth
+                  variant="contained"
+                  onClick={handleNewAccountClick}
+                  style={{ marginTop: "3em" }}
                 >
-                  {error}
-                </Typography>
-              )}
-              <Button
-                type="button"
-                fullWidth
-                variant="contained"
-                onClick={handleNewAccountClick}
-              >
-                New Account
-              </Button>
+                  Register account
+                </Button>
+              </div>
             </form>
           </div>
         </div>
