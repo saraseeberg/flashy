@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useContext, useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -8,11 +8,14 @@ import Container from "@mui/material/Container";
 import { Box } from "@mui/material";
 import loginLogo from "../assets/bilde-Flashy.png";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+
+  const { login } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
@@ -34,6 +37,8 @@ export default function Login() {
     try {
       setError(null);
       await signInWithEmailAndPassword(auth, email, password);
+      login();
+      navigate("/");
       console.log("Logged in successfully");
     } catch (error) {
       setError((error as AuthError).message);

@@ -1,18 +1,12 @@
-import Login from "./pages/LoginPage";
+import AppRouter from "./AppRouter";
+import { AuthProvider } from "./context/AuthContext";
 import "./App.css";
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Register from "./pages/RegisterPage";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/" element={<Login />} />
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <AppRouter />
+    </AuthProvider>
   );
 }
 
