@@ -21,7 +21,7 @@ function AppRouter() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/createSet" element={<CreateSet />} />
+        <Route path="/create-set" element={<CreateSet />} />
         <Route
           path="/"
           // element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
