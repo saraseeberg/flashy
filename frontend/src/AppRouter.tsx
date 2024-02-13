@@ -9,7 +9,7 @@ import Register from "./pages/RegisterPage";
 import Dashboard from "./pages/DashboardPage";
 import NotFound from "./pages/NotFoundPage";
 import { useAuth } from "./hooks/useAuth";
-import AppBar from "./components/AppBar";
+import TopBar from "./components/TopBar";
 import ViewCards from "./pages/ViewCardsPage";
 
 function AppRouter() {
@@ -17,7 +17,7 @@ function AppRouter() {
 
   return (
     <Router>
-      <AppBar />
+      <TopBar />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
