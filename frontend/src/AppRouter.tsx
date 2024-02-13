@@ -6,25 +6,27 @@ import {
 } from "react-router-dom";
 import Login from "./pages/LoginPage";
 import Register from "./pages/RegisterPage";
-import Dashboard from "./pages/DashboardPage";
-import NotFound from "./pages/NotFoundPage";
+// import Dashboard from "./pages/DashboardPage";
+// import NotFound from "./pages/NotFoundPage";
 import { useAuth } from "./hooks/useAuth";
-import AppBar from "./components/AppBar";
+// import AppBar from "./components/AppBar";
+import CreateSet from "./pages/CreateLearingsetPage";
 
 function AppRouter() {
   const { isAuthenticated } = useAuth();
 
   return (
     <Router>
-      <AppBar />
+      {/* <AppBar /> */}
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/createSet" element={<CreateSet />} />
         <Route
           path="/"
-          element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
+          // element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
         />
-        <Route path="*" element={<NotFound />} />
+        {/* <Route path="*" element={<NotFound />} /> */}
       </Routes>
     </Router>
   );
