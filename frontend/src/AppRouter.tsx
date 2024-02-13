@@ -10,6 +10,7 @@ import Dashboard from "./pages/DashboardPage";
 import NotFound from "./pages/NotFoundPage";
 import { useAuth } from "./hooks/useAuth";
 import AppBar from "./components/AppBar";
+import ViewCards from "./pages/ViewCardsPage";
 
 function AppRouter() {
   const { isAuthenticated } = useAuth();
@@ -24,6 +25,7 @@ function AppRouter() {
           path="/"
           element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
         />
+        <Route path="/viewcards" element={<ViewCards />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
