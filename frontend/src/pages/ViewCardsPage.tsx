@@ -11,8 +11,14 @@ export default function ViewCards() {
       </div>
       <div>
         <h2>Title of learningSet</h2>
-        <div>
-          <div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <div style={{ maxWidth: "80%" }}>
             <Card
               question={"Hva er hovedstaden i Norge?"}
               answer={"Oslo"}

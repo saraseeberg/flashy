@@ -7,7 +7,7 @@ const Card: React.FC<CardProps> = ({ question, answer }) => {
   return (
     <div
       className="card-container"
-      style={{ maxWidth: "100%", background: "pink" }}
+      style={{ padding: "2em", background: "pink" }}
     >
       <div className="card">
         <div className="front">
