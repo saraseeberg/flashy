@@ -2,15 +2,17 @@ import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { useState } from "react";
 import { LearningSet } from "../models/Learingset";
 import { db } from "../config/firebase";
-import { Button, TextField } from "@mui/material";
+import { Button, Grid, TextField } from "@mui/material";
 
 const learningsetform = () => {
   const [learingset, setlearingset] = useState<LearningSet>({
     title: "",
     description: "",
     createdAt: serverTimestamp(), // skal vi forstatt ha timestamp her eller skal vi slette?
-  });
-
+  })
+  
+  const [isPublic, setIsPublic] = useState(false);
+  
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -22,11 +24,15 @@ const learningsetform = () => {
     try {
       await addDoc(collection(db, "learningsets"), {
         ...learingset,
+        isPublic: isPublic,
         createdAt: serverTimestamp(),
       });
+      console.log("Document successfully added!");
     } catch (error) {
       console.error("Error adding document:", error);
     }
+
+  
   };
   return (
     <form onSubmit={handleSubmit} style={{display: 'flex', flexDirection: 'column'}}>
@@ -47,6 +53,21 @@ const learningsetform = () => {
         variant="outlined"
         sx={{ mb: 1}}
       />
+      <Grid container alignItems="center" sx={{ mb: 1}}>
+        <Grid item>
+          <input 
+            id="Public" 
+            type="checkbox"
+            checked={isPublic ? true : false}
+            onChange={() => setIsPublic(!isPublic)}
+          />
+        </Grid>
+        <Grid item> 
+          <label htmlFor="Public">Is this deck public?</label>
+        </Grid>
+        
+      </Grid>
+
       <Button 
         type="submit"
         variant="contained"
@@ -61,6 +82,7 @@ const learningsetform = () => {
         }}
       >Create Learingset
       </Button>
+
     </form>
   );
 };
