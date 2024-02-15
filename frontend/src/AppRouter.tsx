@@ -7,7 +7,6 @@ import {
 import Login from "./pages/LoginPage";
 import Register from "./pages/RegisterPage";
 import Dashboard from "./pages/DashboardPage";
-import NotFound from "./pages/NotFoundPage";
 import { useAuth } from "./hooks/useAuth";
 import TopBar from "./components/TopBar";
 
@@ -24,7 +23,16 @@ function AppRouter() {
           path="/dashboard"
           element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
         />
-        <Route path="*" element={<NotFound />} />
+        <Route
+          path="*"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/dashboard" />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
       </Routes>
     </Router>
   );
