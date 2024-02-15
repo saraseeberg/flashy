@@ -1,12 +1,10 @@
 import { Box, Grid, Button, Typography, Paper, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import StarBorderIcon from "@mui/icons-material/StarBorder";
-import StarBorderPurple500Icon from "@mui/icons-material/StarBorderPurple500";
-import EditIcon from '@mui/icons-material/Edit';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar as fasFaStar } from '@fortawesome/free-solid-svg-icons'; 
-import { faStar as farFaStar } from '@fortawesome/free-regular-svg-icons';
+import EditIcon from "@mui/icons-material/Edit";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar as fasFaStar } from "@fortawesome/free-solid-svg-icons";
+import { faStar as farFaStar } from "@fortawesome/free-regular-svg-icons";
 
 interface LearningSet {
   id: number;
@@ -35,8 +33,7 @@ export default function Dashboard() {
   };
 
   const handleEditSets = () => {
-    navigate("/edit-set")
-
+    navigate("/edit-set");
   };
 
   const handleSetFavorite = (id: number) => {
@@ -88,9 +85,9 @@ export default function Dashboard() {
                   maxWidth: "300px",
                   margin: " auto",
                   position: "relative",
-                  '&:hover': {
-                    transform: 'scale(1.05)', 
-                  }
+                  "&:hover": {
+                    transform: "scale(1.05)",
+                  },
                 }}
               >
                 <Button
