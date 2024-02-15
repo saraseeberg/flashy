@@ -1,10 +1,12 @@
-type CardProps = {
-  question: string;
-  answer: string;
+export type Cards = {
+  id: string;
+  front: string;
+  back: string;
   isFlipped: boolean;
+  isDifficult: boolean;
 };
 
-const Card: React.FC<CardProps> = ({ question, answer, isFlipped }) => {
+const Card: React.FC<Cards> = ({ front, back, isDifficult, isFlipped, id }) => {
   return (
     <div
       className="card-container"
@@ -58,7 +60,7 @@ const Card: React.FC<CardProps> = ({ question, answer, isFlipped }) => {
                 height: "100%",
               }}
             >
-              {answer}
+              {back}
             </div>
           ) : (
             <div
@@ -70,7 +72,7 @@ const Card: React.FC<CardProps> = ({ question, answer, isFlipped }) => {
                 height: "100%",
               }}
             >
-              {question}
+              {front}
             </div>
           )}
         </div>
