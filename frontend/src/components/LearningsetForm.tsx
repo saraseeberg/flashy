@@ -1,90 +1,97 @@
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { collection, doc, setDoc } from "firebase/firestore";
 import { useState } from "react";
-import { LearningSet } from "../models/Learingset";
+import { LearningSet } from "../models/Learningset";
 import { db } from "../config/firebase";
 import { Button, Grid, TextField } from "@mui/material";
 
-const learningsetform = () => {
-  const [learingset, setlearingset] = useState<LearningSet>({
+const LearningsetForm = () => {
+  const [learningset, setlearningset] = useState<LearningSet>({
     title: "",
     description: "",
-    createdAt: serverTimestamp(), // skal vi forstatt ha timestamp her eller skal vi slette?
-  })
-  
+    isPublic: false,
+    createdBy: "",
+  });
+
   const [isPublic, setIsPublic] = useState(false);
-  
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setlearingset({ ...learingset, [e.target.name]: e.target.value });
+    setlearningset({ ...learningset, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      await addDoc(collection(db, "learningsets"), {
-        ...learingset,
-        isPublic: isPublic,
-        createdAt: serverTimestamp(),
-      });
-      console.log("Document successfully added!");
-    } catch (error) {
-      console.error("Error adding document:", error);
-    }
+    // Opprett en referanse til et nytt dokument i 'learningSets' samlingen
+    const documentRef = doc(collection(db, "learningSets"));
 
-  
+    try {
+      // Opprett et nytt objekt for å sette i databasen
+      const newLearningSet = {
+        ...learningset,
+        id: documentRef.id, // Bruk den genererte IDen til dokumentreferansen
+      };
+
+      // Bruk setDoc for å skrive dokumentet til databasen
+      await setDoc(documentRef, newLearningSet);
+      console.log("Created new learning set.");
+    } catch (error) {
+      console.error("Error creating learning set: ", error);
+    }
   };
   return (
-    <form onSubmit={handleSubmit} style={{display: 'flex', flexDirection: 'column'}}>
+    <form
+      onSubmit={handleSubmit}
+      style={{ display: "flex", flexDirection: "column" }}
+    >
       <TextField
         name="title"
         type="text"
-        value={learingset.title}
+        value={learningset.title}
         onChange={handleChange}
         placeholder="Title"
         variant="outlined"
-        sx={{ mb: 1}}
+        sx={{ mb: 1 }}
       />
       <TextField
         name="description"
-        value={learingset.description}
+        value={learningset.description}
         onChange={handleChange}
         placeholder="Description"
         variant="outlined"
-        sx={{ mb: 1}}
+        sx={{ mb: 1 }}
       />
-      <Grid container alignItems="center" sx={{ mb: 1}}>
+      <Grid container alignItems="center" sx={{ mb: 1 }}>
         <Grid item>
-          <input 
-            id="Public" 
+          <input
+            id="Public"
             type="checkbox"
             checked={isPublic ? true : false}
             onChange={() => setIsPublic(!isPublic)}
           />
         </Grid>
-        <Grid item> 
+        <Grid item>
           <label htmlFor="Public">Is this deck public?</label>
         </Grid>
-        
       </Grid>
 
-      <Button 
+      <Button
         type="submit"
         variant="contained"
         color="primary"
         size="large"
         style={{
-          backgroundColor: '#007bff',
-          color: 'white',
-          padding: '10px 20px',
-          borderRadius: '5px',
-          cursor: 'pointer'
+          backgroundColor: "#007bff",
+          color: "white",
+          padding: "10px 20px",
+          borderRadius: "5px",
+          cursor: "pointer",
         }}
-      >Create Learingset
+      >
+        Create Learningset
       </Button>
-
     </form>
   );
 };
 
-export default learningsetform;
+export default LearningsetForm;
