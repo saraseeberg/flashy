@@ -9,7 +9,7 @@ import Register from "./pages/RegisterPage";
 import Dashboard from "./pages/DashboardPage";
 // import NotFound from "./pages/NotFoundPage";
 import { useAuth } from "./hooks/useAuth";
-import CreateSet from "./pages/CreateLearingsetPage";
+import CreateSet from "./pages/CreateLearningsetPage";
 import TopBar from "./components/TopBar";
 
 function AppRouter() {

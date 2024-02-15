@@ -40,57 +40,71 @@ const LearningsetForm = () => {
     }
   };
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{ display: "flex", flexDirection: "column" }}
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        width: "30%",
+        minWidth: "400px",
+        margin: "0 auto",
+      }}
     >
-      <TextField
-        name="title"
-        type="text"
-        value={learningset.title}
-        onChange={handleChange}
-        placeholder="Title"
-        variant="outlined"
-        sx={{ mb: 1 }}
-      />
-      <TextField
-        name="description"
-        value={learningset.description}
-        onChange={handleChange}
-        placeholder="Description"
-        variant="outlined"
-        sx={{ mb: 1 }}
-      />
-      <Grid container alignItems="center" sx={{ mb: 1 }}>
-        <Grid item>
-          <input
-            id="Public"
-            type="checkbox"
-            checked={isPublic ? true : false}
-            onChange={() => setIsPublic(!isPublic)}
-          />
-        </Grid>
-        <Grid item>
-          <label htmlFor="Public">Is this deck public?</label>
-        </Grid>
-      </Grid>
-
-      <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        size="large"
-        style={{
-          backgroundColor: "#007bff",
-          color: "white",
-          padding: "10px 20px",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }}
+      <h2 style={{ width: "100%", textAlign: "center" }}>
+        Create Learning Set
+      </h2>
+      <form
+        onSubmit={handleSubmit}
+        style={{ display: "flex", flexDirection: "column", width: "100%" }}
       >
-        Create Learningset
-      </Button>
-    </form>
+        <TextField
+          name="title"
+          type="text"
+          value={learningset.title}
+          onChange={handleChange}
+          placeholder="Title"
+          variant="outlined"
+          sx={{ mb: 1, width: "100%" }}
+        />
+        <TextField
+          name="description"
+          value={learningset.description}
+          onChange={handleChange}
+          placeholder="Description"
+          variant="outlined"
+          sx={{ mb: 1, width: "100%" }}
+        />
+        <Grid container alignItems="center" sx={{ mb: 1 }}>
+          <Grid item>
+            <input
+              id="Public"
+              type="checkbox"
+              checked={isPublic ? true : false}
+              onChange={() => setIsPublic(!isPublic)}
+            />
+          </Grid>
+          <Grid item>
+            <label htmlFor="Public">Is this deck public?</label>
+          </Grid>
+        </Grid>
+
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          size="large"
+          style={{
+            backgroundColor: "#007bff",
+            color: "white",
+            padding: "10px 20px",
+            borderRadius: "5px",
+            cursor: "pointer",
+            width: "100%",
+          }}
+        >
+          Create Learningset
+        </Button>
+      </form>
+    </div>
   );
 };
 
