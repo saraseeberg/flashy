@@ -1,8 +1,8 @@
-/** 
+/**
  * Component for editing flashcards.
- * 
+ *
  * Can be used to edit the front and back of a flashcard, and to delete the flashcard.
-*/
+ */
 
 import React, { useState } from "react";
 import {
@@ -75,8 +75,15 @@ const FlashcardEditor: React.FC<FlashcardEditorProps> = ({
               {front}
             </Typography>
             <Typography color="text.secondary">{back}</Typography>
-            <Button onClick={() => setEditMode(true)} style={{color: "#AC94F4"}}>Edit</Button>
-            <Button onClick={handleDelete} style={{color: "#AC94F4"}}>Delete</Button>
+            <Button
+              onClick={() => setEditMode(true)}
+              style={{ color: "#7F27FF" }}
+            >
+              Edit
+            </Button>
+            <Button onClick={handleDelete} style={{ color: "#7F27FF" }}>
+              Delete
+            </Button>
           </>
         )}
       </CardContent>

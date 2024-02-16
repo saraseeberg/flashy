@@ -54,7 +54,13 @@ const CardForm: React.FC<CardFormProps> = ({ learningSetId, onSave }) => {
         fullWidth
         margin="normal"
       />
-      <Button type="submit" variant="contained" color="primary" style={{backgroundColor: "#AC94F4"}} sx={{mb:1}}>
+      <Button
+        type="submit"
+        variant="contained"
+        color="primary"
+        style={{ backgroundColor: "#9F70FD" }}
+        sx={{ mb: 1 }}
+      >
         Add Card
       </Button>
     </form>

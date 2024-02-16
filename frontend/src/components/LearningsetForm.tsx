@@ -27,18 +27,18 @@ const LearningsetForm = () => {
     e.preventDefault();
     const documentRef = doc(collection(db, "learningSets"));
 
-
+    
     try {
       const newLearningSet = {
         ...learningset,
         isPublic: isPublic,
         createdBy: auth.currentUser?.uid,
-        id: documentRef.id, 
+        id: documentRef.id,
       };
 
       await setDoc(documentRef, newLearningSet);
       console.log("Created new learning set.");
-      navigate("/edit-set/" + documentRef.id)
+      navigate("/edit-set/" + documentRef.id);
     } catch (error) {
       console.error("Error creating learning set: ", error);
     }
@@ -98,7 +98,7 @@ const LearningsetForm = () => {
           color="primary"
           size="large"
           style={{
-            backgroundColor: "#AC94F4",
+            backgroundColor: "#9F70FD",
             color: "white",
             padding: "10px 20px",
             borderRadius: "5px",
@@ -114,5 +114,3 @@ const LearningsetForm = () => {
 };
 
 export default LearningsetForm;
-
-
