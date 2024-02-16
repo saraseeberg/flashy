@@ -1,8 +1,9 @@
 import { collection, doc, setDoc } from "firebase/firestore";
 import { useState } from "react";
 import { LearningSet } from "../models/Learningset";
-import { db } from "../config/firebase";
+import { db, auth } from "../config/firebase";
 import { Button, Grid, TextField } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const LearningsetForm = () => {
   const [learningset, setlearningset] = useState<LearningSet>({
@@ -11,6 +12,8 @@ const LearningsetForm = () => {
     isPublic: false,
     createdBy: "",
   });
+
+  const navigate = useNavigate();
 
   const [isPublic, setIsPublic] = useState(false);
 
@@ -22,23 +25,25 @@ const LearningsetForm = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Opprett en referanse til et nytt dokument i 'learningSets' samlingen
     const documentRef = doc(collection(db, "learningSets"));
 
+
     try {
-      // Opprett et nytt objekt for å sette i databasen
       const newLearningSet = {
         ...learningset,
-        id: documentRef.id, // Bruk den genererte IDen til dokumentreferansen
+        isPublic: isPublic,
+        createdBy: auth.currentUser?.uid,
+        id: documentRef.id, 
       };
 
-      // Bruk setDoc for å skrive dokumentet til databasen
       await setDoc(documentRef, newLearningSet);
       console.log("Created new learning set.");
+      navigate("/edit-set/" + documentRef.id)
     } catch (error) {
       console.error("Error creating learning set: ", error);
     }
   };
+
   return (
     <div
       style={{
@@ -109,3 +114,5 @@ const LearningsetForm = () => {
 };
 
 export default LearningsetForm;
+
+
