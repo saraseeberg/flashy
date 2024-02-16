@@ -52,6 +52,11 @@ export default function ViewCards() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    // Hver gang currentCardIndex endres, settes flipped tilbake til false slik at kortet vises på forsiden
+    setFlipped(false);
+  }, [currentCardIndex]); 
+
   const handleFlipButtonClick = () => {
     setFlipped(!flipped);
   };
