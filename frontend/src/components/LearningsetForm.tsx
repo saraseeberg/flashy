@@ -98,7 +98,7 @@ const LearningsetForm = () => {
           color="primary"
           size="large"
           style={{
-            backgroundColor: "#007bff",
+            backgroundColor: "#AC94F4",
             color: "white",
             padding: "10px 20px",
             borderRadius: "5px",

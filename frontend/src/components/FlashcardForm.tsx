@@ -1,5 +1,6 @@
 /**
  * Component for adding a new flashcard to a learning set.
+
  */
 
 import React, { useState } from "react";
@@ -53,7 +54,7 @@ const CardForm: React.FC<CardFormProps> = ({ learningSetId, onSave }) => {
         fullWidth
         margin="normal"
       />
-      <Button type="submit" variant="contained" color="primary">
+      <Button type="submit" variant="contained" color="primary" style={{backgroundColor: "#AC94F4"}} sx={{mb:1}}>
         Add Card
       </Button>
     </form>

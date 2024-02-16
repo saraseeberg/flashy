@@ -75,8 +75,8 @@ const FlashcardEditor: React.FC<FlashcardEditorProps> = ({
               {front}
             </Typography>
             <Typography color="text.secondary">{back}</Typography>
-            <Button onClick={() => setEditMode(true)}>Edit</Button>
-            <Button onClick={handleDelete}>Delete</Button>
+            <Button onClick={() => setEditMode(true)} style={{color: "#AC94F4"}}>Edit</Button>
+            <Button onClick={handleDelete} style={{color: "#AC94F4"}}>Delete</Button>
           </>
         )}
       </CardContent>
