@@ -29,6 +29,7 @@ function AppRouter() {
           path="/dashboard"
           element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
         />
+        <Route path="/viewcards/:setId" element={<ViewCards />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import styles from "./ViewCardsStyle.module.css";
 import { firestore } from "../config/firebase";
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import { useParams } from "react-router-dom";
 
 interface CardData {
   id: string;
@@ -21,41 +22,50 @@ export default function ViewCards() {
   const [flipped, setFlipped] = useState(false);
   const [title, setTitle] = useState("");
 
+  const { setId } = useParams<{ setId?: string }>();
+
+  //USEEFFECT SOM HENTER SETT FRA DATABASEN BASERT PÅ SETID FRA URL, MÅ KOMME FRA DET MAN TRYKKER PÅ I DASHBOARD
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true); // Begynner å laste inn
+      if (!setId) {
+        console.error("No learning set ID provided");
+        return;
+      }
+
+      setLoading(true);
+
       try {
-        // Henter tittelen fra learningSet
         const learningSetDoc = await getDoc(
-          doc(firestore, "learningSets", "exampleSet") //her må det byttes ut til å hente variabler som bruker har trykket på
+          doc(firestore, "learningSets", setId)
         );
+
         if (learningSetDoc.exists()) {
-          setTitle(learningSetDoc.data().title); // Setter tittelen
+          setTitle(learningSetDoc.data().title);
+
+          const querySnapshot = await getDocs(
+            collection(firestore, "learningSets", setId, "cards")
+          );
+          const cardsData = querySnapshot.docs.map(
+            (doc) => ({ id: doc.id, ...doc.data() }) as CardData
+          );
+          setCards(cardsData);
         } else {
           console.log("No such document!");
         }
-
-        // Henter kortene
-        const querySnapshot = await getDocs(
-          collection(firestore, "learningSets", "exampleSet", "cards")
-        );
-        const cardsData = querySnapshot.docs.map(
-          (doc) => ({ id: doc.id, ...doc.data() }) as CardData
-        );
-        setCards(cardsData);
       } catch (error) {
         console.error("Error fetching cards:", error);
       }
-      setLoading(false); // Avslutter lastingen
+
+      setLoading(false);
     };
 
     fetchData();
-  }, []);
+  }, [setId]);
 
   useEffect(() => {
     // Hver gang currentCardIndex endres, settes flipped tilbake til false slik at kortet vises på forsiden
     setFlipped(false);
-  }, [currentCardIndex]); 
+  }, [currentCardIndex]);
 
   const handleFlipButtonClick = () => {
     setFlipped(!flipped);
