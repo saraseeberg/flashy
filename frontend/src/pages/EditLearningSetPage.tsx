@@ -1,6 +1,6 @@
 /**
  * Page for editing a learning set
- * 
+ *
  * it displays a form for editing the learning set, and a list of flashcards in the spesific learningset that can be edited or deleted.
  */
 
@@ -13,7 +13,7 @@ import {
   doc,
   getDoc,
   getDocs,
-} from "firebase/firestore"; 
+} from "firebase/firestore";
 import { LearningSet } from "../models/Learningset";
 import { db } from "../config/firebase";
 import FlashcardEditor from "../components/FlachcardEditor";
@@ -25,7 +25,7 @@ interface FlashcardData {
 }
 
 const EditLearningSetPage = () => {
-  const { setId } = useParams<{ setId?: string }>(); 
+  const { setId } = useParams<{ setId?: string }>();
   const [learningSet, setLearningSet] = useState<LearningSet | null>(null);
   const [flashcards, setFlashcards] = useState<FlashcardData[]>([]);
 
@@ -45,7 +45,7 @@ const EditLearningSetPage = () => {
   useEffect(() => {
     const fetchLearningSet = async () => {
       if (setId) {
-        const docRef = doc(db as Firestore, "learningSets", setId); 
+        const docRef = doc(db as Firestore, "learningSets", setId);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -78,8 +78,8 @@ const EditLearningSetPage = () => {
 
     if (setId) {
       fetchLearningSet();
-      fetchFlashcards(); 
-      refreshFlashcards(); 
+      fetchFlashcards();
+      refreshFlashcards();
     }
   }, [setId]);
 
@@ -87,15 +87,20 @@ const EditLearningSetPage = () => {
     <div>
       {learningSet && setId ? (
         <>
-          <CardForm learningSetId={setId} onSave={refreshFlashcards} />
-          {flashcards.map((card) => (
-            <FlashcardEditor
-              key={card.id}
-              card={card}
-              learningSetId={setId}
-              onSave={refreshFlashcards} 
-            />
-          ))}
+          <div>
+            <CardForm learningSetId={setId} onSave={refreshFlashcards} />
+          </div>
+          <div>
+            <h2>Edit the existing flashcards:</h2>
+            {flashcards.map((card) => (
+              <FlashcardEditor
+                key={card.id}
+                card={card}
+                learningSetId={setId}
+                onSave={refreshFlashcards}
+              />
+            ))}
+          </div>
         </>
       ) : (
         <p>Loading...</p>
