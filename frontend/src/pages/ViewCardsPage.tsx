@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, Checkbox, FormControlLabel } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Card from "../components/Card";
@@ -25,6 +25,7 @@ export default function ViewCards() {
   const { setId } = useParams<{ setId?: string }>();
 
   //USEEFFECT SOM HENTER SETT FRA DATABASEN BASERT PÅ SETID FRA URL, MÅ KOMME FRA DET MAN TRYKKER PÅ I DASHBOARD
+  /* Fetch the learning set from the database, based on the ID in the URL */
   useEffect(() => {
     const fetchData = async () => {
       if (!setId) {
@@ -62,17 +63,40 @@ export default function ViewCards() {
     fetchData();
   }, [setId]);
 
+  /* Flips the card back to the front, whenever a new card is displayed */
   useEffect(() => {
     // Hver gang currentCardIndex endres, settes flipped tilbake til false slik at kortet vises på forsiden
     setFlipped(false);
   }, [currentCardIndex]);
 
+  /* Method that flips the card */
   const handleFlipButtonClick = () => {
     setFlipped(!flipped);
   };
 
-  const handleNextCard = () => {
+  /* Fetch the next card in the set, in a standard order */
+  const handleNextCardStandard = () => {
     setCurrentCardIndex((prevIndex) => (prevIndex + 1) % cards.length); // Går til neste kort, og begynner på starten hvis vi er på siste kort
+  };
+
+  /* Fetch the next card in the set, in a random order */
+  const handleNextCardRandom = () => {
+    let nextIndex = -1; // Initialize to a value outside the range of valid indices
+
+    while (nextIndex === -1 || nextIndex === currentCardIndex) {
+      nextIndex = Math.floor(Math.random() * cards.length);
+    }
+
+    setCurrentCardIndex(nextIndex);
+  };
+
+  /* Fetch the next card in the set, either in a standard order or in a random order, based on Shuffle-checkbox */
+  const handleNextCard = () => {
+    const checkbox = document.getElementById(
+      "shuffleCheckbox"
+    ) as HTMLInputElement | null;
+
+    checkbox?.checked ? handleNextCardRandom() : handleNextCardStandard();
   };
 
   const handlePrevCard = () => {
@@ -100,6 +124,20 @@ export default function ViewCards() {
             isDifficult={currentCard.isDifficult}
             isFlipped={flipped}
           />
+          <div>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  id="shuffleCheckbox"
+                  sx={{
+                    color: "#9F70FD",
+                    "&.Mui-checked": { color: "#9F70FD" },
+                  }}
+                />
+              }
+              label="Shuffle cards"
+            />
+          </div>
           <div id={styles.flipButtonDiv}>
             <Button onClick={handlePrevCard}>
               <ArrowBackIcon />
