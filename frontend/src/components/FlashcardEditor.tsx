@@ -14,10 +14,10 @@ import {
 } from "@mui/material";
 import { db } from "../config/firebase";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
-import { FlashcardData } from "../models/Flashcard";
+import { CardData } from "../models/Flashcard";
 
 interface FlashcardEditorProps {
-  card: FlashcardData;
+  card: CardData;
   learningSetId: string;
   onSave: () => void;
 }

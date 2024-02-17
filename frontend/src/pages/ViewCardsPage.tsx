@@ -7,13 +7,7 @@ import styles from "./ViewCardsStyle.module.css";
 import { firestore } from "../config/firebase";
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { useParams } from "react-router-dom";
-
-interface CardData {
-  id: string;
-  front: string;
-  back: string;
-  isDifficult: boolean;
-}
+import { CardData } from "../models/Flashcard";
 
 export default function ViewCards() {
   const [cards, setCards] = useState<CardData[]>([]);
@@ -65,7 +59,6 @@ export default function ViewCards() {
 
   /* Flips the card back to the front, whenever a new card is displayed */
   useEffect(() => {
-    // Hver gang currentCardIndex endres, settes flipped tilbake til false slik at kortet vises på forsiden
     setFlipped(false);
   }, [currentCardIndex]);
 
@@ -76,12 +69,12 @@ export default function ViewCards() {
 
   /* Fetch the next card in the set, in a standard order */
   const handleNextCardStandard = () => {
-    setCurrentCardIndex((prevIndex) => (prevIndex + 1) % cards.length); // Går til neste kort, og begynner på starten hvis vi er på siste kort
+    setCurrentCardIndex((prevIndex) => (prevIndex + 1) % cards.length);
   };
 
   /* Fetch the next card in the set, in a random order */
   const handleNextCardRandom = () => {
-    let nextIndex = -1; // Initialize to a value outside the range of valid indices
+    let nextIndex = -1;
 
     while (nextIndex === -1 || nextIndex === currentCardIndex) {
       nextIndex = Math.floor(Math.random() * cards.length);
@@ -99,10 +92,11 @@ export default function ViewCards() {
     checkbox?.checked ? handleNextCardRandom() : handleNextCardStandard();
   };
 
+  /* Fetch the previous card in the set */
   const handlePrevCard = () => {
     setCurrentCardIndex(
       (prevIndex) => (prevIndex - 1 + cards.length) % cards.length
-    ); // Går til forrige kort, og går til siste kort hvis vi er på første kort
+    );
   };
 
   if (loading) {
