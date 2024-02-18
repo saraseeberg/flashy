@@ -32,7 +32,7 @@ const Card: React.FC<CardData> = ({ front, back, isDifficult, isFlipped }) => {
           }}
         >
           {isFlipped ? <p> Answer</p> : <p> Question </p>}
-          <p> Difficulty: {isDifficult ? "Difficult" : "Easy"}</p>
+          <p> {isDifficult ? "Difficult" : "Not difficult"}</p>
         </div>
 
         <div
