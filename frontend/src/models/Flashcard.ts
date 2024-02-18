@@ -1,11 +1,7 @@
-export interface Flashcard {
-  id?: string;
-  front: string;
-  back: string;
-}
-
-export interface FlashcardData {
+export interface CardData {
   id: string;
   front: string;
   back: string;
+  isDifficult: boolean;
+  isFlipped: boolean;
 }
