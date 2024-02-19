@@ -6,14 +6,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as fasFaStar } from "@fortawesome/free-solid-svg-icons";
 import { faStar as farFaStar } from "@fortawesome/free-regular-svg-icons";
 
-interface LearningSet {
-  id: number;
-  name: string;
-  isFavorite: boolean;
+import { useEffect, useState } from "react";
+import { db } from "../config/firebase";
+import { Firestore, collection, getDocs } from "firebase/firestore";
+import { LearningSet } from "../models/Learningset";
 }
 
 export default function Dashboard() {
-  const learningSets: LearningSet[] = [
+  const [learningSets, setLearningSets] = useState<LearningSet[]>([]);
     { id: 1, name: "Set 1", isFavorite: true },
     { id: 2, name: "Set 2", isFavorite: false },
     { id: 3, name: "Set 3", isFavorite: false },
@@ -39,6 +39,23 @@ export default function Dashboard() {
   const handleSetFavorite = (id: number) => {
     console.log("Set favorite", id);
   };
+  useEffect(() => {
+    const fetchLearningSets = async () => {
+      const docCollectionRef = collection(db as Firestore, "learningSets");
+      const querySnapshot = await getDocs(docCollectionRef);
+      const fetchedLearningSets = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...(doc.data() as Omit<LearningSet, "id">),
+      }));
+      const filterlearningset = fetchedLearningSets.filter((learningSet) =>
+        showPublic ? learningSet.isPublic : !learningSet.isPublic
+      );
+      setLearningSets(filterlearningset);
+    };
+
+    fetchLearningSets();
+    console.log(learningSets);
+  }, [showPublic]);
 
   return (
     <Container maxWidth="md" sx={{ marginTop: "20px" }}>
