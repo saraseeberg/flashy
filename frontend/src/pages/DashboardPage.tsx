@@ -12,13 +12,19 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar as fasFaStar } from "@fortawesome/free-solid-svg-icons";
-import { faStar as farFaStar } from "@fortawesome/free-regular-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faStar as fasFaStar } from "@fortawesome/free-solid-svg-icons";
+// import { faStar as farFaStar } from "@fortawesome/free-regular-svg-icons";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useEffect, useState } from "react";
 import { db } from "../config/firebase";
-import { Firestore, collection, getDocs } from "firebase/firestore";
+import {
+  Firestore,
+  collection,
+  getDocs,
+  doc,
+  deleteDoc,
+} from "firebase/firestore";
 import { LearningSet } from "../models/Learningset";
 
 export default function Dashboard() {
@@ -55,7 +61,21 @@ export default function Dashboard() {
   };
 
   const handleDeleteSet = () => {
-    console.log("Deleting", selectedSetId);
+    if (selectedSetId) {
+      const docRef = doc(db, "learningSets", selectedSetId);
+      deleteDoc(docRef)
+        .then(() => {
+          console.log("Document successfully deleted!");
+          setLearningSets(
+            learningSets.filter((set) => set.id !== selectedSetId)
+          );
+        })
+        .catch((error) => {
+          console.error("Error removing document: ", error);
+        });
+    } else {
+      console.error("No set selected for deletion");
+    }
     handleClose();
   };
 

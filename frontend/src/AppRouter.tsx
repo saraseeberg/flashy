@@ -21,6 +21,7 @@ function AppRouter() {
     <Router>
       <TopBar />
       <Routes>
+        <Route path="/" element={<Navigate to="/dashboard" />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route
