@@ -8,7 +8,10 @@ import Login from "./pages/LoginPage";
 import Register from "./pages/RegisterPage";
 import Dashboard from "./pages/DashboardPage";
 import { useAuth } from "./hooks/useAuth";
+import CreateSet from "./pages/CreateLearningsetPage";
+import EditSet from "./pages/EditLearningSetPage";
 import TopBar from "./components/TopBar";
+import ViewCards from "./pages/ViewCardsPage";
 
 function AppRouter() {
   const { isAuthenticated } = useAuth();
@@ -19,6 +22,8 @@ function AppRouter() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/create-set" element={<CreateSet />} />
+        <Route path="/edit-set/:setId" element={<EditSet />} />
         <Route
           path="/dashboard"
           element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
@@ -33,6 +38,7 @@ function AppRouter() {
             )
           }
         />
+        <Route path="/viewcards/:setId" element={<ViewCards />} />
       </Routes>
     </Router>
   );
