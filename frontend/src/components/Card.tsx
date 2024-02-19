@@ -1,12 +1,7 @@
-export type Cards = {
-  id: string;
-  front: string;
-  back: string;
-  isFlipped: boolean;
-  isDifficult: boolean;
-};
+import React from "react";
+import { CardData } from "../models/Flashcard";
 
-const Card: React.FC<Cards> = ({ front, back, isDifficult, isFlipped, id }) => {
+const Card: React.FC<CardData> = ({ front, back, isDifficult, isFlipped }) => {
   return (
     <div
       className="card-container"
@@ -37,7 +32,7 @@ const Card: React.FC<Cards> = ({ front, back, isDifficult, isFlipped, id }) => {
           }}
         >
           {isFlipped ? <p> Answer</p> : <p> Question </p>}
-          <p> Difficulty</p>
+          <p> {isDifficult ? "Difficult" : "Not difficult"}</p>
         </div>
 
         <div

@@ -16,18 +16,13 @@ import {
 } from "firebase/firestore";
 import { LearningSet } from "../models/Learningset";
 import { db } from "../config/firebase";
-import FlashcardEditor from "../components/FlachcardEditor";
-
-interface FlashcardData {
-  id: string;
-  front: string;
-  back: string;
-}
+import FlashcardEditor from "../components/FlashcardEditor";
+import { CardData } from "../models/Flashcard";
 
 const EditLearningSetPage = () => {
   const { setId } = useParams<{ setId?: string }>();
   const [learningSet, setLearningSet] = useState<LearningSet | null>(null);
-  const [flashcards, setFlashcards] = useState<FlashcardData[]>([]);
+  const [flashcards, setFlashcards] = useState<CardData[]>([]);
 
   const refreshFlashcards = async () => {
     if (setId) {
@@ -37,7 +32,7 @@ const EditLearningSetPage = () => {
       const cardsData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-      })) as FlashcardData[];
+      })) as CardData[];
       setFlashcards(cardsData);
     }
   };
@@ -71,7 +66,7 @@ const EditLearningSetPage = () => {
         const cardsData = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-        })) as FlashcardData[];
+        })) as CardData[];
         setFlashcards(cardsData);
       }
     };
