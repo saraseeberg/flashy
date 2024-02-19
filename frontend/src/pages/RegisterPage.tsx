@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../config/firebase";
+import { auth, db } from "../config/firebase";
 import { createUserWithEmailAndPassword, AuthError } from "firebase/auth";
 import TextField from "@mui/material/TextField";
 import { Box, Button, CircularProgress } from "@mui/material";
+import { doc, setDoc } from "firebase/firestore";
 
 function RegisterPage() {
   const [registering, setRegistering] = useState<boolean>(false);
@@ -49,6 +50,17 @@ function RegisterPage() {
         email,
         password
       );
+
+      // Brukerens ID fra autentiseringen brukes som dokument-ID i Firestore
+      const userDocRef = doc(db, "usersData", userCredential.user.uid);
+
+      // Lagre den tilleggende informasjonen i Firestore under usersData samlingen
+      await setDoc(userDocRef, {
+        firstName: firstName,
+        lastName: lastName,
+        username: username,
+      });
+
       console.log("User registered successfully:", userCredential.user);
       navigate("/login");
     } catch (error) {
