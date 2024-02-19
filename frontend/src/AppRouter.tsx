@@ -21,7 +21,7 @@ function AppRouter() {
     <Router>
       <TopBar />
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/create-set" element={<CreateSet />} />
         <Route path="/edit-set/:setId" element={<EditSet />} />
