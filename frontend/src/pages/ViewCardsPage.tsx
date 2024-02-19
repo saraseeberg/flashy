@@ -4,8 +4,15 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Card from "../components/Card";
 import { useEffect, useState } from "react";
 import styles from "./ViewCardsStyle.module.css";
-import { firestore } from "../config/firebase";
-import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import { firestore, db } from "../config/firebase";
+import {
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+  updateDoc,
+  DocumentReference,
+} from "firebase/firestore";
 import { useParams } from "react-router-dom";
 import { CardData } from "../models/Flashcard";
 import CompleteSetPopup from "../components/CompleteSetPopup";
@@ -27,15 +34,9 @@ export default function ViewCards() {
     setShufflePopupOpen(false);
   };
 
-  /* Provide shuffled cards */
+  /* Shuffle the cards */
   const handleShuffle = () => {
     shuffleCards();
-    handleShufflePopupClose();
-  };
-
-  /* Fetch cards without shuffling */
-  const handleNoShuffle = () => {
-    fetchCards();
     handleShufflePopupClose();
   };
 
@@ -129,11 +130,71 @@ export default function ViewCards() {
     );
   };
 
+  /* Reset the isDifficult property for all cards in the learning set to false */
+  const resetIsDifficultForLearningSet = async (setId: string) => {
+    try {
+      const cardsCollectionRef = collection(db, "learningSets", setId, "cards");
+
+      // Get all cards in the learning set
+      const querySnapshot = await getDocs(cardsCollectionRef);
+
+      // Update each card's isDifficult to false
+      const updatePromises = querySnapshot.docs.map((doc) => {
+        const cardDocRef = doc.ref;
+        return updateDoc(cardDocRef, { isDifficult: false });
+      });
+
+      // Wait for all updates to complete
+      await Promise.all(updatePromises);
+
+      // Fetch and set the updated cards
+      await fetchCards();
+
+      console.log("All cards reset to not difficult");
+    } catch (error) {
+      console.error("Error resetting cards:", error);
+    }
+  };
+
+  /* Update the difficulty of a card in the database */
+  const handleDifficultyChange = async (
+    cardId: string,
+    newIsDifficult: boolean
+  ) => {
+    try {
+      // Update the state using the functional form
+      setCards((prevCards) =>
+        prevCards.map((card) =>
+          card.id === cardId ? { ...card, isDifficult: newIsDifficult } : card
+        )
+      );
+
+      // Check if setId is defined
+      if (!setId) {
+        console.error("No learning set ID provided");
+        return;
+      }
+
+      // Update Firestore document
+      const cardDocRef: DocumentReference = doc(
+        db,
+        "learningSets",
+        setId,
+        "cards",
+        cardId
+      );
+
+      await updateDoc(cardDocRef, { isDifficult: newIsDifficult });
+    } catch (error) {
+      console.error("Error updating card difficulty:", error);
+    }
+  };
+
   if (loading) {
     return (
       <div>
         <p>Loading...</p>
-        <CircularProgress />;
+        <CircularProgress />
       </div>
     );
   }
@@ -147,7 +208,7 @@ export default function ViewCards() {
           open={shufflePopupOpen}
           onClose={handleShufflePopupClose}
           onShuffle={handleShuffle}
-          onNoShuffle={handleNoShuffle}
+          onNoShuffle={handleShufflePopupClose}
         />
       )}
       {completedSet ? (
@@ -156,9 +217,14 @@ export default function ViewCards() {
             setCompletedSet(false);
           }}
           onRestart={() => {
-            setCompletedSet(false);
-            setShufflePopupOpen(true);
+            if (!setId) {
+              console.error("No learning set ID provided");
+              return;
+            }
+            resetIsDifficultForLearningSet(setId);
             setCurrentCardIndex(0);
+            setShufflePopupOpen(true);
+            setCompletedSet(false);
           }}
         />
       ) : (
@@ -172,6 +238,7 @@ export default function ViewCards() {
               back={currentCard.back}
               isDifficult={currentCard.isDifficult}
               isFlipped={flipped}
+              onDifficultyChange={handleDifficultyChange}
             />
             <div>
               <Typography>

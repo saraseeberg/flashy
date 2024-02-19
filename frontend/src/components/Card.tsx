@@ -1,7 +1,23 @@
-import React from "react";
+import React, { ChangeEvent } from "react";
 import { CardData } from "../models/Flashcard";
+import { Checkbox, FormControlLabel } from "@mui/material";
 
-const Card: React.FC<CardData> = ({ front, back, isDifficult, isFlipped }) => {
+interface CardProps extends CardData {
+  onDifficultyChange: (id: string, isDifficult: boolean) => void;
+}
+
+const Card: React.FC<CardProps> = ({
+  id,
+  front,
+  back,
+  isDifficult,
+  isFlipped,
+  onDifficultyChange,
+}) => {
+  const handleDifficultyChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const newIsDifficult = event.target.checked;
+    onDifficultyChange(id, newIsDifficult);
+  };
   return (
     <div
       className="card-container"
@@ -13,6 +29,7 @@ const Card: React.FC<CardData> = ({ front, back, isDifficult, isFlipped }) => {
         background: "#AC94F4",
         maxWidth: "40em",
         borderRadius: "2em",
+        zIndex: 0,
       }}
     >
       <div
@@ -32,7 +49,23 @@ const Card: React.FC<CardData> = ({ front, back, isDifficult, isFlipped }) => {
           }}
         >
           {isFlipped ? <p> Answer</p> : <p> Question </p>}
-          <p> {isDifficult ? "Difficult" : "Not difficult"}</p>
+          <div>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  id="difficultyCheckbox"
+                  checked={isDifficult}
+                  onChange={handleDifficultyChange}
+                  sx={{
+                    color: "#9F70FD",
+                    "&.Mui-checked": { color: "#9F70FD" },
+                    zIndex: "3",
+                  }}
+                />
+              }
+              label="Difficult card?"
+            />
+          </div>
         </div>
 
         <div
