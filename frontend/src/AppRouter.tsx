@@ -12,6 +12,7 @@ import CreateSet from "./pages/CreateLearningsetPage";
 import EditSet from "./pages/EditLearningSetPage";
 import TopBar from "./components/TopBar";
 import ViewCards from "./pages/ViewCardsPage";
+import NotFound from "./pages/NotFoundPage";
 
 function AppRouter() {
   const { isAuthenticated } = useAuth();
@@ -22,23 +23,23 @@ function AppRouter() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/create-set" element={<CreateSet />} />
-        <Route path="/edit-set/:setId" element={<EditSet />} />
         <Route
           path="/dashboard"
           element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
         />
         <Route
-          path="*"
-          element={
-            isAuthenticated ? (
-              <Navigate to="/dashboard" />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
+          path="/create-set"
+          element={isAuthenticated ? <CreateSet /> : <Navigate to="/login" />}
         />
-        <Route path="/viewcards/:setId" element={<ViewCards />} />
+        <Route
+          path="/edit-set/:setId"
+          element={isAuthenticated ? <EditSet /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/viewcards/:setId"
+          element={isAuthenticated ? <ViewCards /> : <Navigate to="/login" />}
+        />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );
