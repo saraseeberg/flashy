@@ -72,7 +72,7 @@ export default function Login() {
         <img
           src={loginLogo}
           alt="logo"
-          style={{ maxWidth: "50%", marginBottom: "1em" }}
+          style={{ maxWidth: "50%", marginBottom: "1em", border: "5px solid #9F70FD", borderRadius: "10px"}}
         />
         <Box>
           <Typography
