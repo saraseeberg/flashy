@@ -71,7 +71,7 @@ const FlashcardEditor: React.FC<FlashcardEditorProps> = ({
           </>
         ) : (
           <>
-            <Typography variant="h5" component="div">
+            <Typography variant="h6" component="div">
               {front}
             </Typography>
             <Typography color="text.secondary">{back}</Typography>

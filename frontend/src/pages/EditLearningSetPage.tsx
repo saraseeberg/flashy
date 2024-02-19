@@ -82,15 +82,20 @@ const EditLearningSetPage = () => {
     <div>
       {learningSet && setId ? (
         <>
-          <CardForm learningSetId={setId} onSave={refreshFlashcards} />
-          {flashcards.map((card) => (
-            <FlashcardEditor
-              key={card.id}
-              card={card}
-              learningSetId={setId}
-              onSave={refreshFlashcards}
-            />
-          ))}
+          <div>
+            <CardForm learningSetId={setId} onSave={refreshFlashcards} />
+          </div>
+          <div>
+            <h2>Edit the existing flashcards:</h2>
+            {flashcards.map((card) => (
+              <FlashcardEditor
+                key={card.id}
+                card={card}
+                learningSetId={setId}
+                onSave={refreshFlashcards}
+              />
+            ))}
+          </div>
         </>
       ) : (
         <p>Loading...</p>
