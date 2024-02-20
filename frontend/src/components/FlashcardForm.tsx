@@ -4,9 +4,13 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { Button, TextField } from "@mui/material";
+import { Box,Button, TextField } from "@mui/material";
 import { collection, addDoc, getDoc, doc } from "firebase/firestore";
 import { db } from "../config/firebase";
+import { useNavigate } from "react-router-dom";
+
+
+
 
 interface CardFormProps {
   learningSetId: string;
@@ -20,6 +24,7 @@ const CardForm: React.FC<CardFormProps> = ({ learningSetId, onSave }) => {
   const [back, setBack] = useState("");
   const [isFlipped, setIsFlipped] = useState(false);
   const [isDifficult, setIsDifficult] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLearningSetDetails = async () => {
@@ -100,18 +105,45 @@ const CardForm: React.FC<CardFormProps> = ({ learningSetId, onSave }) => {
           />
         </div>
         <div>
-          <Button
-            type="submit"
+          <Box 
+          sx={{
+            marginTop: "1em",
+            marginBottom: "1.5em",
+            display: "flex",
+            justifyContent: "center", 
+            gap: "20px", 
+          }}
+          
+          >
+          <Button onClick={() => navigate(-1)}
+            type="button"
             variant="contained"
             color="primary"
             style={{
+              padding: "20px 45px",
               backgroundColor: "#9F70FD",
               marginTop: "1em",
               marginBottom: "1.5em",
             }}
           >
-            Add Card
+            Back
           </Button>
+          <Button 
+            type="submit"
+            variant="contained"
+            color="primary"
+            style={{
+              padding: "20px 45px",
+              backgroundColor: "#9F70FD",
+              marginTop: "1em",
+              marginBottom: "1.5em",
+      
+            }}
+          >
+            Add
+          </Button>
+          </Box>
+          
         </div>
       </div>
     </form>

@@ -10,6 +10,7 @@ import { useParams } from "react-router-dom";
 import { CardData } from "../models/Flashcard";
 import CompleteSetPopup from "../components/CompleteSetPopup";
 import ShufflePopup from "../components/ShufflePopup";
+import {useNavigate} from "react-router-dom";
 
 export default function ViewCards() {
   const [cards, setCards] = useState<CardData[]>([]);
@@ -26,6 +27,7 @@ export default function ViewCards() {
   const handleShufflePopupClose = () => {
     setShufflePopupOpen(false);
   };
+  const navigate = useNavigate();
 
   /* Provide shuffled cards */
   const handleShuffle = () => {
@@ -198,7 +200,7 @@ export default function ViewCards() {
               </Button>
             </div>
             <div id={styles.backButtonDiv}>
-              <Button
+              <Button onClick={() => navigate('/dashboard')} 
                 id={styles.backButton}
                 type="button"
                 fullWidth

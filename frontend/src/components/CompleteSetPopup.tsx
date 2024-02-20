@@ -2,13 +2,16 @@ import { Button, Typography } from "@mui/material";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import { useNavigate } from "react-router-dom";
 
 interface PopUpProps {
   onClose: () => void;
   onRestart: () => void;
 }
 
-const CompleteSetPopup: React.FC<PopUpProps> = ({ onClose, onRestart }) => {
+
+const CompleteSetPopup: React.FC<PopUpProps> = ({ onRestart }) => {
+const navigate = useNavigate();
   return (
     <div
       style={{
@@ -60,7 +63,7 @@ const CompleteSetPopup: React.FC<PopUpProps> = ({ onClose, onRestart }) => {
           }}
         >
           <Button
-            onClick={onClose}
+            onClick={() => navigate('/dashboard')}
             type="submit"
             variant="contained"
             color="primary"
@@ -72,7 +75,7 @@ const CompleteSetPopup: React.FC<PopUpProps> = ({ onClose, onRestart }) => {
             }}
             sx={{ mb: 1 }}
           >
-            <DashboardIcon
+            <DashboardIcon 
               sx={{ fontSize: "2.3em", marginRight: "0.4em" }}
             ></DashboardIcon>
             Return to Dashboard
