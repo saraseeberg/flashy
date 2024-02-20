@@ -35,6 +35,12 @@ export default function ViewCards() {
     handleShufflePopupClose();
   };
 
+  /* Shuffle the cards */
+  const handleNoShuffle = () => {
+    fetchCards();
+    handleShufflePopupClose();
+  };
+
   /* Get the current index of the card */
   function getCurrentIndex() {
     return String(currentCardIndex + 1);
@@ -192,7 +198,7 @@ export default function ViewCards() {
           open={shufflePopupOpen}
           onClose={handleShufflePopupClose}
           onShuffle={handleShuffle}
-          onNoShuffle={handleShufflePopupClose}
+          onNoShuffle={handleNoShuffle}
         />
       )}
       {completedSet ? (
