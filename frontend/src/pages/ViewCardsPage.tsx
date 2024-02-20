@@ -4,15 +4,8 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Card from "../components/Card";
 import { useEffect, useState } from "react";
 import styles from "./ViewCardsStyle.module.css";
-import { firestore, db } from "../config/firebase";
-import {
-  collection,
-  getDocs,
-  doc,
-  getDoc,
-  updateDoc,
-  DocumentReference,
-} from "firebase/firestore";
+import { firestore } from "../config/firebase";
+import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { useParams } from "react-router-dom";
 import { CardData } from "../models/Flashcard";
 import CompleteSetPopup from "../components/CompleteSetPopup";
@@ -26,6 +19,8 @@ export default function ViewCards() {
   const [flipped, setFlipped] = useState(false);
   const [title, setTitle] = useState("");
   const [shufflePopupOpen, setShufflePopupOpen] = useState(true);
+  const [difficultCards, setDifficultCards] = useState<CardData[]>([]);
+  const [inDifficultMode, setInDifficultMode] = useState(false);
 
   const { setId } = useParams<{ setId?: string }>();
 
@@ -47,7 +42,8 @@ export default function ViewCards() {
 
   /* Get the length of the current set */
   function getCurrentSetLength() {
-    return String(cards.length);
+    const length = inDifficultMode ? difficultCards.length : cards.length;
+    return String(length);
   }
 
   //USEEFFECT SOM HENTER SETT FRA DATABASEN BASERT PÅ SETID FRA URL, MÅ KOMME FRA DET MAN TRYKKER PÅ I DASHBOARD
@@ -114,79 +110,64 @@ export default function ViewCards() {
     setFlipped(!flipped);
   };
 
-  /* Fetch the next card in the set, in a standard order */
-  const handleNextCardStandard = () => {
-    setCurrentCardIndex((prevIndex) => (prevIndex + 1) % cards.length);
-
-    if (currentCardIndex === cards.length - 1) {
-      setCompletedSet(true);
-    }
-  };
-
   /* Fetch the previous card in the set */
   const handlePrevCard = () => {
+    const currentCards = inDifficultMode ? difficultCards : cards;
+
     setCurrentCardIndex(
-      (prevIndex) => (prevIndex - 1 + cards.length) % cards.length
+      (prevIndex) => (prevIndex - 1 + currentCards.length) % currentCards.length
     );
   };
 
-  /* Reset the isDifficult property for all cards in the learning set to false */
-  const resetIsDifficultForLearningSet = async (setId: string) => {
-    try {
-      const cardsCollectionRef = collection(db, "learningSets", setId, "cards");
+  /* Fetch the next card in the set */
+  const handleNextCardStandard = () => {
+    if (!inDifficultMode) {
+      // If not in difficult mode, proceed with non-difficult cards
+      setCurrentCardIndex((prevIndex) => prevIndex + 1);
 
-      // Get all cards in the learning set
-      const querySnapshot = await getDocs(cardsCollectionRef);
+      if (currentCardIndex === cards.length - 1) {
+        // If reached the end of non-difficult cards
+        if (difficultCards.length > 0) {
+          // If there are difficult cards, switch to difficult mode
+          setInDifficultMode(true);
+          setCurrentCardIndex(0); // Start with the first difficult card
+        } else {
+          // If no difficult cards, set the set as completed
+          setCompletedSet(true);
+        }
+      }
+    } else {
+      // If in difficult mode, proceed with difficult cards
+      setCurrentCardIndex((prevIndex) => prevIndex + 1);
 
-      // Update each card's isDifficult to false
-      const updatePromises = querySnapshot.docs.map((doc) => {
-        const cardDocRef = doc.ref;
-        return updateDoc(cardDocRef, { isDifficult: false });
-      });
-
-      // Wait for all updates to complete
-      await Promise.all(updatePromises);
-
-      // Fetch and set the updated cards
-      await fetchCards();
-
-      console.log("All cards reset to not difficult");
-    } catch (error) {
-      console.error("Error resetting cards:", error);
+      if (currentCardIndex === difficultCards.length - 1) {
+        setCurrentCardIndex(0);
+      }
     }
   };
 
-  /* Update the difficulty of a card in the database */
-  const handleDifficultyChange = async (
-    cardId: string,
-    newIsDifficult: boolean
-  ) => {
-    try {
-      // Update the state using the functional form
-      setCards((prevCards) =>
-        prevCards.map((card) =>
-          card.id === cardId ? { ...card, isDifficult: newIsDifficult } : card
-        )
-      );
+  /* Handle the change of the difficulty checkbox */
+  const handleDifficultyChange = (cardId: string, newIsDifficult: boolean) => {
+    // Find the card in the main list
+    const updatedCards = cards.map((card) =>
+      card.id === cardId ? { ...card, isDifficult: newIsDifficult } : card
+    );
 
-      // Check if setId is defined
-      if (!setId) {
-        console.error("No learning set ID provided");
-        return;
-      }
+    setCards(updatedCards);
 
-      // Update Firestore document
-      const cardDocRef: DocumentReference = doc(
-        db,
-        "learningSets",
-        setId,
-        "cards",
-        cardId
-      );
+    // Update the difficult cards list based on the checkbox status
+    const updatedDifficultCards = updatedCards.filter(
+      (card) => card.isDifficult
+    );
 
-      await updateDoc(cardDocRef, { isDifficult: newIsDifficult });
-    } catch (error) {
-      console.error("Error updating card difficulty:", error);
+    if (inDifficultMode && currentCardIndex === difficultCards.length - 1) {
+      setCurrentCardIndex(0);
+    }
+
+    setDifficultCards(updatedDifficultCards);
+
+    if (inDifficultMode && updatedDifficultCards.length === 0) {
+      setCompletedSet(true);
     }
   };
 
@@ -199,7 +180,10 @@ export default function ViewCards() {
     );
   }
 
-  const currentCard = cards[currentCardIndex];
+  /* Get the current card, based on difficultyMode */
+  const currentCard = inDifficultMode
+    ? difficultCards[currentCardIndex]
+    : cards[currentCardIndex];
 
   return (
     <div>
@@ -217,14 +201,10 @@ export default function ViewCards() {
             setCompletedSet(false);
           }}
           onRestart={() => {
-            if (!setId) {
-              console.error("No learning set ID provided");
-              return;
-            }
-            resetIsDifficultForLearningSet(setId);
+            setCompletedSet(false);
+            setInDifficultMode(false);
             setCurrentCardIndex(0);
             setShufflePopupOpen(true);
-            setCompletedSet(false);
           }}
         />
       ) : (

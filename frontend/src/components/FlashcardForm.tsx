@@ -18,8 +18,6 @@ const CardForm: React.FC<CardFormProps> = ({ learningSetId, onSave }) => {
   const [description, setDescription] = useState("");
   const [front, setFront] = useState("");
   const [back, setBack] = useState("");
-  const [isFlipped, setIsFlipped] = useState(false);
-  const [isDifficult, setIsDifficult] = useState(false);
 
   useEffect(() => {
     const fetchLearningSetDetails = async () => {
@@ -49,13 +47,9 @@ const CardForm: React.FC<CardFormProps> = ({ learningSetId, onSave }) => {
       await addDoc(collection(db, "learningSets", learningSetId, "cards"), {
         front,
         back,
-        isFlipped,
-        isDifficult,
       });
       setFront("");
       setBack("");
-      setIsDifficult(false);
-      setIsFlipped(false);
       onSave();
       console.log("Card added to learning set.");
     } catch (error) {
