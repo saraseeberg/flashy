@@ -29,6 +29,7 @@ const ShufflePopup: React.FC<ShufflePopupProps> = ({
         height: "100%",
         justifyContent: "center",
         background: "rgba(0, 0, 0, 0.5)",
+        zIndex: "5",
       }}
     >
       <div

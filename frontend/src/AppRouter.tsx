@@ -13,6 +13,7 @@ import EditSet from "./pages/EditLearningSetPage";
 import TopBar from "./components/TopBar";
 import ViewCards from "./pages/ViewCardsPage";
 import NotFound from "./pages/NotFoundPage";
+import Settings from "./pages/SettingsPage";
 
 function AppRouter() {
   const { isAuthenticated } = useAuth();
@@ -40,6 +41,7 @@ function AppRouter() {
           path="/viewcards/:setId"
           element={isAuthenticated ? <ViewCards /> : <Navigate to="/login" />}
         />
+        <Route path="/settings" element={<Settings />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

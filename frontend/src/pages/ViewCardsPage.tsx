@@ -20,6 +20,8 @@ export default function ViewCards() {
   const [flipped, setFlipped] = useState(false);
   const [title, setTitle] = useState("");
   const [shufflePopupOpen, setShufflePopupOpen] = useState(true);
+  const [difficultCards, setDifficultCards] = useState<CardData[]>([]);
+  const [inDifficultMode, setInDifficultMode] = useState(false);
 
   const { setId } = useParams<{ setId?: string }>();
 
@@ -29,13 +31,13 @@ export default function ViewCards() {
   };
   const navigate = useNavigate();
 
-  /* Provide shuffled cards */
+  /* Shuffle the cards */
   const handleShuffle = () => {
     shuffleCards();
     handleShufflePopupClose();
   };
 
-  /* Fetch cards without shuffling */
+  /* Shuffle the cards */
   const handleNoShuffle = () => {
     fetchCards();
     handleShufflePopupClose();
@@ -48,7 +50,8 @@ export default function ViewCards() {
 
   /* Get the length of the current set */
   function getCurrentSetLength() {
-    return String(cards.length);
+    const length = inDifficultMode ? difficultCards.length : cards.length;
+    return String(length);
   }
 
   //USEEFFECT SOM HENTER SETT FRA DATABASEN BASERT PÅ SETID FRA URL, MÅ KOMME FRA DET MAN TRYKKER PÅ I DASHBOARD
@@ -115,32 +118,80 @@ export default function ViewCards() {
     setFlipped(!flipped);
   };
 
-  /* Fetch the next card in the set, in a standard order */
-  const handleNextCardStandard = () => {
-    setCurrentCardIndex((prevIndex) => (prevIndex + 1) % cards.length);
+  /* Fetch the previous card in the set */
+  const handlePrevCard = () => {
+    const currentCards = inDifficultMode ? difficultCards : cards;
 
-    if (currentCardIndex === cards.length - 1) {
-      setCompletedSet(true);
+    setCurrentCardIndex(
+      (prevIndex) => (prevIndex - 1 + currentCards.length) % currentCards.length
+    );
+  };
+
+  /* Fetch the next card in the set */
+  const handleNextCardStandard = () => {
+    if (!inDifficultMode) {
+      // If not in difficult mode, proceed with non-difficult cards
+      setCurrentCardIndex((prevIndex) => prevIndex + 1);
+
+      if (currentCardIndex === cards.length - 1) {
+        // If reached the end of non-difficult cards
+        if (difficultCards.length > 0) {
+          // If there are difficult cards, switch to difficult mode
+          setInDifficultMode(true);
+          setCurrentCardIndex(0); // Start with the first difficult card
+        } else {
+          // If no difficult cards, set the set as completed
+          setCompletedSet(true);
+        }
+      }
+    } else {
+      // If in difficult mode, proceed with difficult cards
+      setCurrentCardIndex((prevIndex) => prevIndex + 1);
+
+      if (currentCardIndex === difficultCards.length - 1) {
+        setCurrentCardIndex(0);
+      }
     }
   };
 
-  /* Fetch the previous card in the set */
-  const handlePrevCard = () => {
-    setCurrentCardIndex(
-      (prevIndex) => (prevIndex - 1 + cards.length) % cards.length
+  /* Handle the change of the difficulty checkbox */
+  const handleDifficultyChange = (cardId: string, newIsDifficult: boolean) => {
+    // Find the card in the main list
+    const updatedCards = cards.map((card) =>
+      card.id === cardId ? { ...card, isDifficult: newIsDifficult } : card
     );
+
+    setCards(updatedCards);
+
+    // Update the difficult cards list based on the checkbox status
+    const updatedDifficultCards = updatedCards.filter(
+      (card) => card.isDifficult
+    );
+
+    if (inDifficultMode && currentCardIndex === difficultCards.length - 1) {
+      setCurrentCardIndex(0);
+    }
+
+    setDifficultCards(updatedDifficultCards);
+
+    if (inDifficultMode && updatedDifficultCards.length === 0) {
+      setCompletedSet(true);
+    }
   };
 
   if (loading) {
     return (
       <div>
         <p>Loading...</p>
-        <CircularProgress />;
+        <CircularProgress />
       </div>
     );
   }
 
-  const currentCard = cards[currentCardIndex];
+  /* Get the current card, based on difficultyMode */
+  const currentCard = inDifficultMode
+    ? difficultCards[currentCardIndex]
+    : cards[currentCardIndex];
 
   return (
     <div>
@@ -159,8 +210,9 @@ export default function ViewCards() {
           }}
           onRestart={() => {
             setCompletedSet(false);
-            setShufflePopupOpen(true);
+            setInDifficultMode(false);
             setCurrentCardIndex(0);
+            setShufflePopupOpen(true);
           }}
         />
       ) : (
@@ -174,6 +226,7 @@ export default function ViewCards() {
               back={currentCard.back}
               isDifficult={currentCard.isDifficult}
               isFlipped={flipped}
+              onDifficultyChange={handleDifficultyChange}
             />
             <div>
               <Typography>
