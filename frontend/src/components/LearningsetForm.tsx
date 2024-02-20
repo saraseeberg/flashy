@@ -1,9 +1,11 @@
 import { collection, doc, setDoc } from "firebase/firestore";
 import { useState } from "react";
 import { LearningSet } from "../models/Learningset";
+import DashboardPage from "../pages/DashboardPage"
 import { db, auth } from "../config/firebase";
-import { Button, Grid, TextField } from "@mui/material";
+import {Box, Button, Grid, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+
 
 const LearningsetForm = () => {
   const [learningset, setlearningset] = useState<LearningSet>({
@@ -92,6 +94,24 @@ const LearningsetForm = () => {
           </Grid>
         </Grid>
 
+        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+        <Button onClick={() => navigate('/dashboard')}
+      
+          type="submit"
+          variant="contained"
+          color="primary"
+          size="large"
+          style={{
+            backgroundColor: "#9F70FD",
+            color: "white",
+            padding: "5px 20px",
+            borderRadius: "5px",
+            cursor: "pointer",
+            width: "40%",
+          }}
+        >
+          BACK
+        </Button>
         <Button
           type="submit"
           variant="contained"
@@ -100,14 +120,18 @@ const LearningsetForm = () => {
           style={{
             backgroundColor: "#9F70FD",
             color: "white",
-            padding: "10px 20px",
+            padding: "5px 20px",
             borderRadius: "5px",
             cursor: "pointer",
-            width: "100%",
+            width: "40%",
           }}
         >
           Create Learningset
         </Button>
+
+
+      </Box>
+       
       </form>
     </div>
   );
