@@ -12,12 +12,9 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faStar as fasFaStar } from "@fortawesome/free-solid-svg-icons";
-// import { faStar as farFaStar } from "@fortawesome/free-regular-svg-icons";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useEffect, useState } from "react";
-import { db } from "../config/firebase";
+import { auth, db } from "../config/firebase";
 import {
   Firestore,
   collection,
@@ -29,6 +26,7 @@ import { LearningSet } from "../models/Learningset";
 
 export default function Dashboard() {
   const [learningSets, setLearningSets] = useState<LearningSet[]>([]);
+  const currentUserId = auth.currentUser?.uid;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedSetId, setSelectedSetId] = useState<string | null>(null);
   const [showPublic, setShowPublic] = useState(true);
@@ -79,10 +77,6 @@ export default function Dashboard() {
     handleClose();
   };
 
-  // const handleSetFavorite = (id: string) => {
-  //   console.log("Favorite", id);
-  // };
-
   useEffect(() => {
     const fetchLearningSets = async () => {
       const docCollectionRef = collection(db as Firestore, "learningSets");
@@ -92,13 +86,14 @@ export default function Dashboard() {
         ...(doc.data() as Omit<LearningSet, "id">),
       }));
       const filterlearningset = fetchedLearningSets.filter((learningSet) =>
-        showPublic ? learningSet.isPublic : !learningSet.isPublic
+        showPublic
+          ? learningSet.isPublic
+          : !learningSet.isPublic && learningSet.createdBy === currentUserId
       );
       setLearningSets(filterlearningset);
     };
 
     fetchLearningSets();
-    console.log(learningSets);
   }, [showPublic]);
 
   return (
@@ -192,18 +187,16 @@ export default function Dashboard() {
                       </Button>
                     ) : null}
                   </Box>
-                  {/* <Button
-                    onClick={() => handleSetFavorite(learningSet.id ?? "")}
-                  >
-                    {learningSet.isFavorite ? (
-                      <FontAwesomeIcon icon={fasFaStar} color="gold" />
-                    ) : (
-                      <FontAwesomeIcon icon={farFaStar} color="black" />
-                    )}
-                  </Button> */}
                 </Box>
-                <Typography variant="h6" fontWeight={"bold"}>
+                <Typography
+                  variant="h6"
+                  fontWeight={"bold"}
+                  sx={{ paddingBottom: "20px" }}
+                >
                   {learningSet.title}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {learningSet.description}
                 </Typography>
               </Paper>
             </Grid>
