@@ -171,7 +171,7 @@ export default function Dashboard() {
                   }}
                 >
                   <Box>
-                    {!learningSet.isPublic ? (
+                    {learningSet.createdBy == currentUserId ? (
                       <Button
                         aria-controls="simple-menu"
                         aria-haspopup="true"
