@@ -2,7 +2,7 @@ import { Button, CircularProgress, Typography } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Card from "../components/Card";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styles from "./ViewCardsStyle.module.css";
 import { firestore } from "../config/firebase";
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";
@@ -10,7 +10,7 @@ import { useParams } from "react-router-dom";
 import { CardData } from "../models/Flashcard";
 import CompleteSetPopup from "../components/CompleteSetPopup";
 import ShufflePopup from "../components/ShufflePopup";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function ViewCards() {
   const [cards, setCards] = useState<CardData[]>([]);
@@ -56,7 +56,7 @@ export default function ViewCards() {
 
   //USEEFFECT SOM HENTER SETT FRA DATABASEN BASERT PÅ SETID FRA URL, MÅ KOMME FRA DET MAN TRYKKER PÅ I DASHBOARD
   /* Fetch the learning set from the database, based on the ID in the URL */
-  const fetchCards = async () => {
+  const fetchCards = useCallback(async () => {
     if (!setId) {
       console.error("No learning set ID provided");
       return;
@@ -87,11 +87,11 @@ export default function ViewCards() {
     }
 
     setLoading(false);
-  };
+  }, [setId]);
 
   useEffect(() => {
     fetchCards();
-  }, [setId]);
+  }, [fetchCards, setId]);
 
   /* Shuffles an array */
   function shuffleArray<T>(array: T[]): T[] {
@@ -253,7 +253,8 @@ export default function ViewCards() {
               </Button>
             </div>
             <div id={styles.backButtonDiv}>
-              <Button onClick={() => navigate('/dashboard')} 
+              <Button
+                onClick={() => navigate("/dashboard")}
                 id={styles.backButton}
                 type="button"
                 fullWidth
