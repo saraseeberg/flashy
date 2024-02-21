@@ -29,7 +29,7 @@ const SettingsPage: React.FC = () => {
     };
 
     fetchUserData();
-  }, [auth.currentUser]);
+  }, []);
 
   const handleSaveChanges = async () => {
     try {

@@ -1,11 +1,9 @@
 import { collection, doc, setDoc } from "firebase/firestore";
 import { useState } from "react";
 import { LearningSet } from "../models/Learningset";
-import DashboardPage from "../pages/DashboardPage"
 import { db, auth } from "../config/firebase";
-import {Box, Button, Grid, TextField } from "@mui/material";
+import { Box, Button, Grid, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-
 
 const LearningsetForm = () => {
   const [learningset, setlearningset] = useState<LearningSet>({
@@ -29,7 +27,6 @@ const LearningsetForm = () => {
     e.preventDefault();
     const documentRef = doc(collection(db, "learningSets"));
 
-    
     try {
       const newLearningSet = {
         ...learningset,
@@ -95,43 +92,40 @@ const LearningsetForm = () => {
         </Grid>
 
         <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
-        <Button onClick={() => navigate('/dashboard')}
-      
-          type="submit"
-          variant="contained"
-          color="primary"
-          size="large"
-          style={{
-            backgroundColor: "#9F70FD",
-            color: "white",
-            padding: "5px 20px",
-            borderRadius: "5px",
-            cursor: "pointer",
-            width: "40%",
-          }}
-        >
-          BACK
-        </Button>
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          size="large"
-          style={{
-            backgroundColor: "#9F70FD",
-            color: "white",
-            padding: "5px 20px",
-            borderRadius: "5px",
-            cursor: "pointer",
-            width: "40%",
-          }}
-        >
-          Create Learningset
-        </Button>
-
-
-      </Box>
-       
+          <Button
+            onClick={() => navigate("/dashboard")}
+            type="submit"
+            variant="contained"
+            color="primary"
+            size="large"
+            style={{
+              backgroundColor: "#9F70FD",
+              color: "white",
+              padding: "5px 20px",
+              borderRadius: "5px",
+              cursor: "pointer",
+              width: "40%",
+            }}
+          >
+            BACK
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            size="large"
+            style={{
+              backgroundColor: "#9F70FD",
+              color: "white",
+              padding: "5px 20px",
+              borderRadius: "5px",
+              cursor: "pointer",
+              width: "40%",
+            }}
+          >
+            Create Learningset
+          </Button>
+        </Box>
       </form>
     </div>
   );

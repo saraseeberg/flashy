@@ -4,7 +4,7 @@
  * it displays a form for editing the learning set, and a list of flashcards in the spesific learningset that can be edited or deleted.
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import CardForm from "../components/FlashcardForm";
 import { useParams } from "react-router-dom";
 import {
@@ -24,7 +24,7 @@ const EditLearningSetPage = () => {
   const [learningSet, setLearningSet] = useState<LearningSet | null>(null);
   const [flashcards, setFlashcards] = useState<CardData[]>([]);
 
-  const refreshFlashcards = async () => {
+  const refreshFlashcards = useCallback(async () => {
     if (setId) {
       const querySnapshot = await getDocs(
         collection(db, "learningSets", setId, "cards")
@@ -35,7 +35,7 @@ const EditLearningSetPage = () => {
       })) as CardData[];
       setFlashcards(cardsData);
     }
-  };
+  }, [setId]);
 
   useEffect(() => {
     const fetchLearningSet = async () => {
@@ -76,7 +76,7 @@ const EditLearningSetPage = () => {
       fetchFlashcards();
       refreshFlashcards();
     }
-  }, [setId]);
+  }, [refreshFlashcards, setId]);
 
   return (
     <div>

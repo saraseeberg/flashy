@@ -94,7 +94,7 @@ export default function Dashboard() {
     };
 
     fetchLearningSets();
-  }, [showPublic]);
+  }, [currentUserId, showPublic]);
 
   return (
     <Container maxWidth="md" sx={{ marginTop: "20px", marginBottom: "20px" }}>
