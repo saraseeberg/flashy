@@ -97,7 +97,7 @@ export default function Dashboard() {
   }, [currentUserId, showPublic]);
 
   return (
-    <Container maxWidth="md" sx={{ marginTop: "20px", marginBottom: "20px" }}>
+    <Container maxWidth="lg" sx={{ marginTop: "20px", marginBottom: "20px" }}>
       <Box
         sx={{
           display: "flex",
@@ -134,7 +134,7 @@ export default function Dashboard() {
         </ToggleButtonGroup>
       </Box>
       <Box>
-        <Grid container spacing={2} sx={{ overflowY: "scroll" }}>
+        <Grid container spacing={2}>
           {learningSets.map((learningSet) => (
             <Grid
               item

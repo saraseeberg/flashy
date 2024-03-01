@@ -33,7 +33,7 @@ function TopBar() {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="sticky" sx={{ width: "100vw" }}>
       <Toolbar
         sx={{
           backgroundColor: "#FFBF1F",
