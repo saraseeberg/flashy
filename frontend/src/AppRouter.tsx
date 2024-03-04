@@ -18,6 +18,8 @@ import AdminPage from "./pages/AdminPage";
 import { auth, db } from "./config/firebase";
 import { Firestore, doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import ErrorPopup from "./components/ErrorPopup";
+import CreateAdminUserPage from "./pages/CreateAdminUserPage";
 
 function AppRouter() {
   const { isAuthenticated } = useAuth();
@@ -75,7 +77,23 @@ function AppRouter() {
               (isAuthenticated && userRole === "admin") ? (
                 <AdminPage />
               ) : (
-                <Dashboard />
+                <ErrorPopup
+                  open={true}
+                  onClose={() => <Navigate to="/dashboard" />}
+                />
+              )
+            }
+          />
+          <Route
+            path="create-adminUser"
+            element={
+              isAuthenticated && userRole === "superadmin" ? (
+                <CreateAdminUserPage />
+              ) : (
+                <ErrorPopup
+                  open={true}
+                  onClose={() => <Navigate to="/adminpage" />}
+                />
               )
             }
           />
