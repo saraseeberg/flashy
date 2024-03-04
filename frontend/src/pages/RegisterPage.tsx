@@ -59,6 +59,7 @@ function RegisterPage() {
         firstName: firstName,
         lastName: lastName,
         username: username,
+        role: "user",
       });
 
       console.log("User registered successfully:", userCredential.user);

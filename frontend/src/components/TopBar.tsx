@@ -3,7 +3,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Logo from "../assets/flashy-logo.svg";
-import { Avatar, Box, Menu, MenuItem } from "@mui/material";
+import { Avatar, Box, Button, Menu, MenuItem } from "@mui/material";
 import { useAuth } from "../hooks/useAuth";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -59,17 +59,30 @@ function TopBar() {
         </Box>
         {isAuthenticated && (
           <>
-            <Avatar onClick={handleAvatarClick} sx={{ cursor: "pointer" }} />
-            <Menu
-              id="simple-menu"
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              <MenuItem onClick={handleSettings}>Settings</MenuItem>
-              <MenuItem onClick={handleLogout}>Logout</MenuItem>
-            </Menu>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Button
+                variant="outlined"
+                //startIcon={<AddCircleOutlineIcon />}
+                onClick={() => navigate("/adminpage")}
+                sx={{}}
+              >
+                Admin Page
+              </Button>
+              <Avatar
+                onClick={handleAvatarClick}
+                sx={{ cursor: "pointer", marginLeft: "1em" }}
+              />
+              <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <MenuItem onClick={handleSettings}>Settings</MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              </Menu>
+            </Box>
           </>
         )}
       </Toolbar>

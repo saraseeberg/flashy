@@ -9,9 +9,8 @@ interface PopUpProps {
   onRestart: () => void;
 }
 
-
 const CompleteSetPopup: React.FC<PopUpProps> = ({ onRestart }) => {
-const navigate = useNavigate();
+  const navigate = useNavigate();
   return (
     <div
       style={{
@@ -63,7 +62,7 @@ const navigate = useNavigate();
           }}
         >
           <Button
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate("/dashboard")}
             type="submit"
             variant="contained"
             color="primary"
@@ -75,7 +74,7 @@ const navigate = useNavigate();
             }}
             sx={{ mb: 1 }}
           >
-            <DashboardIcon 
+            <DashboardIcon
               sx={{ fontSize: "2.3em", marginRight: "0.4em" }}
             ></DashboardIcon>
             Return to Dashboard

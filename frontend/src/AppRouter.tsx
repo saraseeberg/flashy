@@ -14,9 +14,36 @@ import ViewCards from "./pages/ViewCardsPage";
 import NotFound from "./pages/NotFoundPage";
 import Settings from "./pages/SettingsPage";
 import App from "./App";
+import AdminPage from "./pages/AdminPage";
+import { auth, db } from "./config/firebase";
+import { Firestore, doc, getDoc } from "firebase/firestore";
+import { useEffect, useState } from "react";
 
 function AppRouter() {
   const { isAuthenticated } = useAuth();
+  const currentUserId = auth.currentUser?.uid;
+  const [userRole, setUserRole] = useState(null);
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (currentUserId) {
+        const userDocRef = doc(db as Firestore, "usersData", currentUserId);
+        const userDocSnapshot = await getDoc(userDocRef);
+
+        if (userDocSnapshot.exists()) {
+          const userData = userDocSnapshot.data();
+          const role = userData?.role;
+          setUserRole(role);
+        } else {
+          console.error("User document not found.");
+        }
+      }
+    };
+
+    if (isAuthenticated && currentUserId) {
+      fetchUserRole();
+    }
+  }, [isAuthenticated, currentUserId]);
 
   return (
     <Router>
@@ -40,6 +67,17 @@ function AppRouter() {
           <Route
             path="viewcards/:setId"
             element={isAuthenticated ? <ViewCards /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="adminpage"
+            element={
+              (isAuthenticated && userRole === "superadmin") ||
+              (isAuthenticated && userRole === "admin") ? (
+                <AdminPage />
+              ) : (
+                <Dashboard />
+              )
+            }
           />
           <Route path="settings" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
