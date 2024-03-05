@@ -38,7 +38,6 @@ export default function AdminPage() {
   };
 
   //LEARNING SETS
-  //Fetch learning sets
   useEffect(() => {
     const fetchLearningSets = async () => {
       const docCollectionRef = collection(db as Firestore, "learningSets");
@@ -96,7 +95,6 @@ export default function AdminPage() {
   };
 
   //USERS
-  //Fetch users
   useEffect(() => {
     const fetchUsers = async () => {
       const docCollectionRef = collection(db as Firestore, "usersData");
