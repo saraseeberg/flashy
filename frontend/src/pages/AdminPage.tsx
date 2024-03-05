@@ -105,8 +105,10 @@ export default function AdminPage() {
         id: doc.id,
         ...(doc.data() as Omit<UserData, "id">),
       }));
-
-      setUsers(fetchedUsers);
+      const filteredUsers = fetchedUsers.filter(
+        (user) => user.role != "superadmin"
+      );
+      setUsers(filteredUsers);
     };
 
     fetchUsers();
