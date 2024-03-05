@@ -61,7 +61,7 @@ function CreateAdminUser() {
       });
 
       console.log("User registered successfully:", userCredential.user);
-      navigate("/login");
+      navigate("/adminpage");
     } catch (error) {
       const e = error as AuthError;
       console.error("Registration failed:", e.message);

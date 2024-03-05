@@ -29,7 +29,7 @@ export default function AdminPage() {
   const [learningSets, setLearningSets] = useState<LearningSet[]>([]);
   const [users, setUsers] = useState<UserData[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedSetId, setSelectedSetId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showUsers, setShowUsers] = useState(true);
   const navigate = useNavigate();
 
@@ -51,24 +51,32 @@ export default function AdminPage() {
     };
 
     fetchLearningSets();
-  });
+  }, []);
 
   //Delete learning set
-  const handleDeleteSet = () => {
-    if (selectedSetId) {
-      const docRef = doc(db, "learningSets", selectedSetId);
+  const handleDelete = () => {
+    if (selectedId && showUsers) {
+      const docRef = doc(db, "usersData", selectedId);
       deleteDoc(docRef)
         .then(() => {
           console.log("Document successfully deleted!");
-          setLearningSets(
-            learningSets.filter((set) => set.id !== selectedSetId)
-          );
+          setUsers(users.filter((user) => user.id !== selectedId));
         })
         .catch((error) => {
-          console.error("Error removing document: ", error);
+          console.error("Error removing user: ", error);
+        });
+    } else if (selectedId && !showUsers) {
+      const docRef = doc(db, "learningSets", selectedId);
+      deleteDoc(docRef)
+        .then(() => {
+          console.log("Document successfully deleted!");
+          setLearningSets(learningSets.filter((set) => set.id !== selectedId));
+        })
+        .catch((error) => {
+          console.error("Error removing learningset: ", error);
         });
     } else {
-      console.error("No set selected for deletion");
+      console.error("No object selected for deletion");
     }
     handleClose();
   };
@@ -79,16 +87,15 @@ export default function AdminPage() {
   ) => {
     event.stopPropagation();
     setAnchorEl(event.currentTarget);
-    setSelectedSetId(id);
+    setSelectedId(id);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
-    setSelectedSetId(null);
+    setSelectedId(null);
   };
 
   //USERS
-
   //Fetch users
   useEffect(() => {
     const fetchUsers = async () => {
@@ -98,11 +105,12 @@ export default function AdminPage() {
         id: doc.id,
         ...(doc.data() as Omit<UserData, "id">),
       }));
+
       setUsers(fetchedUsers);
     };
 
     fetchUsers();
-  });
+  }, []);
 
   return (
     <Container maxWidth="lg" sx={{ marginTop: "20px", marginBottom: "20px" }}>
@@ -126,7 +134,7 @@ export default function AdminPage() {
           Register admin account
         </Button>
         <ToggleButtonGroup
-          value={showUsers ? "Users" : "Learning sets"}
+          value={showUsers ? "users" : "learningset"}
           color="primary"
           exclusive
           onChange={handleShowSwitch}
@@ -168,7 +176,6 @@ export default function AdminPage() {
                       },
                       cursor: "pointer",
                     }}
-                    //onClick={() => navigate(`/viewcards/${learningSet.id}`)}
                   >
                     <Box
                       sx={{
@@ -230,7 +237,6 @@ export default function AdminPage() {
                       },
                       cursor: "pointer",
                     }}
-                    //onClick={() => navigate(`/viewcards/${learningSet.id}`)}
                   >
                     <Box
                       sx={{
@@ -279,8 +285,7 @@ export default function AdminPage() {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        {/* <MenuItem onClick={handleEditSet}>Edit</MenuItem> */}
-        <MenuItem onClick={handleDeleteSet} sx={{ color: "red" }}>
+        <MenuItem onClick={handleDelete} sx={{ color: "red" }}>
           Delete
         </MenuItem>
       </Menu>
