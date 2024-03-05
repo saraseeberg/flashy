@@ -45,13 +45,13 @@ export default function ViewCards() {
 
   /* Get the current index of the card */
   function getCurrentIndex() {
-    return String(currentCardIndex + 1);
+    return currentCardIndex + 1;
   }
 
   /* Get the length of the current set */
   function getCurrentSetLength() {
     const length = inDifficultMode ? difficultCards.length : cards.length;
-    return String(length);
+    return length;
   }
 
   //USEEFFECT SOM HENTER SETT FRA DATABASEN BASERT PÅ SETID FRA URL, MÅ KOMME FRA DET MAN TRYKKER PÅ I DASHBOARD
@@ -188,6 +188,8 @@ export default function ViewCards() {
     );
   }
 
+  const progressPercentage = (getCurrentIndex() / getCurrentSetLength()) * 100;
+
   /* Get the current card, based on difficultyMode */
   const currentCard = inDifficultMode
     ? difficultCards[currentCardIndex]
@@ -229,10 +231,30 @@ export default function ViewCards() {
               onDifficultyChange={handleDifficultyChange}
             />
             <div>
-              <Typography>
-                {" "}
-                {getCurrentIndex()}/{getCurrentSetLength()}{" "}
-              </Typography>
+              <div
+                style={{
+                  width: "100%",
+                  backgroundColor: "#e0e0e0",
+                  borderRadius: "8px",
+                  margin: "20px 0",
+                }}
+              >
+                <div
+                  style={{
+                    height: "20px",
+                    width: `${progressPercentage}%`,
+                    backgroundColor: "#4caf50",
+                    borderRadius: "8px",
+                    textAlign: "center",
+                    color: "white",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {progressPercentage.toFixed(0)}%
+                </div>
+              </div>
             </div>
 
             <div id={styles.flipButtonDiv}>
