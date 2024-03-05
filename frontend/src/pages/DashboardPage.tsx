@@ -26,7 +26,6 @@ import {
   getDocs,
   doc,
   deleteDoc,
-  query,
 } from "firebase/firestore";
 
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -143,7 +142,7 @@ export default function Dashboard() {
       }
 
       if(searchedSets.length != 0) {
-        filterlearningset = filterlearningset.filter((learningSet) =>
+        filterlearningset = filterlearningset.filter(() =>
           searchedSets
         );
       }
