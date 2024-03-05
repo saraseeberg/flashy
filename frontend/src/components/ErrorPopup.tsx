@@ -1,6 +1,8 @@
 import { Button, Typography } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import ErrorIcon from "@mui/icons-material/Error";
 
 interface ErrorPopupProps {
   open: boolean;
@@ -32,8 +34,8 @@ const ErrorPopup: React.FC<ErrorPopupProps> = ({ open, onClose }) => {
     >
       <div
         style={{
-          height: "21em",
-          width: "40em",
+          height: "15em",
+          width: "30em",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -44,9 +46,22 @@ const ErrorPopup: React.FC<ErrorPopupProps> = ({ open, onClose }) => {
           padding: "2em",
         }}
       >
-        <Typography variant="h4">
-          You do not have access to this page
+        <Typography variant="h5" fontWeight={500}>
+          {" "}
+          Oops...
+          <br></br>you do not have access to this page!{" "}
         </Typography>
+
+        <div>
+          <ErrorIcon
+            sx={{
+              width: "4em",
+              height: "4em",
+              color: "#e05443",
+              paddingTop: "0.5em",
+            }}
+          ></ErrorIcon>
+        </div>
 
         <Button
           onClick={() => {
@@ -58,13 +73,16 @@ const ErrorPopup: React.FC<ErrorPopupProps> = ({ open, onClose }) => {
           color="primary"
           style={{
             backgroundColor: "#9F70FD",
-            width: "19em",
-            height: "5em",
+            width: "20em",
+            height: "4em",
             fontSize: "0.9em",
           }}
           sx={{ mt: 2 }}
         >
-          Go to Dashboard
+          <DashboardIcon
+            sx={{ fontSize: "2.3em", marginRight: "0.4em" }}
+          ></DashboardIcon>
+          Go back
         </Button>
 
         <div

@@ -7,6 +7,7 @@ import { Avatar, Box, Button, Menu, MenuItem } from "@mui/material";
 import { useAuth } from "../hooks/useAuth";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 
 function TopBar() {
   const { isAuthenticated, logout } = useAuth();
@@ -61,8 +62,8 @@ function TopBar() {
           <>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Button
-                variant="outlined"
-                //startIcon={<AddCircleOutlineIcon />}
+                variant="contained"
+                startIcon={<SupervisorAccountIcon />}
                 onClick={() => navigate("/adminpage")}
                 sx={{}}
               >

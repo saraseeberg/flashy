@@ -22,7 +22,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../config/firebase";
 import { UserData } from "../models/UserData";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import { useNavigate } from "react-router-dom";
 
 export default function AdminPage() {
@@ -130,7 +130,7 @@ export default function AdminPage() {
 
         <Button
           variant="outlined"
-          startIcon={<AddCircleOutlineIcon />}
+          startIcon={<GroupAddIcon />}
           onClick={() => navigate("/create-adminUser")}
         >
           Register admin account
