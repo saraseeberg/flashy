@@ -10,6 +10,8 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
+import firebase from "firebase/compat/app";
+import SearchBar from "../components/SearchBar";
 import { IconButton } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -24,6 +26,7 @@ import {
   getDocs,
   doc,
   deleteDoc,
+  query,
 } from "firebase/firestore";
 
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -39,7 +42,7 @@ export default function Dashboard() {
   const [showPublic, setShowPublic] = useState(true);
   const [favoritedSets, setFavoritedSets] = useState<string[]>([]);
   const [showFavorites, setShowFavorites] = useState(false);
-
+  const [searchedSets, setSearchedSets] = useState<LearningSet[]>([]);
 
   const navigate = useNavigate();
 
@@ -47,6 +50,25 @@ export default function Dashboard() {
     setShowPublic(!showPublic);
   };
 
+  const handleSearch = async (query: string) => {
+    try {
+        const db = firebase.firestore();
+        const snapshot = await db.collection("learningSets").get();
+        const results = snapshot.docs
+            .map((doc) => doc.data() as LearningSet)
+            .filter(
+                (learningSet) =>
+                    (showPublic
+                        ? learningSet.isPublic
+                        : !learningSet.isPublic &&
+                        learningSet.createdBy === currentUserId) &&
+                    learningSet.title.toLowerCase().includes(query.toLowerCase())
+            );
+        setSearchedSets(results);
+    } catch (error) {
+        console.error("Error searching:", error);
+    }
+};
   
   const toggleFavorite = (id: string) => {
     if (favoritedSets.includes(id)) {
@@ -59,9 +81,6 @@ export default function Dashboard() {
   const handleShowFavorites = () => {
     setShowFavorites(!showFavorites);
   };
-  
-
-
 
   const handleMenuClick = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -118,11 +137,16 @@ export default function Dashboard() {
       );
 
       if (showFavorites) {
-        filterlearningset =  filterlearningset.filter((learningSet) =>
+        filterlearningset = filterlearningset.filter((learningSet) =>
           favoritedSets.includes(learningSet.id ?? "")
         );
       }
-      setLearningSets(filterlearningset);
+
+      if(searchedSets.length != 0) {
+        filterlearningset = filterlearningset.filter((learningSet) =>
+          searchedSets
+        );
+      }
     };
 
 
@@ -184,6 +208,7 @@ export default function Dashboard() {
         />
       </Box>
       <Box>
+        <SearchBar onSearch={handleSearch}/>
         <Grid container spacing={2}>
           {learningSets.map((learningSet) => (
             <Grid
