@@ -6,7 +6,7 @@ import TextField from "@mui/material/TextField";
 import { Box, Button, CircularProgress } from "@mui/material";
 import { doc, setDoc } from "firebase/firestore";
 
-function RegisterPage() {
+function CreateAdminUser() {
   const [registering, setRegistering] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
@@ -51,19 +51,17 @@ function RegisterPage() {
         password
       );
 
-      // Brukerens ID fra autentiseringen brukes som dokument-ID i Firestore
       const userDocRef = doc(db, "usersData", userCredential.user.uid);
 
-      // Lagre den tilleggende informasjonen i Firestore under usersData samlingen
       await setDoc(userDocRef, {
         firstName: firstName,
         lastName: lastName,
         username: username,
-        role: "user",
+        role: "admin",
       });
 
       console.log("User registered successfully:", userCredential.user);
-      navigate("/login");
+      navigate("/adminpage");
     } catch (error) {
       const e = error as AuthError;
       console.error("Registration failed:", e.message);
@@ -138,7 +136,7 @@ function RegisterPage() {
           <Button
             variant="contained"
             color="secondary"
-            onClick={() => navigate("/login")}
+            onClick={() => navigate("/adminpage")}
           >
             Back
           </Button>
@@ -158,4 +156,4 @@ function RegisterPage() {
   );
 }
 
-export default RegisterPage;
+export default CreateAdminUser;

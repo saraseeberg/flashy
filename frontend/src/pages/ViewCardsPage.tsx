@@ -54,7 +54,6 @@ export default function ViewCards() {
     return String(length);
   }
 
-  //USEEFFECT SOM HENTER SETT FRA DATABASEN BASERT PÅ SETID FRA URL, MÅ KOMME FRA DET MAN TRYKKER PÅ I DASHBOARD
   /* Fetch the learning set from the database, based on the ID in the URL */
   const fetchCards = useCallback(async () => {
     if (!setId) {
@@ -134,13 +133,10 @@ export default function ViewCards() {
       setCurrentCardIndex((prevIndex) => prevIndex + 1);
 
       if (currentCardIndex === cards.length - 1) {
-        // If reached the end of non-difficult cards
         if (difficultCards.length > 0) {
-          // If there are difficult cards, switch to difficult mode
           setInDifficultMode(true);
-          setCurrentCardIndex(0); // Start with the first difficult card
+          setCurrentCardIndex(0); 
         } else {
-          // If no difficult cards, set the set as completed
           setCompletedSet(true);
         }
       }

@@ -140,7 +140,7 @@ export default function Dashboard() {
         }}
       >
         <Typography variant="h4" fontWeight="bold" component="h1">
-          Learning Sets
+          Learning sets
         </Typography>
 
         <Button
