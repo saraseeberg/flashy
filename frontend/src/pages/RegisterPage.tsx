@@ -86,6 +86,7 @@ function RegisterPage() {
       <h2>Register Account</h2>
       <Box
         component="form"
+        data-testid="register-form"
         noValidate
         autoComplete="off"
         onSubmit={handleRegister}
@@ -99,6 +100,7 @@ function RegisterPage() {
       >
         <TextField
           label="First Name"
+          data-testid="firstName-input"
           variant="outlined"
           name="firstName"
           fullWidth
@@ -106,6 +108,7 @@ function RegisterPage() {
         />
         <TextField
           label="Last Name"
+          data-testid="lastName-input"
           variant="outlined"
           name="lastName"
           fullWidth
@@ -113,14 +116,16 @@ function RegisterPage() {
         />
         <TextField
           label="Username"
+          data-testid="username-input"
           variant="outlined"
           name="username"
           fullWidth
           required
         />
-        <TextField label="Email" type="email" name="email" fullWidth required />
+        <TextField label="Email" type="email" data-testid="email-input" name="email" fullWidth required />
         <TextField
           label="Password"
+          data-testid="password-input"
           type="password"
           name="password"
           fullWidth
@@ -128,6 +133,7 @@ function RegisterPage() {
         />
         <TextField
           label="Confirm Password"
+          data-testid="confirm-input"
           type="password"
           name="confirm"
           fullWidth
@@ -143,6 +149,7 @@ function RegisterPage() {
             Back
           </Button>
           <Button
+            data-testid="register-button"
             variant="contained"
             color="primary"
             type="submit"
