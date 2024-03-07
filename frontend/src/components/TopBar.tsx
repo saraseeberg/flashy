@@ -8,9 +8,11 @@ import { useAuth } from "../hooks/useAuth";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import useUserRole from "../hooks/useRole";
 
 function TopBar() {
   const { isAuthenticated, logout } = useAuth();
+  const userRole = useUserRole();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
 
@@ -61,14 +63,18 @@ function TopBar() {
         {isAuthenticated && (
           <>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Button
-                variant="contained"
-                startIcon={<SupervisorAccountIcon />}
-                onClick={() => navigate("/adminpage")}
-                sx={{}}
-              >
-                Admin Page
-              </Button>
+              {userRole === "user" ? null : (
+                <div>
+                  <Button
+                    variant="contained"
+                    startIcon={<SupervisorAccountIcon />}
+                    onClick={() => navigate("/adminpage")}
+                    sx={{}}
+                  >
+                    Admin Page
+                  </Button>
+                </div>
+              )}
               <Avatar
                 onClick={handleAvatarClick}
                 sx={{ cursor: "pointer", marginLeft: "1em" }}
