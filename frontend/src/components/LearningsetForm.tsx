@@ -6,7 +6,7 @@ import { Box, Button, Grid, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const LearningsetForm = () => {
-  const [learningset, setlearningset] = useState<LearningSet>({
+  const [learningset, setLearningset] = useState<LearningSet>({
     title: "",
     description: "",
     isPublic: false,
@@ -20,11 +20,22 @@ const LearningsetForm = () => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setlearningset({ ...learningset, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setLearningset({ ...learningset, [name]: value });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // Sjekker om "Title" og "Description" er tomme og viser en alert hvis de er det
+    if (
+      learningset.title.trim() === "" ||
+      learningset.description.trim() === ""
+    ) {
+      alert("Both Title and Description fields are required.");
+      return;
+    }
+
     const documentRef = doc(collection(db, "learningSets"));
 
     try {
@@ -82,7 +93,7 @@ const LearningsetForm = () => {
             <input
               id="Public"
               type="checkbox"
-              checked={isPublic ? true : false}
+              checked={isPublic}
               onChange={() => setIsPublic(!isPublic)}
             />
           </Grid>
@@ -94,7 +105,6 @@ const LearningsetForm = () => {
         <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
           <Button
             onClick={() => navigate("/dashboard")}
-            type="submit"
             variant="contained"
             color="primary"
             size="large"

@@ -4,13 +4,10 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { Box,Button, TextField } from "@mui/material";
+import { Box, Button, TextField } from "@mui/material";
 import { collection, addDoc, getDoc, doc } from "firebase/firestore";
 import { db } from "../config/firebase";
 import { useNavigate } from "react-router-dom";
-
-
-
 
 interface CardFormProps {
   learningSetId: string;
@@ -22,6 +19,7 @@ const CardForm: React.FC<CardFormProps> = ({ learningSetId, onSave }) => {
   const [description, setDescription] = useState("");
   const [front, setFront] = useState("");
   const [back, setBack] = useState("");
+  const [cardAdded, setCardAdded] = useState(false); // Tilstand for å holde styr på om et kort er lagt til
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -56,6 +54,7 @@ const CardForm: React.FC<CardFormProps> = ({ learningSetId, onSave }) => {
       setFront("");
       setBack("");
       onSave();
+      setCardAdded(true); // Oppdaterer tilstanden til true når et kort er lagt til
       console.log("Card added to learning set.");
     } catch (error) {
       console.error("Error adding card to learning set: ", error);
@@ -64,6 +63,7 @@ const CardForm: React.FC<CardFormProps> = ({ learningSetId, onSave }) => {
 
   return (
     <form onSubmit={handleSubmit}>
+      {/* Tittel og beskrivelse */}
       <h1 style={{ marginTop: "20px", marginBottom: "0" }}>
         {title || "Loading title..."}
       </h1>
@@ -80,49 +80,47 @@ const CardForm: React.FC<CardFormProps> = ({ learningSetId, onSave }) => {
           paddingRight: "20em",
         }}
       >
-        <div>
-          <TextField
-            label="Front of the card"
-            value={front}
-            onChange={(e) => setFront(e.target.value)}
-            fullWidth
-            margin="normal"
-          />
-        </div>
-        <div>
-          <TextField
-            label="Back of the card"
-            value={back}
-            onChange={(e) => setBack(e.target.value)}
-            fullWidth
-            margin="normal"
-          />
-        </div>
-        <div>
-          <Box 
+        {/* Front og Back input felter */}
+        <TextField
+          label="Front of the card"
+          value={front}
+          onChange={(e) => setFront(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Back of the card"
+          value={back}
+          onChange={(e) => setBack(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
+        <Box
           sx={{
             marginTop: "1em",
             marginBottom: "1.5em",
             display: "flex",
-            justifyContent: "center", 
-            gap: "20px", 
+            justifyContent: "center",
+            gap: "20px",
           }}
-          
-          >
-          <Button onClick={() => navigate(-1)}
+        >
+          {/* "Back"-knappen skjules eller deaktiveres basert på om et kort er lagt til */}
+          <Button
+            onClick={() => navigate(-1)}
+            disabled={!cardAdded}
             type="button"
             variant="contained"
             color="primary"
             style={{
               padding: "20px 45px",
-              backgroundColor: "#9F70FD",
+              backgroundColor: cardAdded ? "#9F70FD" : "#B0AEBE",
               marginTop: "1em",
               marginBottom: "1.5em",
             }}
           >
             Back
           </Button>
-          <Button 
+          <Button
             type="submit"
             variant="contained"
             color="primary"
@@ -131,14 +129,11 @@ const CardForm: React.FC<CardFormProps> = ({ learningSetId, onSave }) => {
               backgroundColor: "#9F70FD",
               marginTop: "1em",
               marginBottom: "1.5em",
-      
             }}
           >
             Add
           </Button>
-          </Box>
-          
-        </div>
+        </Box>
       </div>
     </form>
   );
