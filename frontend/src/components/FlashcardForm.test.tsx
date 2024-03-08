@@ -1,0 +1,35 @@
+import { render, screen, fireEvent } from "@testing-library/react";
+import FlashcardForm from "./FlashcardForm";
+import { addDoc } from "firebase/firestore";
+
+vi.mock("react-router-dom", () => ({
+  useNavigate: () => vi.fn(),
+}));
+
+vi.mock("firebase/firestore", async (importOriginal) => {
+  const actual = await importOriginal();
+  const mockSetDoc = vi.fn();
+
+  return {
+    ...(actual || {}),
+    addDoc: mockSetDoc,
+  };
+});
+
+test("Renders FlashcardForm and handles form submission correctly", async () => {
+  const mockOnSave = vi.fn();
+
+  // Render the component
+  render(<FlashcardForm learningSetId="1" onSave={mockOnSave} />);
+
+  // Simulate filling in the form
+  fireEvent.change(screen.getByLabelText("Front of the card"), {
+    target: { value: "Front of card" },
+  });
+  fireEvent.change(screen.getByLabelText("Back of the card"), {
+    target: { value: "Back of card" },
+  });
+
+  fireEvent.click(screen.getByText("Add"));
+  expect(addDoc).toHaveBeenCalled();
+});
