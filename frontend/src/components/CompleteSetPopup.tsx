@@ -9,7 +9,7 @@ interface PopUpProps {
   onRestart: () => void;
 }
 
-const CompleteSetPopup: React.FC<PopUpProps> = ({ onRestart }) => {
+const CompleteSetPopup: React.FC<PopUpProps> = ({ onRestart, onClose }) => {
   const navigate = useNavigate();
   return (
     <div
@@ -62,7 +62,10 @@ const CompleteSetPopup: React.FC<PopUpProps> = ({ onRestart }) => {
           }}
         >
           <Button
-            onClick={() => navigate("/dashboard")}
+            onClick={() => {
+              onClose();
+              navigate("/dashboard");
+            }}
             type="submit"
             variant="contained"
             color="primary"
