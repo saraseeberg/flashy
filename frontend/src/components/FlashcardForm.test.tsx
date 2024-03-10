@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import FlashcardForm from "./FlashcardForm";
 import { addDoc } from "firebase/firestore";
+import { act } from "react-dom/test-utils";
 
 vi.mock("react-router-dom", () => ({
   useNavigate: () => vi.fn(),
@@ -30,6 +31,8 @@ test("Renders FlashcardForm and handles form submission correctly", async () => 
     target: { value: "Back of card" },
   });
 
-  fireEvent.click(screen.getByText("Add"));
+  await act(async () => {
+    fireEvent.click(screen.getByText("Add"));
+  });
   expect(addDoc).toHaveBeenCalled();
 });
