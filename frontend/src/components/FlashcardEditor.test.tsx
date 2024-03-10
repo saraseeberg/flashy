@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import FlashcardEditor from "./FlashcardEditor";
 import { updateDoc } from "firebase/firestore";
+import { act } from "react-dom/test-utils";
 
 vi.mock("firebase/firestore", async (importOriginal) => {
   const actual = await importOriginal();
@@ -32,6 +33,8 @@ test("Renders FlashcardEditor and handles edit mode correctly", async () => {
   expect(screen.getByLabelText("Back of the card")).toBeInTheDocument();
 
   // Simulate clicking on the save button, adding the flashcard
-  fireEvent.click(screen.getByText("Save"));
+  await act(async () => {
+    fireEvent.click(screen.getByText("Save"));
+  });
   expect(updateDoc).toHaveBeenCalled();
 });
