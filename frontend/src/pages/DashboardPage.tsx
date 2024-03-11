@@ -25,6 +25,8 @@ import {
   getDocs,
   doc,
   deleteDoc,
+  getDoc,
+  updateDoc,
 } from "firebase/firestore";
 
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -47,11 +49,23 @@ export default function Dashboard() {
     setShowPublic(!showPublic);
   };
 
-  const toggleFavorite = (id: string) => {
+  const toggleFavorite = async (id: string) => {
+    let updatedFavorites = [...favoritedSets];
     if (favoritedSets.includes(id)) {
-      setFavoritedSets(favoritedSets.filter((favId) => favId !== id));
+      updatedFavorites = updatedFavorites.filter((favId) => favId !== id);
     } else {
-      setFavoritedSets([...favoritedSets, id]);
+      updatedFavorites.push(id);
+    }
+    setFavoritedSets(updatedFavorites);
+    await updateFavoritesInFirestore(updatedFavorites);
+  };
+
+  const updateFavoritesInFirestore = async (updatedFavorites: string[]) => {
+    if (currentUserId) {
+      const userDocRef = doc(db, "usersData", currentUserId);
+      await updateDoc(userDocRef, {
+        favoritedSets: updatedFavorites,
+      });
     }
   };
 
@@ -100,6 +114,7 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
+    // Fetch learning sets
     const fetchLearningSets = async () => {
       const docCollectionRef = collection(db as Firestore, "learningSets");
       const querySnapshot = await getDocs(docCollectionRef);
@@ -108,27 +123,41 @@ export default function Dashboard() {
         ...(doc.data() as Omit<LearningSet, "id">),
       }));
 
-      let filterlearningset = fetchedLearningSets.filter((learningSet) =>
+      let filteredLearningSets = fetchedLearningSets.filter((learningSet) =>
         showPublic
           ? learningSet.isPublic
           : !learningSet.isPublic && learningSet.createdBy === currentUserId
       );
 
       if (showFavorites) {
-        filterlearningset = filterlearningset.filter((learningSet) =>
+        filteredLearningSets = fetchedLearningSets.filter((learningSet) =>
           favoritedSets.includes(learningSet.id ?? "")
         );
       }
 
       if (query !== "") {
-        filterlearningset = filterlearningset.filter((card) =>
+        filteredLearningSets = filteredLearningSets.filter((card) =>
           card.title.toLowerCase().includes(query.toLowerCase() || "")
         );
       }
 
-      setLearningSets(filterlearningset);
+      setLearningSets(filteredLearningSets);
     };
+
+    // Fetch user's favorite sets
+    const fetchFavorites = async () => {
+      if (currentUserId) {
+        const userDocRef = doc(db, "usersData", currentUserId);
+        const docSnap = await getDoc(userDocRef);
+        if (docSnap.exists()) {
+          const userData = docSnap.data();
+          setFavoritedSets(userData.favoritedSets || []);
+        }
+      }
+    };
+
     fetchLearningSets();
+    fetchFavorites();
   }, [currentUserId, showPublic, showFavorites, favoritedSets, query]);
 
   return (

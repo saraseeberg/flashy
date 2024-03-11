@@ -4,4 +4,5 @@ export interface UserData {
   lastName: string;
   role: string;
   username: string;
+  favoritedSets: string[];
 }
