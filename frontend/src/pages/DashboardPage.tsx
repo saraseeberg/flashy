@@ -40,7 +40,7 @@ export default function Dashboard() {
   const [showPublic, setShowPublic] = useState(true);
   const [favoritedSets, setFavoritedSets] = useState<string[]>([]);
   const [showFavorites, setShowFavorites] = useState(false);
-  const [query, setQuery] = useState<string>('');
+  const [query, setQuery] = useState<string>("");
   const navigate = useNavigate();
 
   const handlePrivacyChange = () => {
@@ -120,9 +120,12 @@ export default function Dashboard() {
         );
       }
 
-      if(query!==''){
-        filterlearningset = filterlearningset.filter(card => card.title.toLowerCase().includes(query || ''));
+      if (query !== "") {
+        filterlearningset = filterlearningset.filter((card) =>
+          card.title.toLowerCase().includes(query.toLowerCase() || "")
+        );
       }
+
       setLearningSets(filterlearningset);
     };
     fetchLearningSets();
@@ -171,13 +174,13 @@ export default function Dashboard() {
         >
           Favorites
         </Button>
-         <TextField
-              type="text"
-              label="Search"
-              placeholder="Search for flashcards"
-              value={query}
-              onChange={(e) => setQuery((e.target as HTMLInputElement).value)}
-            />
+        <TextField
+          type="text"
+          label="Search"
+          placeholder="Search for flashcards"
+          value={query}
+          onChange={(e) => setQuery((e.target as HTMLInputElement).value)}
+        />
       </Box>
       <Box>
         <Grid container spacing={2}>
