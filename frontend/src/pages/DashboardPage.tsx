@@ -171,29 +171,15 @@ export default function Dashboard() {
         >
           Favorites
         </Button>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={showFavorites}
-              onChange={handleShowFavorites}
-              color="primary"
-            />
-          }
-          label="Show Favorites"
-        />
-      </Box>
-      <Box>
-        <Grid container spacing={2} alignItems="center">
-          <Grid item>
-            <TextField
+         <TextField
               type="text"
               label="Search"
               placeholder="Search for flashcards"
               value={query}
               onChange={(e) => setQuery((e.target as HTMLInputElement).value)}
             />
-          </Grid>
-        </Grid>
+      </Box>
+      <Box>
         <Grid container spacing={2}>
           {learningSets.map((learningSet) => (
             <Grid
