@@ -1,4 +1,9 @@
-import { Button, CircularProgress, Typography } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  LinearProgress,
+  Typography,
+} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Card from "../components/Card";
@@ -22,6 +27,11 @@ export default function ViewCards() {
   const [shufflePopupOpen, setShufflePopupOpen] = useState(true);
   const [difficultCards, setDifficultCards] = useState<CardData[]>([]);
   const [inDifficultMode, setInDifficultMode] = useState(false);
+  const [seenCards, setSeenCards] = useState<Set<string>>(new Set());
+  const [seenDifficultCards, setSeenDifficultCards] = useState<Set<string>>(
+    new Set()
+  );
+  const [completedCards, setCompletedCards] = useState<Set<string>>(new Set());
 
   const { setId } = useParams<{ setId?: string }>();
 
@@ -152,6 +162,27 @@ export default function ViewCards() {
         setCurrentCardIndex(0);
       }
     }
+    const handleCardSeen = (cardId: string, isDifficult: boolean) => {
+      // Hvis et kort er sett og ikke er vanskelig, eller tidligere var vanskelig og nå er sett uten å være vanskelig
+      if (!isDifficult) {
+        setCompletedCards((prev) => new Set(prev).add(cardId));
+      }
+    };
+
+    const currentCard = inDifficultMode
+      ? difficultCards[currentCardIndex]
+      : cards[currentCardIndex];
+    const newSeenCards = new Set(seenCards);
+    const newSeenDifficultCards = new Set(seenDifficultCards);
+
+    if (!currentCard.isDifficult || !inDifficultMode) {
+      newSeenCards.add(currentCard.id);
+    } else {
+      newSeenDifficultCards.add(currentCard.id);
+    }
+
+    setSeenCards(newSeenCards);
+    setSeenDifficultCards(newSeenDifficultCards);
   };
 
   /* Handle the change of the difficulty checkbox */
@@ -188,7 +219,15 @@ export default function ViewCards() {
     );
   }
 
-  const progressPercentage = (getCurrentIndex() / getCurrentSetLength()) * 100;
+  const calculateProgress = () => {
+    const totalSeen =
+      seenCards.size + (inDifficultMode ? 0 : seenDifficultCards.size);
+    const totalCards =
+      cards.length + (inDifficultMode ? difficultCards.length : 0);
+    return (totalSeen / totalCards) * 100;
+  };
+
+  const progressPercentage = calculateProgress();
 
   /* Get the current card, based on difficultyMode */
   const currentCard = inDifficultMode
@@ -205,6 +244,7 @@ export default function ViewCards() {
           onNoShuffle={handleNoShuffle}
         />
       )}
+
       {completedSet ? (
         <CompleteSetPopup
           onClose={() => {
@@ -230,33 +270,25 @@ export default function ViewCards() {
               isFlipped={flipped}
               onDifficultyChange={handleDifficultyChange}
             />
-            <div>
-              <div
-                style={{
-                  width: "100%",
-                  backgroundColor: "#e0e0e0",
-                  borderRadius: "8px",
-                  margin: "20px 0",
-                }}
-              >
-                <div
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                padding: "20px",
+              }}
+            >
+              <div style={{ width: "40em" }}>
+                <LinearProgress
+                  variant="determinate"
+                  value={progressPercentage}
                   style={{
                     height: "20px",
-                    width: `${progressPercentage}%`,
-                    backgroundColor: "#4caf50",
-                    borderRadius: "8px",
-                    textAlign: "center",
-                    color: "white",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    borderRadius: "10px",
+                    margin: "auto",
                   }}
-                >
-                  {progressPercentage.toFixed(0)}%
-                </div>
+                />
               </div>
             </div>
-
             <div id={styles.flipButtonDiv}>
               <Button onClick={handlePrevCard}>
                 <ArrowBackIcon />
