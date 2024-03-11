@@ -12,8 +12,6 @@ import {
   TextField,
 } from "@mui/material";
 import { IconButton } from "@mui/material";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import { useNavigate } from "react-router-dom";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -31,6 +29,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
 import { LearningSet } from "../models/Learningset";
+import { ModeCommentOutlined, ThumbUpOutlined } from "@mui/icons-material";
 
 export default function Dashboard() {
   const [learningSets, setLearningSets] = useState<LearningSet[]>([]);
@@ -263,6 +262,21 @@ export default function Dashboard() {
                 <Typography variant="body2" color="text.secondary">
                   {learningSet.description}
                 </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "flex-end",
+                    flexGrow: 1,
+                  }}
+                >
+                  <IconButton sx={{ marginTop: "auto" }} onClick={() => {}}>
+                    <ThumbUpOutlined />
+                  </IconButton>
+                  <IconButton sx={{ marginTop: "auto" }} onClick={() => {}}>
+                    <ModeCommentOutlined />
+                  </IconButton>
+                </Box>
               </Paper>
             </Grid>
           ))}
