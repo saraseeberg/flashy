@@ -9,12 +9,11 @@ import {
   ToggleButton,
   Menu,
   MenuItem,
+  TextField,
 } from "@mui/material";
-import firebase from "firebase/compat/app";
-import SearchBar from "../components/SearchBar";
-import { IconButton } from '@mui/material';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel'
+import { IconButton } from "@mui/material";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import { useNavigate } from "react-router-dom";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -28,8 +27,8 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 import { LearningSet } from "../models/Learningset";
 
@@ -41,34 +40,13 @@ export default function Dashboard() {
   const [showPublic, setShowPublic] = useState(true);
   const [favoritedSets, setFavoritedSets] = useState<string[]>([]);
   const [showFavorites, setShowFavorites] = useState(false);
-  const [searchedSets, setSearchedSets] = useState<LearningSet[]>([]);
-
+  const [query, setQuery] = useState<string>('');
   const navigate = useNavigate();
 
   const handlePrivacyChange = () => {
     setShowPublic(!showPublic);
   };
 
-  const handleSearch = async (query: string) => {
-    try {
-        const db = firebase.firestore();
-        const snapshot = await db.collection("learningSets").get();
-        const results = snapshot.docs
-            .map((doc) => doc.data() as LearningSet)
-            .filter(
-                (learningSet) =>
-                    (showPublic
-                        ? learningSet.isPublic
-                        : !learningSet.isPublic &&
-                        learningSet.createdBy === currentUserId) &&
-                    learningSet.title.toLowerCase().includes(query.toLowerCase())
-            );
-        setSearchedSets(results);
-    } catch (error) {
-        console.error("Error searching:", error);
-    }
-};
-  
   const toggleFavorite = (id: string) => {
     if (favoritedSets.includes(id)) {
       setFavoritedSets(favoritedSets.filter((favId) => favId !== id));
@@ -129,6 +107,7 @@ export default function Dashboard() {
         id: doc.id,
         ...(doc.data() as Omit<LearningSet, "id">),
       }));
+
       let filterlearningset = fetchedLearningSets.filter((learningSet) =>
         showPublic
           ? learningSet.isPublic
@@ -141,16 +120,13 @@ export default function Dashboard() {
         );
       }
 
-      if(searchedSets.length != 0) {
-        filterlearningset = filterlearningset.filter(() =>
-          searchedSets
-        );
+      if(query!==''){
+        filterlearningset = filterlearningset.filter(card => card.title.toLowerCase().includes(query || ''));
       }
+      setLearningSets(filterlearningset);
     };
-
-
     fetchLearningSets();
-  }, [currentUserId, showPublic, showFavorites, favoritedSets]);
+  }, [currentUserId, showPublic, showFavorites, favoritedSets, query]);
 
   return (
     <Container maxWidth="lg" sx={{ marginTop: "20px", marginBottom: "20px" }}>
@@ -191,23 +167,33 @@ export default function Dashboard() {
         <Button
           variant={showFavorites ? "contained" : "outlined"}
           onClick={handleShowFavorites}
-          sx={{ marginLeft: 2 }} 
-          >
+          sx={{ marginLeft: 2 }}
+        >
           Favorites
         </Button>
         <FormControlLabel
-            control={
-              <Checkbox
-                checked={showFavorites}
-                onChange={handleShowFavorites}
-                color="primary"
-              />
-            }
+          control={
+            <Checkbox
+              checked={showFavorites}
+              onChange={handleShowFavorites}
+              color="primary"
+            />
+          }
           label="Show Favorites"
         />
       </Box>
       <Box>
-        <SearchBar onSearch={handleSearch}/>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item>
+            <TextField
+              type="text"
+              label="Search"
+              placeholder="Search for flashcards"
+              value={query}
+              onChange={(e) => setQuery((e.target as HTMLInputElement).value)}
+            />
+          </Grid>
+        </Grid>
         <Grid container spacing={2}>
           {learningSets.map((learningSet) => (
             <Grid
@@ -244,16 +230,22 @@ export default function Dashboard() {
                     minHeight: "30px",
                   }}
                 >
-                <Box>
-                  <IconButton onClick={(e) => {
-                    e.stopPropagation();
-                    if (learningSet.id) { 
-                      toggleFavorite(learningSet.id);
-                    }
-                  }}>
-                    {favoritedSets.includes(learningSet.id ?? "") ? <FavoriteIcon sx={{ color: "yellow" }} /> : <FavoriteBorderIcon />}
-                  </IconButton>
-                </Box>
+                  <Box>
+                    <IconButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (learningSet.id) {
+                          toggleFavorite(learningSet.id);
+                        }
+                      }}
+                    >
+                      {favoritedSets.includes(learningSet.id ?? "") ? (
+                        <FavoriteIcon sx={{ color: "yellow" }} />
+                      ) : (
+                        <FavoriteBorderIcon />
+                      )}
+                    </IconButton>
+                  </Box>
                   <Box>
                     {learningSet.createdBy == currentUserId ? (
                       <Button
