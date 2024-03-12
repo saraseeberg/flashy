@@ -11,6 +11,7 @@ const LearningsetForm = () => {
     description: "",
     isPublic: false,
     createdBy: "",
+    category: "",
   });
 
   const navigate = useNavigate();
@@ -85,6 +86,14 @@ const LearningsetForm = () => {
           value={learningset.description}
           onChange={handleChange}
           placeholder="Description"
+          variant="outlined"
+          sx={{ mb: 1, width: "100%" }}
+        />
+        <TextField
+          name="category"
+          value={learningset.category}
+          onChange={handleChange}
+          placeholder="Category"
           variant="outlined"
           sx={{ mb: 1, width: "100%" }}
         />

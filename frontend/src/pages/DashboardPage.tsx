@@ -12,8 +12,11 @@ import {
   TextField,
 } from "@mui/material";
 import { IconButton } from "@mui/material";
+import Modal from '@mui/material/Modal';
 import Checkbox from "@mui/material/Checkbox";
+import { styled } from '@mui/material/styles';
 import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from '@mui/material/FormGroup';
 import { useNavigate } from "react-router-dom";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -32,6 +35,27 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 
 import { LearningSet } from "../models/Learningset";
 
+
+
+  const categories = ['geography', 'History','Annet' ];
+  
+  const StyleModal = styled(Modal)(({theme}) => ({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }));
+    const ModalBox = styled(Box)(({ theme }) => ({
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: 400,
+      bgcolor: 'background.paper',
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(4),
+      outline: 'none',
+    }));
+
 export default function Dashboard() {
   const [learningSets, setLearningSets] = useState<LearningSet[]>([]);
   const currentUserId = auth.currentUser?.uid;
@@ -40,8 +64,12 @@ export default function Dashboard() {
   const [showPublic, setShowPublic] = useState(true);
   const [favoritedSets, setFavoritedSets] = useState<string[]>([]);
   const [showFavorites, setShowFavorites] = useState(false);
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
+  const initialCategories = { geography: false, history: false, annet: false };
+  const [selectedCategories, setSelectedCategories] = useState<{ [key: string]: boolean }>(initialCategories);
   const [query, setQuery] = useState<string>("");
   const navigate = useNavigate();
+
 
   const handlePrivacyChange = () => {
     setShowPublic(!showPublic);
@@ -54,6 +82,13 @@ export default function Dashboard() {
       setFavoritedSets([...favoritedSets, id]);
     }
   };
+
+  const handleOpenFilterModal = () => setFilterModalOpen(true);
+  const handleCloseFilterModal = () => setFilterModalOpen(false);
+  const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const { name, checked } = event.target;
+  setSelectedCategories(prev => ({ ...prev, [name.toLowerCase()]: checked }));
+  };  
 
   const handleShowFavorites = () => {
     setShowFavorites(!showFavorites);
@@ -114,6 +149,12 @@ export default function Dashboard() {
           : !learningSet.isPublic && learningSet.createdBy === currentUserId
       );
 
+      if (Object.values(selectedCategories).some((val) => val)) {
+        filterlearningset = filterlearningset.filter((learningSet) =>
+          selectedCategories[learningSet.category]
+        );
+      }
+
       if (showFavorites) {
         filterlearningset = filterlearningset.filter((learningSet) =>
           favoritedSets.includes(learningSet.id ?? "")
@@ -129,7 +170,7 @@ export default function Dashboard() {
       setLearningSets(filterlearningset);
     };
     fetchLearningSets();
-  }, [currentUserId, showPublic, showFavorites, favoritedSets, query]);
+  }, [currentUserId, showPublic,selectedCategories, showFavorites, favoritedSets, query]);
 
   return (
     <Container maxWidth="lg" sx={{ marginTop: "20px", marginBottom: "20px" }}>
@@ -167,6 +208,45 @@ export default function Dashboard() {
             Private
           </ToggleButton>
         </ToggleButtonGroup>
+        <Button onClick={handleOpenFilterModal} sx={{ marginLeft: 2 }}>
+          Filter
+        </Button>      
+        <Modal
+            open={filterModalOpen}
+            onClose={handleCloseFilterModal}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+            >
+        <Box sx={{position: 'absolute', 
+                top: '50%',
+                left: '50%', 
+                transform: 'translate(-50%, -50%)',
+                bgcolor: 'background.paper', 
+                boxShadow: 24, 
+                p: 4}}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Filter by Category
+          </Typography>
+          <FormGroup>
+          {Object.keys(selectedCategories).map((category) => {
+          const key = category as keyof typeof selectedCategories;
+          return (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={selectedCategories[key]}
+                  onChange={handleCategoryChange}
+                  name={category}
+                />
+              }
+              label={category.charAt(0).toUpperCase() + category.slice(1)}
+              key={category}
+            />
+          );
+        })}
+        </FormGroup>
+        </Box>
+      </Modal>
         <Button
           variant={showFavorites ? "contained" : "outlined"}
           onClick={handleShowFavorites}
