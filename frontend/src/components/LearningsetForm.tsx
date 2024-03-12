@@ -11,6 +11,7 @@ const LearningsetForm = () => {
     description: "",
     isPublic: false,
     createdBy: "",
+    comments: [],
   });
 
   const navigate = useNavigate();

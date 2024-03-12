@@ -4,4 +4,5 @@ export interface LearningSet {
   description: string;
   isPublic: boolean;
   createdBy: string;
+  comments: string[];
 }
