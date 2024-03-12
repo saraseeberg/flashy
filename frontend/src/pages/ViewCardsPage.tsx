@@ -32,7 +32,7 @@ export default function ViewCards() {
     new Set()
   );
   const [completedCards, setCompletedCards] = useState<Set<string>>(new Set());
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState(0); // Ny tilstand for fremdriftsbarens verdi
 
   const { setId } = useParams<{ setId?: string }>();
 
@@ -222,35 +222,16 @@ export default function ViewCards() {
     );
   }
 
-  // /*Progress (in percent) of how many cards have been seen.*/
-  // const calculateProgress = () => {
-  //   const totalSeen =
-  //     seenCards.size + (inDifficultMode ? 0 : seenDifficultCards.size);
-  //   const totalCards =
-  //     cards.length + (inDifficultMode ? difficultCards.length : 0);
-  //   return (totalSeen / totalCards) * 100;
-  // };
-
+  /*Progress (in percent) of how many cards have been seen.*/
   const calculateProgress = () => {
-    // Antall unike sett kort, uavhengig av modus
-    const totalSeenUnique = new Set([...seenCards, ...seenDifficultCards]).size;
-
-    // Totalt antall unike kort i både standard og vanskelig modus
-    const totalCardsUnique = new Set([
-      ...cards.map((card) => card.id),
-      ...difficultCards.map((card) => card.id),
-    ]).size;
-
-    // Oppdaterer fremdriften basert på unike sett kort
-    return (totalSeenUnique / totalCardsUnique) * 100;
+    const totalSeen =
+      seenCards.size + (inDifficultMode ? 0 : seenDifficultCards.size);
+    const totalCards =
+      cards.length + (inDifficultMode ? difficultCards.length : 0);
+    return (totalSeen / totalCards) * 100;
   };
 
   const progressPercentage = calculateProgress();
-
-  useEffect(() => {
-    const newProgress = calculateProgress();
-    setProgress(newProgress);
-  }, [seenCards, seenDifficultCards, cards, difficultCards]);
 
   /* Get the current card, based on difficultyMode */
   const currentCard = inDifficultMode
