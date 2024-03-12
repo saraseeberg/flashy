@@ -32,6 +32,7 @@ export default function ViewCards() {
     new Set()
   );
   const [completedCards, setCompletedCards] = useState<Set<string>>(new Set());
+  const [progress, setProgress] = useState(0);
 
   const { setId } = useParams<{ setId?: string }>();
 
@@ -44,15 +45,23 @@ export default function ViewCards() {
   /* Shuffle the cards */
   const handleShuffle = () => {
     shuffleCards();
+    resetProgress();
     handleShufflePopupClose();
   };
 
   /* Shuffle the cards */
   const handleNoShuffle = () => {
     fetchCards();
+    resetProgress();
     handleShufflePopupClose();
   };
 
+  const resetProgress = () => {
+    setSeenCards(new Set());
+    setSeenDifficultCards(new Set());
+    setCompletedCards(new Set());
+    setProgress(0);
+  };
   /* Get the current index of the card */
   function getCurrentIndex() {
     return currentCardIndex + 1;
@@ -162,12 +171,6 @@ export default function ViewCards() {
         setCurrentCardIndex(0);
       }
     }
-    const handleCardSeen = (cardId: string, isDifficult: boolean) => {
-      // Hvis et kort er sett og ikke er vanskelig, eller tidligere var vanskelig og nå er sett uten å være vanskelig
-      if (!isDifficult) {
-        setCompletedCards((prev) => new Set(prev).add(cardId));
-      }
-    };
 
     const currentCard = inDifficultMode
       ? difficultCards[currentCardIndex]
@@ -219,15 +222,35 @@ export default function ViewCards() {
     );
   }
 
+  // /*Progress (in percent) of how many cards have been seen.*/
+  // const calculateProgress = () => {
+  //   const totalSeen =
+  //     seenCards.size + (inDifficultMode ? 0 : seenDifficultCards.size);
+  //   const totalCards =
+  //     cards.length + (inDifficultMode ? difficultCards.length : 0);
+  //   return (totalSeen / totalCards) * 100;
+  // };
+
   const calculateProgress = () => {
-    const totalSeen =
-      seenCards.size + (inDifficultMode ? 0 : seenDifficultCards.size);
-    const totalCards =
-      cards.length + (inDifficultMode ? difficultCards.length : 0);
-    return (totalSeen / totalCards) * 100;
+    // Antall unike sett kort, uavhengig av modus
+    const totalSeenUnique = new Set([...seenCards, ...seenDifficultCards]).size;
+
+    // Totalt antall unike kort i både standard og vanskelig modus
+    const totalCardsUnique = new Set([
+      ...cards.map((card) => card.id),
+      ...difficultCards.map((card) => card.id),
+    ]).size;
+
+    // Oppdaterer fremdriften basert på unike sett kort
+    return (totalSeenUnique / totalCardsUnique) * 100;
   };
 
   const progressPercentage = calculateProgress();
+
+  useEffect(() => {
+    const newProgress = calculateProgress();
+    setProgress(newProgress);
+  }, [seenCards, seenDifficultCards, cards, difficultCards]);
 
   /* Get the current card, based on difficultyMode */
   const currentCard = inDifficultMode
