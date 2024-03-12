@@ -43,7 +43,6 @@ describe("Dashboard", () => {
       },
     ];
 
-    // Mock `getDocs` for å returnere læringssett
     vi.mocked(firebaseFirestore.getDocs).mockResolvedValue({
       docs: learningSets.map((set) => ({
         id: set.id,
@@ -52,10 +51,9 @@ describe("Dashboard", () => {
       })),
     } as unknown as firebaseFirestore.QuerySnapshot<firebaseFirestore.DocumentData>);
 
-    // Oppdater `getDoc`-mocken for å håndtere unhandled rejection feil
     vi.mocked(firebaseFirestore.getDoc).mockResolvedValue({
       exists: () => true,
-      data: () => ({ favoritedSets: [] }), // Anta ingen favoriserte sett i starten
+      data: () => ({ favoritedSets: [] }),
     } as unknown as firebaseFirestore.DocumentSnapshot<firebaseFirestore.DocumentData>);
   });
 
@@ -77,5 +75,24 @@ describe("Dashboard", () => {
       expect(screen.queryByText("Others Public Set")).toBeNull();
       expect(screen.getByText("Private Set")).toBeInTheDocument();
     });
+  });
+
+  test("shows only favorited sets when 'favorites' is selected", async () => {
+    vi.mocked(firebaseFirestore.getDoc).mockResolvedValueOnce({
+      exists: () => true,
+      data: () => ({ favoritedSets: ["1"] }), 
+    } as unknown as firebaseFirestore.DocumentSnapshot<firebaseFirestore.DocumentData>);
+
+    render(<Dashboard />);
+
+    await waitFor(() =>
+      expect(screen.getByText("Public Set")).toBeInTheDocument()
+    );
+    fireEvent.click(screen.getByLabelText("favorites"));
+    await waitFor(() => {
+      expect(screen.getByText("Public Set")).toBeInTheDocument(); 
+    });
+    expect(screen.queryByText("Private Set")).not.toBeInTheDocument(); 
+    expect(screen.queryByText("Others Public Set")).not.toBeInTheDocument();
   });
 });
