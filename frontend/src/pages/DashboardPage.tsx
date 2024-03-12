@@ -146,6 +146,7 @@ export default function Dashboard() {
             return (
               !learningSet.isPublic && learningSet.createdBy === currentUserId
             );
+
           default:
             return true;
         }
@@ -153,6 +154,15 @@ export default function Dashboard() {
 
       if (mounted) {
         setLearningSets(filteredLearningSets);
+      }
+
+      const filterBySearch = filteredLearningSets.filter((learningSet) => {
+        return learningSet.title
+          .toLowerCase()
+          .includes(query.toLowerCase() || "");
+      });
+      if (query !== "") {
+        setLearningSets(filterBySearch);
       }
     };
 
