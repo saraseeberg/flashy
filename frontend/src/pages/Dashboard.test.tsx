@@ -43,6 +43,7 @@ describe("Dashboard", () => {
       },
     ];
 
+    // Mock `getDocs` for å returnere læringssett
     vi.mocked(firebaseFirestore.getDocs).mockResolvedValue({
       docs: learningSets.map((set) => ({
         id: set.id,
@@ -50,12 +51,20 @@ describe("Dashboard", () => {
         exists: () => true,
       })),
     } as unknown as firebaseFirestore.QuerySnapshot<firebaseFirestore.DocumentData>);
+
+    // Oppdater `getDoc`-mocken for å håndtere unhandled rejection feil
+    vi.mocked(firebaseFirestore.getDoc).mockResolvedValue({
+      exists: () => true,
+      data: () => ({ favoritedSets: [] }), // Anta ingen favoriserte sett i starten
+    } as unknown as firebaseFirestore.DocumentSnapshot<firebaseFirestore.DocumentData>);
   });
 
   test("shows public sets correctly when 'public' is selected", async () => {
     render(<Dashboard />);
-    expect(await screen.findByText("Public Set")).toBeInTheDocument();
-    expect(screen.getByText("Others Public Set")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText("Public Set")).toBeInTheDocument();
+      expect(screen.getByText("Others Public Set")).toBeInTheDocument();
+    });
     expect(screen.queryByText("Private Set")).toBeNull();
   });
 
