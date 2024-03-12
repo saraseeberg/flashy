@@ -50,12 +50,19 @@ describe("Dashboard", () => {
         exists: () => true,
       })),
     } as unknown as firebaseFirestore.QuerySnapshot<firebaseFirestore.DocumentData>);
+
+    vi.mocked(firebaseFirestore.getDoc).mockResolvedValue({
+      exists: () => true,
+      data: () => ({ favoritedSets: [] }),
+    } as unknown as firebaseFirestore.DocumentSnapshot<firebaseFirestore.DocumentData>);
   });
 
   test("shows public sets correctly when 'public' is selected", async () => {
     render(<Dashboard />);
-    expect(await screen.findByText("Public Set")).toBeInTheDocument();
-    expect(screen.getByText("Others Public Set")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText("Public Set")).toBeInTheDocument();
+      expect(screen.getByText("Others Public Set")).toBeInTheDocument();
+    });
     expect(screen.queryByText("Private Set")).toBeNull();
   });
 
@@ -68,5 +75,24 @@ describe("Dashboard", () => {
       expect(screen.queryByText("Others Public Set")).toBeNull();
       expect(screen.getByText("Private Set")).toBeInTheDocument();
     });
+  });
+
+  test("shows only favorited sets when 'favorites' is selected", async () => {
+    vi.mocked(firebaseFirestore.getDoc).mockResolvedValueOnce({
+      exists: () => true,
+      data: () => ({ favoritedSets: ["1"] }), 
+    } as unknown as firebaseFirestore.DocumentSnapshot<firebaseFirestore.DocumentData>);
+
+    render(<Dashboard />);
+
+    await waitFor(() =>
+      expect(screen.getByText("Public Set")).toBeInTheDocument()
+    );
+    fireEvent.click(screen.getByLabelText("favorites"));
+    await waitFor(() => {
+      expect(screen.getByText("Public Set")).toBeInTheDocument(); 
+    });
+    expect(screen.queryByText("Private Set")).not.toBeInTheDocument(); 
+    expect(screen.queryByText("Others Public Set")).not.toBeInTheDocument();
   });
 });

@@ -12,8 +12,6 @@ import {
   TextField,
 } from "@mui/material";
 import { IconButton } from "@mui/material";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import { useNavigate } from "react-router-dom";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -25,6 +23,8 @@ import {
   getDocs,
   doc,
   deleteDoc,
+  getDoc,
+  updateDoc,
 } from "firebase/firestore";
 
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -37,26 +37,31 @@ export default function Dashboard() {
   const currentUserId = auth.currentUser?.uid;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedSetId, setSelectedSetId] = useState<string | null>(null);
-  const [showPublic, setShowPublic] = useState(true);
   const [favoritedSets, setFavoritedSets] = useState<string[]>([]);
-  const [showFavorites, setShowFavorites] = useState(false);
   const [query, setQuery] = useState<string>("");
   const navigate = useNavigate();
+  const [filter, setFilter] = useState<"public" | "private" | "favorites">(
+    "public"
+  );
 
-  const handlePrivacyChange = () => {
-    setShowPublic(!showPublic);
-  };
-
-  const toggleFavorite = (id: string) => {
+  const toggleFavorite = async (id: string) => {
+    let updatedFavorites = [...favoritedSets];
     if (favoritedSets.includes(id)) {
-      setFavoritedSets(favoritedSets.filter((favId) => favId !== id));
+      updatedFavorites = updatedFavorites.filter((favId) => favId !== id);
     } else {
-      setFavoritedSets([...favoritedSets, id]);
+      updatedFavorites.push(id);
     }
+    setFavoritedSets(updatedFavorites);
+    await updateFavoritesInFirestore(updatedFavorites);
   };
 
-  const handleShowFavorites = () => {
-    setShowFavorites(!showFavorites);
+  const updateFavoritesInFirestore = async (updatedFavorites: string[]) => {
+    if (currentUserId) {
+      const userDocRef = doc(db, "usersData", currentUserId);
+      await updateDoc(userDocRef, {
+        favoritedSets: updatedFavorites,
+      });
+    }
   };
 
   const handleMenuClick = (
@@ -99,8 +104,30 @@ export default function Dashboard() {
     handleClose();
   };
 
+  const handleFilterChange = (
+    _event: React.MouseEvent<HTMLElement>,
+    newFilter: "public" | "private" | "favorites"
+  ) => {
+    if (newFilter !== null) {
+      setFilter(newFilter);
+    }
+  };
+
   useEffect(() => {
-    const fetchLearningSets = async () => {
+    let mounted = true;
+
+    const fetchFavoritesAndSets = async () => {
+      let userFavoritedSets: string[] = [];
+      if (currentUserId) {
+        const userDocRef = doc(db, "usersData", currentUserId);
+        const docSnap = await getDoc(userDocRef);
+        if (docSnap.exists() && mounted) {
+          const userData = docSnap.data();
+          userFavoritedSets = userData.favoritedSets || [];
+          setFavoritedSets(userFavoritedSets);
+        }
+      }
+
       const docCollectionRef = collection(db as Firestore, "learningSets");
       const querySnapshot = await getDocs(docCollectionRef);
       const fetchedLearningSets = querySnapshot.docs.map((doc) => ({
@@ -108,28 +135,33 @@ export default function Dashboard() {
         ...(doc.data() as Omit<LearningSet, "id">),
       }));
 
-      let filterlearningset = fetchedLearningSets.filter((learningSet) =>
-        showPublic
-          ? learningSet.isPublic
-          : !learningSet.isPublic && learningSet.createdBy === currentUserId
-      );
+      const filteredLearningSets = fetchedLearningSets.filter((learningSet) => {
+        const isFavorited = userFavoritedSets.includes(learningSet.id ?? "");
+        switch (filter) {
+          case "favorites":
+            return isFavorited;
+          case "public":
+            return learningSet.isPublic;
+          case "private":
+            return (
+              !learningSet.isPublic && learningSet.createdBy === currentUserId
+            );
+          default:
+            return true;
+        }
+      });
 
-      if (showFavorites) {
-        filterlearningset = filterlearningset.filter((learningSet) =>
-          favoritedSets.includes(learningSet.id ?? "")
-        );
+      if (mounted) {
+        setLearningSets(filteredLearningSets);
       }
-
-      if (query !== "") {
-        filterlearningset = filterlearningset.filter((card) =>
-          card.title.toLowerCase().includes(query.toLowerCase() || "")
-        );
-      }
-
-      setLearningSets(filterlearningset);
     };
-    fetchLearningSets();
-  }, [currentUserId, showPublic, showFavorites, favoritedSets, query]);
+
+    fetchFavoritesAndSets();
+
+    return () => {
+      mounted = false;
+    };
+  }, [currentUserId, filter, query]);
 
   return (
     <Container maxWidth="lg" sx={{ marginTop: "20px", marginBottom: "20px" }}>
@@ -153,11 +185,10 @@ export default function Dashboard() {
           Create new learning set
         </Button>
         <ToggleButtonGroup
-          value={showPublic ? "public" : "private"}
-          color="primary"
+          value={filter}
           exclusive
-          onChange={handlePrivacyChange}
-          aria-label="privacy"
+          onChange={handleFilterChange}
+          aria-label="learning set filter"
           sx={{ bgcolor: "white", borderRadius: 1 }}
         >
           <ToggleButton value="public" aria-label="public">
@@ -166,20 +197,16 @@ export default function Dashboard() {
           <ToggleButton value="private" aria-label="private">
             Private
           </ToggleButton>
+          <ToggleButton value="favorites" aria-label="favorites">
+            Favorites
+          </ToggleButton>
         </ToggleButtonGroup>
-        <Button
-          variant={showFavorites ? "contained" : "outlined"}
-          onClick={handleShowFavorites}
-          sx={{ marginLeft: 2 }}
-        >
-          Favorites
-        </Button>
         <TextField
           type="text"
           label="Search"
           placeholder="Search for flashcards"
           value={query}
-          onChange={(e) => setQuery((e.target as HTMLInputElement).value)}
+          onChange={(e) => setQuery(e.target.value)}
         />
       </Box>
       <Box>
