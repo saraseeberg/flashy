@@ -216,7 +216,7 @@ export default function Dashboard() {
           label="Search"
           placeholder="Search for flashcards"
           value={query}
-          onChange={(e) => setQuery((e.target as HTMLInputElement).value)}
+          onChange={(e) => setQuery(e.target.value)}
         />
       </Box>
       <Box>
