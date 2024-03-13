@@ -12,6 +12,7 @@ import {
   TextField,
 } from "@mui/material";
 import { IconButton } from "@mui/material";
+<<<<<<< frontend/src/pages/DashboardPage.tsx
 import Modal from '@mui/material/Modal';
 import Checkbox from "@mui/material/Checkbox";
 import { styled } from '@mui/material/styles';
@@ -28,6 +29,8 @@ import {
   getDocs,
   doc,
   deleteDoc,
+  getDoc,
+  updateDoc,
 } from "firebase/firestore";
 
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -61,7 +64,6 @@ export default function Dashboard() {
   const currentUserId = auth.currentUser?.uid;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedSetId, setSelectedSetId] = useState<string | null>(null);
-  const [showPublic, setShowPublic] = useState(true);
   const [favoritedSets, setFavoritedSets] = useState<string[]>([]);
   const [showFavorites, setShowFavorites] = useState(false);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
@@ -69,18 +71,23 @@ export default function Dashboard() {
   const [selectedCategories, setSelectedCategories] = useState<{ [key: string]: boolean }>(initialCategories);
   const [query, setQuery] = useState<string>("");
   const navigate = useNavigate();
+  const [filter, setFilter] = useState<"public" | "private" | "favorites">(
+    "public"
+  );
 
 
-  const handlePrivacyChange = () => {
-    setShowPublic(!showPublic);
-  };
 
   const toggleFavorite = (id: string) => {
+=======
+  const toggleFavorite = async (id: string) => {
+    let updatedFavorites = [...favoritedSets];
     if (favoritedSets.includes(id)) {
-      setFavoritedSets(favoritedSets.filter((favId) => favId !== id));
+      updatedFavorites = updatedFavorites.filter((favId) => favId !== id);
     } else {
-      setFavoritedSets([...favoritedSets, id]);
+      updatedFavorites.push(id);
     }
+    setFavoritedSets(updatedFavorites);
+    await updateFavoritesInFirestore(updatedFavorites);
   };
 
   const handleOpenFilterModal = () => setFilterModalOpen(true);
@@ -92,6 +99,14 @@ export default function Dashboard() {
 
   const handleShowFavorites = () => {
     setShowFavorites(!showFavorites);
+=======
+  const updateFavoritesInFirestore = async (updatedFavorites: string[]) => {
+    if (currentUserId) {
+      const userDocRef = doc(db, "usersData", currentUserId);
+      await updateDoc(userDocRef, {
+        favoritedSets: updatedFavorites,
+      });
+    }
   };
 
   const handleMenuClick = (
@@ -134,8 +149,30 @@ export default function Dashboard() {
     handleClose();
   };
 
+  const handleFilterChange = (
+    _event: React.MouseEvent<HTMLElement>,
+    newFilter: "public" | "private" | "favorites"
+  ) => {
+    if (newFilter !== null) {
+      setFilter(newFilter);
+    }
+  };
+
   useEffect(() => {
-    const fetchLearningSets = async () => {
+    let mounted = true;
+
+    const fetchFavoritesAndSets = async () => {
+      let userFavoritedSets: string[] = [];
+      if (currentUserId) {
+        const userDocRef = doc(db, "usersData", currentUserId);
+        const docSnap = await getDoc(userDocRef);
+        if (docSnap.exists() && mounted) {
+          const userData = docSnap.data();
+          userFavoritedSets = userData.favoritedSets || [];
+          setFavoritedSets(userFavoritedSets);
+        }
+      }
+
       const docCollectionRef = collection(db as Firestore, "learningSets");
       const querySnapshot = await getDocs(docCollectionRef);
       const fetchedLearningSets = querySnapshot.docs.map((doc) => ({
@@ -143,11 +180,18 @@ export default function Dashboard() {
         ...(doc.data() as Omit<LearningSet, "id">),
       }));
 
-      let filterlearningset = fetchedLearningSets.filter((learningSet) =>
-        showPublic
-          ? learningSet.isPublic
-          : !learningSet.isPublic && learningSet.createdBy === currentUserId
-      );
+      const filteredLearningSets = fetchedLearningSets.filter((learningSet) => {
+        const isFavorited = userFavoritedSets.includes(learningSet.id ?? "");
+        switch (filter) {
+          case "favorites":
+            return isFavorited;
+          case "public":
+            return learningSet.isPublic;
+          case "private":
+            return (
+              !learningSet.isPublic && learningSet.createdBy === currentUserId
+            );
+
 
       if (Object.values(selectedCategories).some((val) => val)) {
         filterlearningset = filterlearningset.filter((learningSet) =>
@@ -159,18 +203,39 @@ export default function Dashboard() {
         filterlearningset = filterlearningset.filter((learningSet) =>
           favoritedSets.includes(learningSet.id ?? "")
         );
+=======
+          default:
+            return true;
+        }
+      });
+
+      if (mounted) {
+        setLearningSets(filteredLearningSets);
       }
 
+      return () => {
+      mounted = false;
+    };
+
+    fetchFavoritesAndSets();
+
+      const filterBySearch = filteredLearningSets.filter((learningSet) => {
+        return learningSet.title
+          .toLowerCase()
+          .includes(query.toLowerCase() || "");
+      });
       if (query !== "") {
-        filterlearningset = filterlearningset.filter((card) =>
-          card.title.toLowerCase().includes(query.toLowerCase() || "")
-        );
+        setLearningSets(filterBySearch);
       }
-
-      setLearningSets(filterlearningset);
     };
     fetchLearningSets();
-  }, [currentUserId, showPublic,selectedCategories, showFavorites, favoritedSets, query]);
+  }, [currentUserId, showPublic,selectedCategories, filter, showFavorites, favoritedSets, query]);
+=======
+
+    
+
+    
+  
 
   return (
     <Container maxWidth="lg" sx={{ marginTop: "20px", marginBottom: "20px" }}>
@@ -194,11 +259,10 @@ export default function Dashboard() {
           Create new learning set
         </Button>
         <ToggleButtonGroup
-          value={showPublic ? "public" : "private"}
-          color="primary"
+          value={filter}
           exclusive
-          onChange={handlePrivacyChange}
-          aria-label="privacy"
+          onChange={handleFilterChange}
+          aria-label="learning set filter"
           sx={{ bgcolor: "white", borderRadius: 1 }}
         >
           <ToggleButton value="public" aria-label="public">
@@ -207,7 +271,11 @@ export default function Dashboard() {
           <ToggleButton value="private" aria-label="private">
             Private
           </ToggleButton>
+          <ToggleButton value="favorites" aria-label="favorites">
+            Favorites
+          </ToggleButton>
         </ToggleButtonGroup>
+<<<<<<< frontend/src/pages/DashboardPage.tsx
         <Button onClick={handleOpenFilterModal} sx={{ marginLeft: 2 }}>
           Filter
         </Button>      
@@ -254,12 +322,13 @@ export default function Dashboard() {
         >
           Favorites
         </Button>
+=======
         <TextField
           type="text"
           label="Search"
           placeholder="Search for flashcards"
           value={query}
-          onChange={(e) => setQuery((e.target as HTMLInputElement).value)}
+          onChange={(e) => setQuery(e.target.value)}
         />
       </Box>
       <Box>
