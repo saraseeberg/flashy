@@ -36,26 +36,6 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import { LearningSet } from "../models/Learningset";
 
 
-
-  const categories = ['Geography', 'History', 'Programmering','Annet' ];
-  
-  const StyleModal = styled(Modal)(({theme}) => ({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }));
-    const ModalBox = styled(Box)(({ theme }) => ({
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      width: 400,
-      bgcolor: 'background.paper',
-      boxShadow: theme.shadows[5],
-      padding: theme.spacing(4),
-      outline: 'none',
-    }));
-
 export default function Dashboard() {
   const [learningSets, setLearningSets] = useState<LearningSet[]>([]);
   const currentUserId = auth.currentUser?.uid;
