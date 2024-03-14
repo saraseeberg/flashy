@@ -64,7 +64,7 @@ export default function Dashboard() {
   const [favoritedSets, setFavoritedSets] = useState<string[]>([]);
   // const [showFavorites, setShowFavorites] = useState(false);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
-  const initialCategories = { geography: false, history: false, programering: false , annet: false };
+  const initialCategories = { geography: false, history: false, programering: false , none: false };
   const [selectedCategories, setSelectedCategories] = useState<{ [key: string]: boolean }>(initialCategories);
   const [query, setQuery] = useState<string>("");
   const navigate = useNavigate();
