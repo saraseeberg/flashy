@@ -2,10 +2,13 @@ import { collection, doc, setDoc } from "firebase/firestore";
 import { useState } from "react";
 import { LearningSet } from "../models/Learningset";
 import { db, auth } from "../config/firebase";
-import { Box, Button, Grid, TextField } from "@mui/material";
+import { Box, Button, FormControl, Grid, InputLabel, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { Select, MenuItem } from "@mui/material";
+import { SelectChangeEvent } from '@mui/material/Select';
 
 const LearningsetForm = () => {
+  const defaultCategory = 'Select a Category';
   const [learningset, setLearningset] = useState<LearningSet>({
     title: "",
     description: "",
@@ -13,16 +16,22 @@ const LearningsetForm = () => {
     createdBy: "",
     category: "",
   });
+  const categories = ['Geography', 'History', 'Programmering', 'None'];
 
   const navigate = useNavigate();
 
   const [isPublic, setIsPublic] = useState(false);
 
-  const handleChange = (
+  const handleChange = (event: SelectChangeEvent<string>) => {
+    const { name, value } = event.target;
+    setLearningset({ ...learningset, [name as string]: value });
+  };
+
+  const handleChanges = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setLearningset({ ...learningset, [name]: value });
+    setLearningset({ ...learningset, [name as string]: value });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -76,7 +85,7 @@ const LearningsetForm = () => {
           name="title"
           type="text"
           value={learningset.title}
-          onChange={handleChange}
+          onChange={handleChanges}
           placeholder="Title"
           variant="outlined"
           sx={{ mb: 1, width: "100%" }}
@@ -84,19 +93,32 @@ const LearningsetForm = () => {
         <TextField
           name="description"
           value={learningset.description}
-          onChange={handleChange}
+          onChange={handleChanges}
           placeholder="Description"
           variant="outlined"
           sx={{ mb: 1, width: "100%" }}
         />
-        <TextField
-          name="category"
-          value={learningset.category}
-          onChange={handleChange}
-          placeholder="Category"
-          variant="outlined"
-          sx={{ mb: 1, width: "100%" }}
-        />
+        <FormControl fullWidth>
+          <InputLabel id="simple-select-label">Category</InputLabel>
+        <Select
+            labelId="simple-select-label"
+            id="simple-select"
+            value={learningset.category}
+            onChange={handleChange}
+            label="Category"
+            variant="outlined"
+            sx={{ mb: 1, width: "100%" }}
+          >
+        <MenuItem value={defaultCategory} disabled>
+            {defaultCategory}
+         </MenuItem>
+          {categories.map((category) => (
+            <MenuItem key={category} value={category}>
+              {category}
+            </MenuItem>
+          ))}
+        </Select>
+        </FormControl>
         <Grid container alignItems="center" sx={{ mb: 1 }}>
           <Grid item>
             <input

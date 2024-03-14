@@ -12,7 +12,6 @@ import {
   TextField,
 } from "@mui/material";
 import { IconButton } from "@mui/material";
-<<<<<<< frontend/src/pages/DashboardPage.tsx
 import Modal from '@mui/material/Modal';
 import Checkbox from "@mui/material/Checkbox";
 import { styled } from '@mui/material/styles';
@@ -32,15 +31,13 @@ import {
   getDoc,
   updateDoc,
 } from "firebase/firestore";
-
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-
 import { LearningSet } from "../models/Learningset";
 
 
 
-  const categories = ['geography', 'History','Annet' ];
+  const categories = ['Geography', 'History', 'Programmering','Annet' ];
   
   const StyleModal = styled(Modal)(({theme}) => ({
     display: 'flex',
@@ -65,9 +62,9 @@ export default function Dashboard() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedSetId, setSelectedSetId] = useState<string | null>(null);
   const [favoritedSets, setFavoritedSets] = useState<string[]>([]);
-  const [showFavorites, setShowFavorites] = useState(false);
+  // const [showFavorites, setShowFavorites] = useState(false);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
-  const initialCategories = { geography: false, history: false, annet: false };
+  const initialCategories = { geography: false, history: false, programering: false , annet: false };
   const [selectedCategories, setSelectedCategories] = useState<{ [key: string]: boolean }>(initialCategories);
   const [query, setQuery] = useState<string>("");
   const navigate = useNavigate();
@@ -77,8 +74,6 @@ export default function Dashboard() {
 
 
 
-  const toggleFavorite = (id: string) => {
-=======
   const toggleFavorite = async (id: string) => {
     let updatedFavorites = [...favoritedSets];
     if (favoritedSets.includes(id)) {
@@ -95,11 +90,10 @@ export default function Dashboard() {
   const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   const { name, checked } = event.target;
   setSelectedCategories(prev => ({ ...prev, [name.toLowerCase()]: checked }));
+
   };  
 
-  const handleShowFavorites = () => {
-    setShowFavorites(!showFavorites);
-=======
+
   const updateFavoritesInFirestore = async (updatedFavorites: string[]) => {
     if (currentUserId) {
       const userDocRef = doc(db, "usersData", currentUserId);
@@ -180,7 +174,9 @@ export default function Dashboard() {
         ...(doc.data() as Omit<LearningSet, "id">),
       }));
 
-      const filteredLearningSets = fetchedLearningSets.filter((learningSet) => {
+      
+
+      let filteredLearningSets = fetchedLearningSets.filter((learningSet) => {
         const isFavorited = userFavoritedSets.includes(learningSet.id ?? "");
         switch (filter) {
           case "favorites":
@@ -191,46 +187,40 @@ export default function Dashboard() {
             return (
               !learningSet.isPublic && learningSet.createdBy === currentUserId
             );
+            default:
+              return true;
+          }
+        });
 
-
-      if (Object.values(selectedCategories).some((val) => val)) {
-        filterlearningset = filterlearningset.filter((learningSet) =>
-          selectedCategories[learningSet.category]
-        );
-      }
-
-      if (showFavorites) {
-        filterlearningset = filterlearningset.filter((learningSet) =>
-          favoritedSets.includes(learningSet.id ?? "")
-        );
-=======
-          default:
-            return true;
+        if (Object.values(selectedCategories).some((val) => val)) {
+          filteredLearningSets = filteredLearningSets.filter((learningSet) =>
+            selectedCategories[learningSet.category]
+          );
         }
-      });
 
+    
       if (mounted) {
         setLearningSets(filteredLearningSets);
       }
-
-      return () => {
-      mounted = false;
-    };
-
-    fetchFavoritesAndSets();
 
       const filterBySearch = filteredLearningSets.filter((learningSet) => {
         return learningSet.title
           .toLowerCase()
           .includes(query.toLowerCase() || "");
       });
+
       if (query !== "") {
         setLearningSets(filterBySearch);
-      }
+       }
     };
-    fetchLearningSets();
-  }, [currentUserId, showPublic,selectedCategories, filter, showFavorites, favoritedSets, query]);
-=======
+     fetchFavoritesAndSets();
+
+     return () => {
+              mounted = false;
+            };
+    
+  }, [currentUserId,selectedCategories, filter, query]);
+
 
     
 
@@ -275,7 +265,6 @@ export default function Dashboard() {
             Favorites
           </ToggleButton>
         </ToggleButtonGroup>
-<<<<<<< frontend/src/pages/DashboardPage.tsx
         <Button onClick={handleOpenFilterModal} sx={{ marginLeft: 2 }}>
           Filter
         </Button>      
@@ -315,14 +304,6 @@ export default function Dashboard() {
         </FormGroup>
         </Box>
       </Modal>
-        <Button
-          variant={showFavorites ? "contained" : "outlined"}
-          onClick={handleShowFavorites}
-          sx={{ marginLeft: 2 }}
-        >
-          Favorites
-        </Button>
-=======
         <TextField
           type="text"
           label="Search"
