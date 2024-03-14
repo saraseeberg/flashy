@@ -1,4 +1,9 @@
-import { Button, CircularProgress, Typography } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  LinearProgress,
+  Typography,
+} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Card from "../components/Card";
@@ -22,6 +27,12 @@ export default function ViewCards() {
   const [shufflePopupOpen, setShufflePopupOpen] = useState(true);
   const [difficultCards, setDifficultCards] = useState<CardData[]>([]);
   const [inDifficultMode, setInDifficultMode] = useState(false);
+  const [seenCards, setSeenCards] = useState<Set<string>>(new Set());
+  const [seenDifficultCards, setSeenDifficultCards] = useState<Set<string>>(
+    new Set()
+  );
+  const [completedCards, setCompletedCards] = useState<Set<string>>(new Set());
+  const [progress, setProgress] = useState(0); // Ny tilstand for fremdriftsbarens verdi
 
   const { setId } = useParams<{ setId?: string }>();
 
@@ -34,24 +45,32 @@ export default function ViewCards() {
   /* Shuffle the cards */
   const handleShuffle = () => {
     shuffleCards();
+    resetProgress();
     handleShufflePopupClose();
   };
 
   /* Shuffle the cards */
   const handleNoShuffle = () => {
     fetchCards();
+    resetProgress();
     handleShufflePopupClose();
   };
 
+  const resetProgress = () => {
+    setSeenCards(new Set());
+    setSeenDifficultCards(new Set());
+    setCompletedCards(new Set());
+    setProgress(0);
+  };
   /* Get the current index of the card */
   function getCurrentIndex() {
-    return String(currentCardIndex + 1);
+    return currentCardIndex + 1;
   }
 
   /* Get the length of the current set */
   function getCurrentSetLength() {
     const length = inDifficultMode ? difficultCards.length : cards.length;
-    return String(length);
+    return length;
   }
 
   /* Fetch the learning set from the database, based on the ID in the URL */
@@ -148,6 +167,21 @@ export default function ViewCards() {
         setCurrentCardIndex(0);
       }
     }
+
+    const currentCard = inDifficultMode
+      ? difficultCards[currentCardIndex]
+      : cards[currentCardIndex];
+    const newSeenCards = new Set(seenCards);
+    const newSeenDifficultCards = new Set(seenDifficultCards);
+
+    if (!currentCard.isDifficult || !inDifficultMode) {
+      newSeenCards.add(currentCard.id);
+    } else {
+      newSeenDifficultCards.add(currentCard.id);
+    }
+
+    setSeenCards(newSeenCards);
+    setSeenDifficultCards(newSeenDifficultCards);
   };
 
   /* Handle the change of the difficulty checkbox */
@@ -184,6 +218,17 @@ export default function ViewCards() {
     );
   }
 
+  /*Progress (in percent) of how many cards have been seen.*/
+  const calculateProgress = () => {
+    const totalSeen =
+      seenCards.size + (inDifficultMode ? 0 : seenDifficultCards.size);
+    const totalCards =
+      cards.length + (inDifficultMode ? difficultCards.length : 0);
+    return (totalSeen / totalCards) * 100;
+  };
+
+  const progressPercentage = calculateProgress();
+
   /* Get the current card, based on difficultyMode */
   const currentCard = inDifficultMode
     ? difficultCards[currentCardIndex]
@@ -199,6 +244,7 @@ export default function ViewCards() {
           onNoShuffle={handleNoShuffle}
         />
       )}
+
       {completedSet ? (
         <CompleteSetPopup
           onClose={() => {
@@ -224,13 +270,25 @@ export default function ViewCards() {
               isFlipped={flipped}
               onDifficultyChange={handleDifficultyChange}
             />
-            <div>
-              <Typography>
-                {" "}
-                {getCurrentIndex()}/{getCurrentSetLength()}{" "}
-              </Typography>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                padding: "20px",
+              }}
+            >
+              <div style={{ width: "40em" }}>
+                <LinearProgress
+                  variant="determinate"
+                  value={progressPercentage}
+                  style={{
+                    height: "20px",
+                    borderRadius: "10px",
+                    margin: "auto",
+                  }}
+                />
+              </div>
             </div>
-
             <div id={styles.flipButtonDiv}>
               <Button onClick={handlePrevCard}>
                 <ArrowBackIcon />
