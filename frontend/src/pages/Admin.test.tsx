@@ -61,22 +61,6 @@ describe("AdminPage", () => {
       },
     ];
 
-    // vi.mocked(firebaseFirestore.getDocs).mockResolvedValue({
-    //   docs: learningSets.map((set) => ({
-    //     id: set.id,
-    //     data: () => set,
-    //     exists: () => true,
-    //   })),
-    // } as unknown as firebaseFirestore.QuerySnapshot<firebaseFirestore.DocumentData>);
-
-    // vi.mocked(firebaseFirestore.getDocs).mockResolvedValue({
-    //   docs: users.map((user) => ({
-    //     id: user.id,
-    //     data: () => user,
-    //     exists: () => true,
-    //   })),
-    // } as unknown as firebaseFirestore.QuerySnapshot<firebaseFirestore.DocumentData>);
-
     vi.mocked(firebaseFirestore.getDocs).mockImplementationOnce(() =>
       Promise.resolve({
         docs: learningSets.map((set) => ({
