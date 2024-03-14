@@ -26,6 +26,7 @@ describe("Dashboard", () => {
         description: "A public learning set",
         isPublic: true,
         createdBy: "testUID",
+        category: "none",
       },
       {
         id: "2",
@@ -33,6 +34,7 @@ describe("Dashboard", () => {
         description: "A private learning set",
         isPublic: false,
         createdBy: "testUID",
+        category: "none",
       },
       {
         id: "3",
@@ -40,6 +42,7 @@ describe("Dashboard", () => {
         description: "Another public set",
         isPublic: true,
         createdBy: "otherUID",
+        category: "none",
       },
     ];
 
@@ -80,7 +83,7 @@ describe("Dashboard", () => {
   test("shows only favorited sets when 'favorites' is selected", async () => {
     vi.mocked(firebaseFirestore.getDoc).mockResolvedValueOnce({
       exists: () => true,
-      data: () => ({ favoritedSets: ["1"] }), 
+      data: () => ({ favoritedSets: ["1"] }),
     } as unknown as firebaseFirestore.DocumentSnapshot<firebaseFirestore.DocumentData>);
 
     render(<Dashboard />);
@@ -90,9 +93,9 @@ describe("Dashboard", () => {
     );
     fireEvent.click(screen.getByLabelText("favorites"));
     await waitFor(() => {
-      expect(screen.getByText("Public Set")).toBeInTheDocument(); 
+      expect(screen.getByText("Public Set")).toBeInTheDocument();
     });
-    expect(screen.queryByText("Private Set")).not.toBeInTheDocument(); 
+    expect(screen.queryByText("Private Set")).not.toBeInTheDocument();
     expect(screen.queryByText("Others Public Set")).not.toBeInTheDocument();
   });
 });
