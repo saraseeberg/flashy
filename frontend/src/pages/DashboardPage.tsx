@@ -12,6 +12,11 @@ import {
   TextField,
 } from "@mui/material";
 import { IconButton } from "@mui/material";
+import Modal from '@mui/material/Modal';
+import Checkbox from "@mui/material/Checkbox";
+import { styled } from '@mui/material/styles';
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from '@mui/material/FormGroup';
 import { useNavigate } from "react-router-dom";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -26,11 +31,10 @@ import {
   getDoc,
   updateDoc,
 } from "firebase/firestore";
-
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-
 import { LearningSet } from "../models/Learningset";
+
 
 export default function Dashboard() {
   const [learningSets, setLearningSets] = useState<LearningSet[]>([]);
@@ -38,11 +42,17 @@ export default function Dashboard() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedSetId, setSelectedSetId] = useState<string | null>(null);
   const [favoritedSets, setFavoritedSets] = useState<string[]>([]);
+  // const [showFavorites, setShowFavorites] = useState(false);
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
+  const initialCategories = { geography: false, history: false, programering: false , none: false };
+  const [selectedCategories, setSelectedCategories] = useState<{ [key: string]: boolean }>(initialCategories);
   const [query, setQuery] = useState<string>("");
   const navigate = useNavigate();
   const [filter, setFilter] = useState<"public" | "private" | "favorites">(
     "public"
   );
+
+
 
   const toggleFavorite = async (id: string) => {
     let updatedFavorites = [...favoritedSets];
@@ -54,6 +64,15 @@ export default function Dashboard() {
     setFavoritedSets(updatedFavorites);
     await updateFavoritesInFirestore(updatedFavorites);
   };
+
+  const handleOpenFilterModal = () => setFilterModalOpen(true);
+  const handleCloseFilterModal = () => setFilterModalOpen(false);
+  const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const { name, checked } = event.target;
+  setSelectedCategories(prev => ({ ...prev, [name.toLowerCase()]: checked }));
+
+  };  
+
 
   const updateFavoritesInFirestore = async (updatedFavorites: string[]) => {
     if (currentUserId) {
@@ -135,7 +154,9 @@ export default function Dashboard() {
         ...(doc.data() as Omit<LearningSet, "id">),
       }));
 
-      const filteredLearningSets = fetchedLearningSets.filter((learningSet) => {
+      
+
+      let filteredLearningSets = fetchedLearningSets.filter((learningSet) => {
         const isFavorited = userFavoritedSets.includes(learningSet.id ?? "");
         switch (filter) {
           case "favorites":
@@ -146,12 +167,18 @@ export default function Dashboard() {
             return (
               !learningSet.isPublic && learningSet.createdBy === currentUserId
             );
+            default:
+              return true;
+          }
+        });
 
-          default:
-            return true;
+        if (Object.values(selectedCategories).some((val) => val)) {
+          filteredLearningSets = filteredLearningSets.filter((learningSet) =>
+            selectedCategories[learningSet.category]
+          );
         }
-      });
 
+    
       if (mounted) {
         setLearningSets(filteredLearningSets);
       }
@@ -161,17 +188,24 @@ export default function Dashboard() {
           .toLowerCase()
           .includes(query.toLowerCase() || "");
       });
+
       if (query !== "") {
         setLearningSets(filterBySearch);
-      }
+       }
     };
+     fetchFavoritesAndSets();
 
-    fetchFavoritesAndSets();
+     return () => {
+              mounted = false;
+            };
+    
+  }, [currentUserId,selectedCategories, filter, query]);
 
-    return () => {
-      mounted = false;
-    };
-  }, [currentUserId, filter, query]);
+
+    
+
+    
+  
 
   return (
     <Container maxWidth="lg" sx={{ marginTop: "20px", marginBottom: "20px" }}>
@@ -211,6 +245,45 @@ export default function Dashboard() {
             Favorites
           </ToggleButton>
         </ToggleButtonGroup>
+        <Button onClick={handleOpenFilterModal} sx={{ marginLeft: 2 }}>
+          Filter
+        </Button>      
+        <Modal
+            open={filterModalOpen}
+            onClose={handleCloseFilterModal}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+            >
+        <Box sx={{position: 'absolute', 
+                top: '50%',
+                left: '50%', 
+                transform: 'translate(-50%, -50%)',
+                bgcolor: 'background.paper', 
+                boxShadow: 24, 
+                p: 4}}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Filter by Category
+          </Typography>
+          <FormGroup>
+          {Object.keys(selectedCategories).map((category) => {
+          const key = category as keyof typeof selectedCategories;
+          return (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={selectedCategories[key]}
+                  onChange={handleCategoryChange}
+                  name={category}
+                />
+              }
+              label={category.charAt(0).toUpperCase() + category.slice(1)}
+              key={category}
+            />
+          );
+        })}
+        </FormGroup>
+        </Box>
+      </Modal>
         <TextField
           type="text"
           label="Search"
