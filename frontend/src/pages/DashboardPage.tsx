@@ -305,16 +305,53 @@ export default function Dashboard() {
                   sx={{
                     display: "flex",
                     flexDirection: "row",
-                    justifyContent: "flex-end",
+                    justifyContent: "space-between",
+                    width: "50%",
                     flexGrow: 1,
                   }}
                 >
-                  <IconButton sx={{ marginTop: "auto" }} onClick={() => {}}>
-                    <ThumbUpOutlined />
-                  </IconButton>
-                  <IconButton sx={{ marginTop: "auto" }} onClick={() => {}}>
-                    <ModeCommentOutlined />
-                  </IconButton>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginTop: "auto",
+                    }}
+                  >
+                    <IconButton onClick={() => {}}>
+                      <ThumbUpOutlined />
+                    </IconButton>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ paddingLeft: "5%" }}
+                    >
+                      {0}
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginTop: "auto",
+                    }}
+                  >
+                    <IconButton
+                      onClick={(e) => {
+                        e.preventDefault();
+                      }}
+                    >
+                      <ModeCommentOutlined />
+                    </IconButton>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ paddingLeft: "5%" }}
+                    >
+                      {learningSet.comments?.length || 0}
+                    </Typography>
+                  </Box>
                 </Box>
               </Paper>
             </Grid>

@@ -1,4 +1,12 @@
-import { Button, CircularProgress, Typography } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Container,
+  Divider,
+  FormControl,
+  InputBase,
+  Typography,
+} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Card from "../components/Card";
@@ -135,7 +143,7 @@ export default function ViewCards() {
       if (currentCardIndex === cards.length - 1) {
         if (difficultCards.length > 0) {
           setInDifficultMode(true);
-          setCurrentCardIndex(0); 
+          setCurrentCardIndex(0);
         } else {
           setCompletedSet(true);
         }
@@ -262,6 +270,21 @@ export default function ViewCards() {
           </div>
         </div>
       )}
+      <Divider sx={{ marginBottom: "5%" }} />
+      <Container>
+        <Typography variant="h6" fontWeight="bold" sx={{ marginBottom: "2%" }}>
+          Comments
+        </Typography>
+        <FormControl>
+          <InputBase
+            sx={{ width: "100%", marginBottom: "2%" }}
+            placeholder="Leave a comment"
+          />
+          <Button variant="contained" fullWidth>
+            Submit
+          </Button>
+        </FormControl>
+      </Container>
     </div>
   );
 }
