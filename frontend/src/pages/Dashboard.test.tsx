@@ -27,6 +27,8 @@ describe("Dashboard", () => {
         isPublic: true,
         createdBy: "testUID",
         category: "none",
+        comments: [],
+        numberOfLikes: 0,
       },
       {
         id: "2",
@@ -35,6 +37,8 @@ describe("Dashboard", () => {
         isPublic: false,
         createdBy: "testUID",
         category: "none",
+        comments: [],
+        numberOfLikes: 0,
       },
       {
         id: "3",
@@ -43,6 +47,8 @@ describe("Dashboard", () => {
         isPublic: true,
         createdBy: "otherUID",
         category: "none",
+        comments: [],
+        numberOfLikes: 0,
       },
     ];
 
