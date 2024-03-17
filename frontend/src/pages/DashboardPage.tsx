@@ -36,7 +36,11 @@ import {
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { LearningSet } from "../models/Learningset";
-import { ModeCommentOutlined, ThumbUp, ThumbUpOutlined } from "@mui/icons-material";
+import {
+  ModeCommentOutlined,
+  ThumbUp,
+  ThumbUpOutlined,
+} from "@mui/icons-material";
 
 export default function Dashboard() {
   const [learningSets, setLearningSets] = useState<LearningSet[]>([]);
@@ -144,23 +148,25 @@ export default function Dashboard() {
   const updateNumberOfLikes = (setId: string, change: number) => {
     setLearningSets((prevSets) =>
       prevSets.map((set) =>
-        set.id === setId ? { ...set, numberOfLikes: set.numberOfLikes + change } : set
+        set.id === setId
+          ? { ...set, numberOfLikes: set.numberOfLikes + change }
+          : set
       )
     );
   };
 
   const clickLikeButton = async (id: string) => {
     if (likedSets.includes(id)) {
-      let updatedLikedSets = likedSets.filter((likedId) => likedId !== id);
+      const updatedLikedSets = likedSets.filter((likedId) => likedId !== id);
       setLikedSets(updatedLikedSets);
       await updateSetsInFirestore(id, false);
       updateNumberOfLikes(id, -1);
     } else {
-      let updatedLikedSets = [...likedSets, id];
+      const updatedLikedSets = [...likedSets, id];
       setLikedSets(updatedLikedSets);
-      await updateSetsInFirestore(id,true);
+      await updateSetsInFirestore(id, true);
       updateNumberOfLikes(id, 1);
-    } 
+    }
   };
 
   const updateSetsInFirestore = async (setId: string, isLiked: boolean) => {
@@ -170,13 +176,13 @@ export default function Dashboard() {
         likedSets: isLiked ? arrayUnion(setId) : arrayRemove(setId),
       });
     }
-  
+
     const setDocRef = doc(db, "learningSets", setId);
     const setDocSnap = await getDoc(setDocRef);
     if (setDocSnap.exists()) {
       const data = setDocSnap.data();
       if (data) {
-        let likes = data.numberOfLikes;  
+        let likes = data.numberOfLikes;
         if (isLiked) {
           likes += 1;
         } else {
@@ -186,8 +192,6 @@ export default function Dashboard() {
       }
     }
   };
-
-  
 
   useEffect(() => {
     let mounted = true;
@@ -249,43 +253,41 @@ export default function Dashboard() {
     };
     fetchFavoritesAndSets();
 
-     return () => {
-              mounted = false;
-            
-    
-            const fetchLikedSets = async () => {
-              if (currentUserId) {
-                const userDocRef = doc(db, "usersData", currentUserId);
-                const userDocSnap = await getDoc(userDocRef);
-                if (userDocSnap.exists()) {
-                  const userData = userDocSnap.data();
-                  if (userData && userData.likedSets) {
-                    setLikedSets(userData.likedSets);
-                  }
-                }
-              }
-              const setsDocRef = collection(db, "learningSets");
-              const setsDocSnap = await getDocs(setsDocRef);
-              const likesPromises = setsDocSnap.docs.map(async (doc) => {
-                const data = doc.data();
-                if (data) {
-                  return { id: doc.id, likes: data.numberOfLikes };
-                }
-                return { id: doc.id, likes: 0 };
-              });
-          
-              const likesData = await Promise.all(likesPromises);
-              const updatedSets = learningSets.map((set) => {
-                const likes = likesData.find((item) => item.id === set.id)?.likes || 0;
-                return { ...set, numberOfLikes: likes };
-              });
-              setLearningSets(updatedSets);
-          
-            };
-            fetchLikedSets();
-          };
-  }, [currentUserId,selectedCategories, filter, query]);
+    return () => {
+      mounted = false;
 
+      const fetchLikedSets = async () => {
+        if (currentUserId) {
+          const userDocRef = doc(db, "usersData", currentUserId);
+          const userDocSnap = await getDoc(userDocRef);
+          if (userDocSnap.exists()) {
+            const userData = userDocSnap.data();
+            if (userData && userData.likedSets) {
+              setLikedSets(userData.likedSets);
+            }
+          }
+        }
+        const setsDocRef = collection(db, "learningSets");
+        const setsDocSnap = await getDocs(setsDocRef);
+        const likesPromises = setsDocSnap.docs.map(async (doc) => {
+          const data = doc.data();
+          if (data) {
+            return { id: doc.id, likes: data.numberOfLikes };
+          }
+          return { id: doc.id, likes: 0 };
+        });
+
+        const likesData = await Promise.all(likesPromises);
+        const updatedSets = learningSets.map((set) => {
+          const likes =
+            likesData.find((item) => item.id === set.id)?.likes || 0;
+          return { ...set, numberOfLikes: likes };
+        });
+        setLearningSets(updatedSets);
+      };
+      fetchLikedSets();
+    };
+  }, [currentUserId, selectedCategories, filter, query]);
 
   return (
     <Container maxWidth="lg" sx={{ marginTop: "20px", marginBottom: "20px" }}>
@@ -474,19 +476,25 @@ export default function Dashboard() {
                       marginTop: "auto",
                     }}
                   >
-                  <IconButton sx={{ marginTop: "auto" }} onClick={(event) => 
-                    {event.stopPropagation();
-                    learningSet.id && clickLikeButton(learningSet.id)}}>
-
-                    {likedSets.includes(learningSet.id ?? "") ? (
-                      <ThumbUp sx={{ color: "blue" }} /> 
-                    ) : (
-                    <ThumbUpOutlined />
-                    )}
-                  </IconButton>
-                  <Typography variant="body2" sx={{ marginTop: "40px", marginRight: "10px" }}>
-                    {learningSet.numberOfLikes}
-                  </Typography>
+                    <IconButton
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        learningSet.id && clickLikeButton(learningSet.id);
+                      }}
+                    >
+                      {likedSets.includes(learningSet.id ?? "") ? (
+                        <ThumbUp sx={{ color: "blue" }} />
+                      ) : (
+                        <ThumbUpOutlined />
+                      )}
+                    </IconButton>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ paddingLeft: "5%" }}
+                    >
+                      {learningSet.numberOfLikes}
+                    </Typography>
                   </Box>
                   <Box
                     sx={{
