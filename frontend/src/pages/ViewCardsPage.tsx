@@ -7,14 +7,25 @@ import {
   FormControl,
   InputBase,
   Typography,
+  Box,
+  Input,
+  TextField,
+  List,
+  ListItem,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Card from "../components/Card";
-import { useCallback, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import styles from "./ViewCardsStyle.module.css";
 import { firestore } from "../config/firebase";
-import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { useParams } from "react-router-dom";
 import { CardData } from "../models/Flashcard";
 import CompleteSetPopup from "../components/CompleteSetPopup";
@@ -37,6 +48,8 @@ export default function ViewCards() {
   );
   const [completedCards, setCompletedCards] = useState<Set<string>>(new Set());
   const [progress, setProgress] = useState(0); // Ny tilstand for fremdriftsbarens verdi
+  const [newComment, setNewComment] = useState("");
+  const [existingComments, setExistingComments] = useState<string[]>([]);
 
   const { setId } = useParams<{ setId?: string }>();
 
@@ -93,6 +106,7 @@ export default function ViewCards() {
 
       if (learningSetDoc.exists()) {
         setTitle(learningSetDoc.data().title);
+        setExistingComments(learningSetDoc.data().comments);
 
         const querySnapshot = await getDocs(
           collection(firestore, "learningSets", setId, "cards")
@@ -213,6 +227,29 @@ export default function ViewCards() {
     }
   };
 
+  const handleNewCommentChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setNewComment(event.target.value);
+  };
+
+  const handleSubmitComment = async () => {
+    try {
+      if (!setId) {
+        console.error("No learning set ID provided");
+        return;
+      }
+
+      const learningSetRef = doc(firestore, "learningSets", setId);
+      await updateDoc(learningSetRef, {
+        comments: [...existingComments, newComment],
+      });
+      setExistingComments([newComment, ...existingComments]);
+
+      setNewComment("");
+    } catch (error) {
+      console.error("Error adding comment:", error);
+    }
+  };
+
   if (loading) {
     return (
       <div>
@@ -239,106 +276,142 @@ export default function ViewCards() {
     : cards[currentCardIndex];
 
   return (
-    <div>
-      {shufflePopupOpen && (
-        <ShufflePopup
-          open={shufflePopupOpen}
-          onClose={handleShufflePopupClose}
-          onShuffle={handleShuffle}
-          onNoShuffle={handleNoShuffle}
-        />
-      )}
+    <Container>
+      <Box>
+        {shufflePopupOpen && (
+          <ShufflePopup
+            open={shufflePopupOpen}
+            onClose={handleShufflePopupClose}
+            onShuffle={handleShuffle}
+            onNoShuffle={handleNoShuffle}
+          />
+        )}
 
-      {completedSet ? (
-        <CompleteSetPopup
-          onClose={() => {
-            setCompletedSet(false);
-          }}
-          onRestart={() => {
-            setCompletedSet(false);
-            setInDifficultMode(false);
-            setCurrentCardIndex(0);
-            setShufflePopupOpen(true);
-          }}
-        />
-      ) : (
-        <div id={styles.outerDiv}>
-          <h2>{title || "Loading title..."}</h2>
-          <div id={styles.innerDiv}>
-            <Card
-              key={currentCard.id}
-              id={currentCard.id}
-              front={currentCard.front}
-              back={currentCard.back}
-              isDifficult={currentCard.isDifficult}
-              isFlipped={flipped}
-              onDifficultyChange={handleDifficultyChange}
-            />
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                padding: "20px",
-              }}
-            >
-              <div style={{ width: "40em" }}>
-                <LinearProgress
-                  variant="determinate"
-                  value={progressPercentage}
-                  style={{
-                    height: "20px",
-                    borderRadius: "10px",
-                    margin: "auto",
-                  }}
-                />
+        {completedSet ? (
+          <CompleteSetPopup
+            onClose={() => {
+              setCompletedSet(false);
+            }}
+            onRestart={() => {
+              setCompletedSet(false);
+              setInDifficultMode(false);
+              setCurrentCardIndex(0);
+              setShufflePopupOpen(true);
+            }}
+          />
+        ) : (
+          <div id={styles.outerDiv}>
+            <h2>{title || "Loading title..."}</h2>
+            <div id={styles.innerDiv}>
+              <Card
+                key={currentCard.id}
+                id={currentCard.id}
+                front={currentCard.front}
+                back={currentCard.back}
+                isDifficult={currentCard.isDifficult}
+                isFlipped={flipped}
+                onDifficultyChange={handleDifficultyChange}
+              />
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  padding: "20px",
+                }}
+              >
+                <div style={{ width: "40em" }}>
+                  <LinearProgress
+                    variant="determinate"
+                    value={progressPercentage}
+                    style={{
+                      height: "20px",
+                      borderRadius: "10px",
+                      margin: "auto",
+                    }}
+                  />
+                </div>
+              </div>
+              <div id={styles.flipButtonDiv}>
+                <Button onClick={handlePrevCard}>
+                  <ArrowBackIcon />
+                </Button>
+                <Button
+                  id={styles.flipButton}
+                  onClick={handleFlipButtonClick}
+                  type="button"
+                  fullWidth
+                  variant="contained"
+                >
+                  Flip
+                </Button>
+                <Button onClick={handleNextCardStandard}>
+                  <ArrowForwardIcon />
+                </Button>
+              </div>
+              <div id={styles.backButtonDiv}>
+                <Button
+                  onClick={() => navigate("/dashboard")}
+                  id={styles.backButton}
+                  type="button"
+                  fullWidth
+                  variant="contained"
+                >
+                  Back
+                </Button>
               </div>
             </div>
-            <div id={styles.flipButtonDiv}>
-              <Button onClick={handlePrevCard}>
-                <ArrowBackIcon />
-              </Button>
-              <Button
-                id={styles.flipButton}
-                onClick={handleFlipButtonClick}
-                type="button"
-                fullWidth
-                variant="contained"
-              >
-                Flip
-              </Button>
-              <Button onClick={handleNextCardStandard}>
-                <ArrowForwardIcon />
-              </Button>
-            </div>
-            <div id={styles.backButtonDiv}>
-              <Button
-                onClick={() => navigate("/dashboard")}
-                id={styles.backButton}
-                type="button"
-                fullWidth
-                variant="contained"
-              >
-                Back
-              </Button>
-            </div>
           </div>
-        </div>
-      )}
-      <Divider sx={{ marginBottom: "5%" }} />
-      <Container>
+        )}
+      </Box>
+      <Divider sx={{ marginTop: "1%", marginBottom: "1%" }} />
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
+        }}
+      >
         <Typography variant="h6" fontWeight="bold" sx={{ marginBottom: "2%" }}>
           Comments
         </Typography>
-        <FormControl>
-          <InputBase
-            sx={{ width: "100%", marginBottom: "2%" }}
-            placeholder="Leave a comment"
+        <FormControl
+          fullWidth
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+          }}
+        >
+          <TextField
+            sx={{
+              marginBottom: "2%",
+              marginRight: "1%",
+            }}
+            fullWidth
+            required
+            placeholder="Leave a comment..."
+            value={newComment}
+            onChange={handleNewCommentChange}
           />
-          <Button variant="contained" fullWidth>
+          <Button
+            variant="contained"
+            type="submit"
+            onClick={handleSubmitComment}
+            sx={{ height: "56px" }}
+            disabled={!newComment.trim()}
+          >
             Submit
           </Button>
         </FormControl>
-      </Container>
-    </div>
+        <List>
+          {existingComments.map((comment, index) => (
+            <ListItem>
+              <Typography key={index} sx={{ marginBottom: "2%" }}>
+                {comment}
+              </Typography>
+            </ListItem>
+          ))}
+        </List>
+      </Box>
+    </Container>
   );
 }
