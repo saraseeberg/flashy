@@ -14,6 +14,8 @@ const LearningsetForm = () => {
     description: "",
     isPublic: false,
     createdBy: "",
+    comments: [],
+    numberOfLikes: 0,
     category: "",
   });
   const categories = ['Geography', 'History', 'Programmering', 'None'];

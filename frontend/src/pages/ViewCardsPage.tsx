@@ -2,15 +2,24 @@ import {
   Button,
   CircularProgress,
   LinearProgress,
-  Typography,
+  Container,
+  Divider,
+  Box,
 } from "@mui/material";
+import CommentsSection from "../components/CommentsSection";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Card from "../components/Card";
 import { useCallback, useEffect, useState } from "react";
 import styles from "./ViewCardsStyle.module.css";
 import { firestore } from "../config/firebase";
-import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { useParams } from "react-router-dom";
 import { CardData } from "../models/Flashcard";
 import CompleteSetPopup from "../components/CompleteSetPopup";
@@ -33,6 +42,7 @@ export default function ViewCards() {
   );
   const [completedCards, setCompletedCards] = useState<Set<string>>(new Set());
   const [progress, setProgress] = useState(0); // Ny tilstand for fremdriftsbarens verdi
+  const [existingComments, setExistingComments] = useState<string[]>([]);
 
   const { setId } = useParams<{ setId?: string }>();
 
@@ -89,6 +99,7 @@ export default function ViewCards() {
 
       if (learningSetDoc.exists()) {
         setTitle(learningSetDoc.data().title);
+        setExistingComments(learningSetDoc.data().comments);
 
         const querySnapshot = await getDocs(
           collection(firestore, "learningSets", setId, "cards")
@@ -154,7 +165,7 @@ export default function ViewCards() {
       if (currentCardIndex === cards.length - 1) {
         if (difficultCards.length > 0) {
           setInDifficultMode(true);
-          setCurrentCardIndex(0); 
+          setCurrentCardIndex(0);
         } else {
           setCompletedSet(true);
         }
@@ -209,6 +220,23 @@ export default function ViewCards() {
     }
   };
 
+  const saveComments = async (updatedComments: string[]) => {
+    try {
+      if (!setId) {
+        console.error("No learning set ID provided");
+        return;
+      }
+
+      const learningSetRef = doc(firestore, "learningSets", setId);
+      await updateDoc(learningSetRef, {
+        comments: updatedComments,
+      });
+      setExistingComments(updatedComments);
+    } catch (error) {
+      console.error("Error adding comment:", error);
+    }
+  };
+
   if (loading) {
     return (
       <div>
@@ -235,91 +263,102 @@ export default function ViewCards() {
     : cards[currentCardIndex];
 
   return (
-    <div>
-      {shufflePopupOpen && (
-        <ShufflePopup
-          open={shufflePopupOpen}
-          onClose={handleShufflePopupClose}
-          onShuffle={handleShuffle}
-          onNoShuffle={handleNoShuffle}
-        />
-      )}
+    <Container>
+      <Box>
+        {shufflePopupOpen && (
+          <ShufflePopup
+            open={shufflePopupOpen}
+            onClose={handleShufflePopupClose}
+            onShuffle={handleShuffle}
+            onNoShuffle={handleNoShuffle}
+          />
+        )}
 
-      {completedSet ? (
-        <CompleteSetPopup
-          onClose={() => {
-            setCompletedSet(false);
-          }}
-          onRestart={() => {
-            setCompletedSet(false);
-            setInDifficultMode(false);
-            setCurrentCardIndex(0);
-            setShufflePopupOpen(true);
-          }}
-        />
-      ) : (
-        <div id={styles.outerDiv}>
-          <h2>{title || "Loading title..."}</h2>
-          <div id={styles.innerDiv}>
-            <Card
-              key={currentCard.id}
-              id={currentCard.id}
-              front={currentCard.front}
-              back={currentCard.back}
-              isDifficult={currentCard.isDifficult}
-              isFlipped={flipped}
-              onDifficultyChange={handleDifficultyChange}
-            />
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                padding: "20px",
-              }}
-            >
-              <div style={{ width: "40em" }}>
-                <LinearProgress
-                  variant="determinate"
-                  value={progressPercentage}
-                  style={{
-                    height: "20px",
-                    borderRadius: "10px",
-                    margin: "auto",
-                  }}
-                />
+        {completedSet ? (
+          <CompleteSetPopup
+            onClose={() => {
+              setCompletedSet(false);
+            }}
+            onRestart={() => {
+              setCompletedSet(false);
+              setInDifficultMode(false);
+              setCurrentCardIndex(0);
+              setShufflePopupOpen(true);
+            }}
+          />
+        ) : (
+          <div id={styles.outerDiv}>
+            <h2>{title || "Loading title..."}</h2>
+            <div id={styles.innerDiv}>
+              <Card
+                key={currentCard.id}
+                id={currentCard.id}
+                front={currentCard.front}
+                back={currentCard.back}
+                isDifficult={currentCard.isDifficult}
+                isFlipped={flipped}
+                onDifficultyChange={handleDifficultyChange}
+              />
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  padding: "20px",
+                }}
+              >
+                <div style={{ width: "40em" }}>
+                  <LinearProgress
+                    variant="determinate"
+                    value={progressPercentage}
+                    style={{
+                      height: "20px",
+                      borderRadius: "10px",
+                      margin: "auto",
+                    }}
+                  />
+                </div>
+              </div>
+              <div id={styles.flipButtonDiv}>
+                <Button onClick={handlePrevCard}>
+                  <ArrowBackIcon />
+                </Button>
+                <Button
+                  id={styles.flipButton}
+                  onClick={handleFlipButtonClick}
+                  type="button"
+                  fullWidth
+                  variant="contained"
+                >
+                  Flip
+                </Button>
+                <Button onClick={handleNextCardStandard}>
+                  <ArrowForwardIcon />
+                </Button>
+              </div>
+              <div id={styles.backButtonDiv}>
+                <Button
+                  onClick={() => navigate("/dashboard")}
+                  id={styles.backButton}
+                  type="button"
+                  fullWidth
+                  variant="contained"
+                >
+                  Back
+                </Button>
               </div>
             </div>
-            <div id={styles.flipButtonDiv}>
-              <Button onClick={handlePrevCard}>
-                <ArrowBackIcon />
-              </Button>
-              <Button
-                id={styles.flipButton}
-                onClick={handleFlipButtonClick}
-                type="button"
-                fullWidth
-                variant="contained"
-              >
-                Flip
-              </Button>
-              <Button onClick={handleNextCardStandard}>
-                <ArrowForwardIcon />
-              </Button>
-            </div>
-            <div id={styles.backButtonDiv}>
-              <Button
-                onClick={() => navigate("/dashboard")}
-                id={styles.backButton}
-                type="button"
-                fullWidth
-                variant="contained"
-              >
-                Back
-              </Button>
-            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </Box>
+      <Divider sx={{ marginTop: "1%", marginBottom: "1%" }} />
+      <CommentsSection
+        existingComments={existingComments}
+        addComment={(newComment: string) => {
+          const updatedComments = [newComment, ...existingComments];
+          setExistingComments(updatedComments);
+          saveComments(updatedComments);
+        }}
+      />
+    </Container>
   );
 }

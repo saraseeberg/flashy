@@ -5,4 +5,6 @@ export interface LearningSet {
   category: string;
   isPublic: boolean;
   createdBy: string;
+  comments: string[];
+  numberOfLikes: number;
 }

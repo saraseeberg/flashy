@@ -60,6 +60,7 @@ function RegisterPage() {
         lastName: lastName,
         username: username,
         role: "user",
+        likedSets: [],
       });
 
       console.log("User registered successfully:", userCredential.user);
