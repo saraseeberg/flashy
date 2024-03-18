@@ -133,7 +133,7 @@ describe("Dashboard", () => {
     render(<Dashboard />);
 
     fireEvent.change(screen.getByLabelText("Search"), {
-      target: { value: "P" },
+      target: { value: "Public" },
     });
 
     await waitFor(() => {
