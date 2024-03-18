@@ -27,8 +27,8 @@ describe("Dashboard", () => {
         isPublic: true,
         createdBy: "testUID",
         category: "none",
-        comments: [],
-        numberOfLikes: 0,
+        comments: ["Great set!", "Very useful"],
+        numberOfLikes: 5,
       },
       {
         id: "2",
@@ -103,5 +103,19 @@ describe("Dashboard", () => {
     });
     expect(screen.queryByText("Private Set")).not.toBeInTheDocument();
     expect(screen.queryByText("Others Public Set")).not.toBeInTheDocument();
+  });
+
+  test("displays the correct number of likes and comments for a learning set", async () => {
+    render(<Dashboard />);
+
+    await waitFor(() =>
+      expect(screen.getByText("Public Set")).toBeInTheDocument()
+    );
+
+    const numberOfLikesElement = screen.getByText("5");
+    const numberOfCommentsElement = screen.getByText("2");
+
+    expect(numberOfLikesElement).toBeInTheDocument();
+    expect(numberOfCommentsElement).toBeInTheDocument();
   });
 });
