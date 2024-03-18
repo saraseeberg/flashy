@@ -4,19 +4,13 @@ import {
   LinearProgress,
   Container,
   Divider,
-  FormControl,
-  InputBase,
-  Typography,
   Box,
-  Input,
-  TextField,
-  List,
-  ListItem,
 } from "@mui/material";
+import CommentsSection from "../components/CommentsSection";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Card from "../components/Card";
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styles from "./ViewCardsStyle.module.css";
 import { firestore } from "../config/firebase";
 import {
@@ -48,7 +42,6 @@ export default function ViewCards() {
   );
   const [completedCards, setCompletedCards] = useState<Set<string>>(new Set());
   const [progress, setProgress] = useState(0); // Ny tilstand for fremdriftsbarens verdi
-  const [newComment, setNewComment] = useState("");
   const [existingComments, setExistingComments] = useState<string[]>([]);
 
   const { setId } = useParams<{ setId?: string }>();
@@ -227,11 +220,7 @@ export default function ViewCards() {
     }
   };
 
-  const handleNewCommentChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setNewComment(event.target.value);
-  };
-
-  const handleSubmitComment = async () => {
+  const saveComments = async (updatedComments: string[]) => {
     try {
       if (!setId) {
         console.error("No learning set ID provided");
@@ -240,11 +229,9 @@ export default function ViewCards() {
 
       const learningSetRef = doc(firestore, "learningSets", setId);
       await updateDoc(learningSetRef, {
-        comments: [...existingComments, newComment],
+        comments: updatedComments,
       });
-      setExistingComments([newComment, ...existingComments]);
-
-      setNewComment("");
+      setExistingComments(updatedComments);
     } catch (error) {
       console.error("Error adding comment:", error);
     }
@@ -364,54 +351,14 @@ export default function ViewCards() {
         )}
       </Box>
       <Divider sx={{ marginTop: "1%", marginBottom: "1%" }} />
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-start",
+      <CommentsSection
+        existingComments={existingComments}
+        addComment={(newComment: string) => {
+          const updatedComments = [newComment, ...existingComments];
+          setExistingComments(updatedComments);
+          saveComments(updatedComments);
         }}
-      >
-        <Typography variant="h6" fontWeight="bold" sx={{ marginBottom: "2%" }}>
-          Comments
-        </Typography>
-        <FormControl
-          fullWidth
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-          }}
-        >
-          <TextField
-            sx={{
-              marginBottom: "2%",
-              marginRight: "1%",
-            }}
-            fullWidth
-            required
-            placeholder="Leave a comment..."
-            value={newComment}
-            onChange={handleNewCommentChange}
-          />
-          <Button
-            variant="contained"
-            type="submit"
-            onClick={handleSubmitComment}
-            sx={{ height: "56px" }}
-            disabled={!newComment.trim()}
-          >
-            Submit
-          </Button>
-        </FormControl>
-        <List>
-          {existingComments.map((comment, index) => (
-            <ListItem>
-              <Typography key={index} sx={{ marginBottom: "2%" }}>
-                {comment}
-              </Typography>
-            </ListItem>
-          ))}
-        </List>
-      </Box>
+      />
     </Container>
   );
 }
