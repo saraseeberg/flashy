@@ -1,8 +1,12 @@
-# Flashy
+# --------⚡️Flashy⚡️--------
 
 ## Description
 
-Flashy is a flashcard app that helps you learn new things. You can create your own set of flashcards for your self, or for sharing with others. You can also browse and use flashcard sets created by other users.
+Flashy is a dynamic and user-friendly flashcard app designed to enhance learning and memory. It is an intuitive application that allows users to create, manage, and engage with diverse learning sets, offering features like marking difficult cards, and interacting with others' sets through likes and comments. It also includes advanced search and filtering, favorites saving for later review, and admin privileges for content moderation, making it ideal for any learning scenario.
+
+## Technologies
+
+This project uses [Vite](https://vitejs.dev/) as the build tool and [React](https://reactjs.org/) as the frontend framework with [TypeScript](https://www.typescriptlang.org/) for type safety. The backend is built with [Firebase](https://firebase.google.com/), and the database is Firestore.
 
 ## Installation
 
@@ -18,6 +22,12 @@ When you have Node.js and Yarn installed, you can follow these steps to run the 
 3. Run `yarn` to install the project dependencies
 4. Run `yarn dev` to start the development server
 5. Follow the instructions in the terminal to open the project in your browser
+
+## Testing
+
+This project uses [Vitest](https://vitest.dev/) for testing. To run the tests, navigate to the frontend folder in the terminal and use the following command:
+
+- `yarn test`
 
 ## Authors
 
