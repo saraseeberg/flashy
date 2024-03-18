@@ -48,14 +48,11 @@ export default function Dashboard() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedSetId, setSelectedSetId] = useState<string | null>(null);
   const [favoritedSets, setFavoritedSets] = useState<string[]>([]);
-  // const [showFavorites, setShowFavorites] = useState(false);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
-  const initialCategories = {
-    Geography: false,
-    History: false,
-    Programming: false,
-    None: false,
-  };
+  const initialCategories = { geography: false,
+     history: false, 
+     programming: false ,
+     none: false };
   const [selectedCategories, setSelectedCategories] = useState<{
     [key: string]: boolean;
   }>(initialCategories);
@@ -232,11 +229,10 @@ export default function Dashboard() {
       });
 
       if (Object.values(selectedCategories).some((val) => val)) {
-        filteredLearningSets = filteredLearningSets.filter(
-          (learningSet) => selectedCategories[learningSet.category]
-        );
-      }
-
+          filteredLearningSets = filteredLearningSets.filter((learningSet) =>
+            selectedCategories[learningSet.category.toLowerCase()]
+          );
+        }
       if (mounted) {
         setLearningSets(filteredLearningSets);
       }

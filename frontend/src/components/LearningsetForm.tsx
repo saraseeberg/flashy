@@ -1,5 +1,5 @@
 import { collection, doc, setDoc } from "firebase/firestore";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { LearningSet } from "../models/Learningset";
 import { db, auth } from "../config/firebase";
 import { Box, Button, FormControl, Grid, InputLabel, TextField } from "@mui/material";
@@ -18,7 +18,7 @@ const LearningsetForm = () => {
     numberOfLikes: 0,
     category: "",
   });
-  const categories = ['Geography', 'History', 'Programmering', 'None'];
+  const categories = ['Geography', 'History', 'Programming', 'None'];
 
   const navigate = useNavigate();
 
@@ -36,7 +36,7 @@ const LearningsetForm = () => {
     setLearningset({ ...learningset, [name as string]: value });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Sjekker om "Title" og "Description" er tomme og viser en alert hvis de er det
@@ -103,6 +103,7 @@ const LearningsetForm = () => {
         <FormControl fullWidth>
           <InputLabel id="simple-select-label">Category</InputLabel>
         <Select
+            name="category" 
             labelId="simple-select-label"
             id="simple-select"
             value={learningset.category}
