@@ -1,5 +1,4 @@
 import { Button, Typography } from "@mui/material";
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ErrorIcon from "@mui/icons-material/Error";
@@ -9,7 +8,7 @@ interface ErrorPopupProps {
   onClose: () => void;
 }
 
-const ErrorPopup: React.FC<ErrorPopupProps> = ({ open, onClose }) => {
+const ErrorPopup = ({ open, onClose }: ErrorPopupProps) => {
   const navigate = useNavigate();
 
   if (!open) {

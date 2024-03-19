@@ -4,7 +4,7 @@
  * Can be used to edit the front and back of a flashcard, and to delete the flashcard.
  */
 
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Button,
   TextField,
@@ -22,11 +22,11 @@ interface FlashcardEditorProps {
   onSave: () => void;
 }
 
-const FlashcardEditor: React.FC<FlashcardEditorProps> = ({
+const FlashcardEditor = ({
   card,
   learningSetId,
   onSave,
-}) => {
+}: FlashcardEditorProps) => {
   const [editMode, setEditMode] = useState(false);
   const [front, setFront] = useState(card.front);
   const [back, setBack] = useState(card.back);

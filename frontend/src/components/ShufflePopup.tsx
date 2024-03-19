@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, Typography } from "@mui/material";
 import ShuffleOnIcon from "@mui/icons-material/ShuffleOn";
 import ShuffleIcon from "@mui/icons-material/Shuffle";
@@ -11,11 +10,7 @@ interface ShufflePopupProps {
   onNoShuffle: () => void;
 }
 
-const ShufflePopup: React.FC<ShufflePopupProps> = ({
-  open,
-  onShuffle,
-  onNoShuffle,
-}) => {
+const ShufflePopup = ({ open, onShuffle, onNoShuffle }: ShufflePopupProps) => {
   return (
     <div
       style={{

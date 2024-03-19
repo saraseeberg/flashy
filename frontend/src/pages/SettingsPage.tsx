@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { db, auth } from "../config/firebase";
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { deleteUser, sendPasswordResetEmail } from "firebase/auth";
@@ -7,7 +7,7 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 
-const SettingsPage: React.FC = () => {
+const SettingsPage = () => {
   const [username, setUsername] = useState("");
   const [editMode, setEditMode] = useState(false);
   const [firstName, setFirstName] = useState("");
