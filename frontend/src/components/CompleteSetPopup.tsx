@@ -25,6 +25,7 @@ const CompleteSetPopup: React.FC<PopUpProps> = ({ onRestart, onClose }) => {
         alignItems: "center",
         justifyContent: "center",
         background: "rgba(0, 0, 0, 0.5)",
+        zIndex: 100,
       }}
     >
       <div
