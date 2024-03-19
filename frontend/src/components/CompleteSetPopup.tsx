@@ -9,7 +9,7 @@ interface PopUpProps {
   onRestart: () => void;
 }
 
-const CompleteSetPopup: React.FC<PopUpProps> = ({ onRestart, onClose }) => {
+const CompleteSetPopup = ({ onRestart, onClose }: PopUpProps) => {
   const navigate = useNavigate();
   return (
     <div

@@ -14,12 +14,12 @@ interface CardFormProps {
   onSave: () => void;
 }
 
-const CardForm: React.FC<CardFormProps> = ({ learningSetId, onSave }) => {
+const CardForm = ({ learningSetId, onSave }: CardFormProps) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [front, setFront] = useState("");
   const [back, setBack] = useState("");
-  const [cardAdded, setCardAdded] = useState(false); // Tilstand for å holde styr på om et kort er lagt til
+  const [cardAdded, setCardAdded] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {

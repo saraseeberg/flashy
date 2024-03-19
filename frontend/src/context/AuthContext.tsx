@@ -8,9 +8,7 @@ interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType>(null!);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   const login = () => {
