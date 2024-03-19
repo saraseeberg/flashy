@@ -26,7 +26,7 @@ describe("Dashboard", () => {
         description: "A public learning set",
         isPublic: true,
         createdBy: "testUID",
-        category: "none",
+        category: "geography",
         comments: ["Great set!", "Very useful"],
         numberOfLikes: 5,
       },
@@ -36,7 +36,7 @@ describe("Dashboard", () => {
         description: "A private learning set",
         isPublic: false,
         createdBy: "testUID",
-        category: "none",
+        category: "history",
         comments: [],
         numberOfLikes: 0,
       },
@@ -64,6 +64,13 @@ describe("Dashboard", () => {
       exists: () => true,
       data: () => ({ favoritedSets: [] }),
     } as unknown as firebaseFirestore.DocumentSnapshot<firebaseFirestore.DocumentData>);
+  });
+
+  test("filters learning sets by selected category 'geography'", async () => {
+    render(<Dashboard />);
+    fireEvent.click(screen.getByText("Filter"));
+    fireEvent.click(screen.getByLabelText("Geography"));
+    expect(screen.getByText("Geography")).toBeInTheDocument();
   });
 
   test("shows public sets correctly when 'public' is selected", async () => {
