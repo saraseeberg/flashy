@@ -27,6 +27,9 @@ describe("AdminPage", () => {
         description: "A public learning set",
         isPublic: true,
         createdBy: "testUID",
+        comments: [],
+        numberOfLikes: 0,
+        category: "None",
       },
       {
         id: "2",
@@ -34,6 +37,9 @@ describe("AdminPage", () => {
         description: "A private learning set",
         isPublic: false,
         createdBy: "testUID",
+        comments: [],
+        numberOfLikes: 0,
+        category: "None",
       },
     ];
 
@@ -44,6 +50,7 @@ describe("AdminPage", () => {
         firstName: "Admin",
         lastName: "User",
         role: "admin",
+        favoritedSets: [],
       },
       {
         id: "otherUID",
@@ -51,6 +58,7 @@ describe("AdminPage", () => {
         firstName: "Other",
         lastName: "User",
         role: "user",
+        favoritedSets: [],
       },
       {
         id: "superadminUID",
@@ -58,6 +66,7 @@ describe("AdminPage", () => {
         firstName: "Super",
         lastName: "User",
         role: "superadmin",
+        favoritedSets: [],
       },
     ];
 
