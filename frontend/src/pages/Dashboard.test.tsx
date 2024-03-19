@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import Dashboard from "./DashboardPage";
 import * as firebaseFirestore from "firebase/firestore";
 import { LearningSet } from "../models/Learningset";
+import { act } from "react-dom/test-utils";
 
 vi.mock("firebase/firestore");
 vi.mock("firebase/auth");
@@ -119,13 +120,13 @@ describe("Dashboard", () => {
     expect(numberOfCommentsElement).toBeInTheDocument();
   });
 
-  test("search functionality in TextField", () => {
+  test("search functionality in TextField", async () => {
     const { getByLabelText } = render(<Dashboard />);
 
     const searchInput = getByLabelText("Search");
-
-    fireEvent.change(searchInput, { target: { value: "example" } });
-
+    await act(async () => {
+      fireEvent.change(searchInput, { target: { value: "example" } });
+    });
     expect(searchInput).toHaveValue("example");
   });
 
@@ -137,8 +138,8 @@ describe("Dashboard", () => {
     });
 
     await waitFor(() => {
-    expect(screen.queryByText("Public Set")).toBeInTheDocument();
-    expect(screen.queryByText("Others Public Set")).toBeInTheDocument();
+      expect(screen.queryByText("Public Set")).toBeInTheDocument();
+      expect(screen.queryByText("Others Public Set")).toBeInTheDocument();
     });
   });
 
