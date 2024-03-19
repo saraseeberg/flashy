@@ -3,7 +3,7 @@
 exports[`App > should render without crashing 1`] = `
 <div>
   <div
-    class="MuiBox-root css-1vf7wte"
+    class="MuiBox-root css-1my4ydd"
   >
     <header
       class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionSticky css-8bjgx3-MuiPaper-root-MuiAppBar-root"
