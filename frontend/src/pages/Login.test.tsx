@@ -2,7 +2,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Login from "./LoginPage";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../config/firebase"; // Oppdater stien til din Firebase-konfigurasjon
+import { auth } from "../config/firebase";
+import { UserCredential } from "firebase/auth";
 
 vi.mock("../config/firebase", () => ({
   auth: {},
@@ -31,7 +32,7 @@ describe("LoginPage", () => {
         uid: "some-uid",
         email: "user@example.com",
       },
-    } as any);
+    } as UserCredential);
 
     render(<Login />);
 
