@@ -118,4 +118,40 @@ describe("Dashboard", () => {
     expect(numberOfLikesElement).toBeInTheDocument();
     expect(numberOfCommentsElement).toBeInTheDocument();
   });
+
+  test("search functionality in TextField", () => {
+    const { getByLabelText } = render(<Dashboard />);
+
+    const searchInput = getByLabelText("Search");
+
+    fireEvent.change(searchInput, { target: { value: "example" } });
+
+    expect(searchInput).toHaveValue("example");
+  });
+
+  test("search for set that exists", async () => {
+    render(<Dashboard />);
+
+    fireEvent.change(screen.getByLabelText("Search"), {
+      target: { value: "Public" },
+    });
+
+    await waitFor(() => {
+    expect(screen.queryByText("Public Set")).toBeInTheDocument();
+    expect(screen.queryByText("Others Public Set")).toBeInTheDocument();
+    });
+  });
+
+  test("search for set that does not exist", async () => {
+    render(<Dashboard />);
+
+    fireEvent.change(screen.getByLabelText("Search"), {
+      target: { value: "x" },
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByText("Public Set")).not.toBeInTheDocument();
+      expect(screen.queryByText("Others Public Set")).not.toBeInTheDocument();
+    });
+  });
 });
