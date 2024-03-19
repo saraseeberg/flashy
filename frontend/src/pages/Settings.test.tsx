@@ -22,7 +22,9 @@ describe("SettingsPage", () => {
     window.alert = vi.fn();
 
     const mockDocRef = { id: "testUID", path: "usersData/testUID" };
-    vi.mocked(firebaseFirestore.doc).mockReturnValue(mockDocRef as any);
+    vi.mocked(firebaseFirestore.doc).mockReturnValue(
+      mockDocRef as unknown as firebaseFirestore.DocumentReference
+    );
     vi.mocked(firebaseFirestore.getDoc).mockResolvedValue({
       exists: () => true,
       data: () => ({ username: "testUser", firstName: "Test" }),
@@ -33,7 +35,7 @@ describe("SettingsPage", () => {
     vi.mocked(firebaseFirestore.getDoc).mockResolvedValue({
       exists: () => true,
       data: () => ({ username: "testUser", firstName: "Test" }),
-    } as any);
+    } as unknown as firebaseFirestore.DocumentSnapshot);
 
     render(<SettingsPage />);
 

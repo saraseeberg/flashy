@@ -40,8 +40,6 @@ export default function ViewCards() {
   const [seenDifficultCards, setSeenDifficultCards] = useState<Set<string>>(
     new Set()
   );
-  const [completedCards, setCompletedCards] = useState<Set<string>>(new Set());
-  const [progress, setProgress] = useState(0); // Ny tilstand for fremdriftsbarens verdi
   const [existingComments, setExistingComments] = useState<string[]>([]);
 
   const { setId } = useParams<{ setId?: string }>();
@@ -69,19 +67,7 @@ export default function ViewCards() {
   const resetProgress = () => {
     setSeenCards(new Set());
     setSeenDifficultCards(new Set());
-    setCompletedCards(new Set());
-    setProgress(0);
   };
-  /* Get the current index of the card */
-  function getCurrentIndex() {
-    return currentCardIndex + 1;
-  }
-
-  /* Get the length of the current set */
-  function getCurrentSetLength() {
-    const length = inDifficultMode ? difficultCards.length : cards.length;
-    return length;
-  }
 
   /* Fetch the learning set from the database, based on the ID in the URL */
   const fetchCards = useCallback(async () => {
