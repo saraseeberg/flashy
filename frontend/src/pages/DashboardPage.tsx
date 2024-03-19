@@ -1,25 +1,6 @@
-import {
-  Box,
-  Grid,
-  Button,
-  Typography,
-  Paper,
-  Container,
-  ToggleButtonGroup,
-  ToggleButton,
-  Menu,
-  MenuItem,
-  TextField,
-} from "@mui/material";
-import { IconButton } from "@mui/material";
-import Modal from "@mui/material/Modal";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
-import { useNavigate } from "react-router-dom";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { auth, db } from "../config/firebase";
 import {
   Firestore,
@@ -33,14 +14,36 @@ import {
   arrayUnion,
   arrayRemove,
 } from "firebase/firestore";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import { LearningSet } from "../models/Learningset";
+
+import {
+  Box,
+  Grid,
+  Button,
+  Typography,
+  Paper,
+  Container,
+  ToggleButtonGroup,
+  ToggleButton,
+  Menu,
+  MenuItem,
+  TextField,
+  IconButton,
+  Modal,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+} from "@mui/material";
 import {
   ModeCommentOutlined,
   ThumbUp,
   ThumbUpOutlined,
+  AddCircleOutline,
+  MoreHoriz,
+  FavoriteBorder,
+  Favorite,
 } from "@mui/icons-material";
+
+import { LearningSet } from "../models/Learningset";
 
 export default function Dashboard() {
   const [learningSets, setLearningSets] = useState<LearningSet[]>([]);
@@ -49,10 +52,12 @@ export default function Dashboard() {
   const [selectedSetId, setSelectedSetId] = useState<string | null>(null);
   const [favoritedSets, setFavoritedSets] = useState<string[]>([]);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
-  const initialCategories = { geography: false,
-     history: false, 
-     programming: false ,
-     none: false };
+  const initialCategories = {
+    geography: false,
+    history: false,
+    programming: false,
+    none: false,
+  };
   const [selectedCategories, setSelectedCategories] = useState<{
     [key: string]: boolean;
   }>(initialCategories);
@@ -229,10 +234,11 @@ export default function Dashboard() {
       });
 
       if (Object.values(selectedCategories).some((val) => val)) {
-          filteredLearningSets = filteredLearningSets.filter((learningSet) =>
+        filteredLearningSets = filteredLearningSets.filter(
+          (learningSet) =>
             selectedCategories[learningSet.category.toLowerCase()]
-          );
-        }
+        );
+      }
       if (mounted) {
         setLearningSets(filteredLearningSets);
       }
@@ -283,7 +289,7 @@ export default function Dashboard() {
       };
       fetchLikedSets();
     };
-  }, [currentUserId, selectedCategories, filter, query]);
+  }, [currentUserId, filter, selectedCategories, query]);
 
   return (
     <Container maxWidth="lg" sx={{ marginTop: "20px", marginBottom: "20px" }}>
@@ -301,7 +307,7 @@ export default function Dashboard() {
 
         <Button
           variant="outlined"
-          startIcon={<AddCircleOutlineIcon />}
+          startIcon={<AddCircleOutline />}
           onClick={() => navigate("/create-set")}
         >
           Create new learning set
@@ -421,9 +427,9 @@ export default function Dashboard() {
                       }}
                     >
                       {favoritedSets.includes(learningSet.id ?? "") ? (
-                        <FavoriteIcon sx={{ color: "#FFBF1F" }} />
+                        <Favorite sx={{ color: "#FFBF1F" }} />
                       ) : (
-                        <FavoriteBorderIcon />
+                        <FavoriteBorder />
                       )}
                     </IconButton>
                   </Box>
@@ -440,7 +446,7 @@ export default function Dashboard() {
                           "&:hover": { backgroundColor: "#grey" },
                         }}
                       >
-                        <MoreHorizIcon />
+                        <MoreHoriz />
                       </Button>
                     ) : null}
                   </Box>
