@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import { ChangeEvent } from "react";
 import { CardData } from "../models/Flashcard";
 import { Checkbox, FormControlLabel } from "@mui/material";
 
@@ -6,14 +6,14 @@ interface CardProps extends CardData {
   onDifficultyChange: (id: string, isDifficult: boolean) => void;
 }
 
-const Card: React.FC<CardProps> = ({
+const Card = ({
   id,
   front,
   back,
   isDifficult,
   isFlipped,
   onDifficultyChange,
-}) => {
+}: CardProps) => {
   const handleDifficultyChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newIsDifficult = event.target.checked;
     onDifficultyChange(id, newIsDifficult);
