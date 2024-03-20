@@ -4,20 +4,20 @@
  * it displays a form for editing the learning set, and a list of flashcards in the spesific learningset that can be edited or deleted.
  */
 
-import { useState, useEffect, useCallback } from "react";
-import CardForm from "../components/FlashcardForm";
-import { useParams } from "react-router-dom";
+import { useState, useEffect, useCallback } from 'react';
+import CardForm from '../components/FlashcardForm';
+import { useParams } from 'react-router-dom';
 import {
   Firestore,
   collection,
   doc,
   getDoc,
   getDocs,
-} from "firebase/firestore";
-import { LearningSet } from "../models/Learningset";
-import { db } from "../config/firebase";
-import FlashcardEditor from "../components/FlashcardEditor";
-import { CardData } from "../models/Flashcard";
+} from 'firebase/firestore';
+import { LearningSet } from '../models/Learningset';
+import { db } from '../config/firebase';
+import FlashcardEditor from '../components/FlashcardEditor';
+import { CardData } from '../models/Flashcard';
 
 const EditLearningSetPage = () => {
   const { setId } = useParams<{ setId?: string }>();
@@ -27,7 +27,7 @@ const EditLearningSetPage = () => {
   const refreshFlashcards = useCallback(async () => {
     if (setId) {
       const querySnapshot = await getDocs(
-        collection(db, "learningSets", setId, "cards")
+        collection(db, 'learningSets', setId, 'cards')
       );
       const cardsData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
@@ -40,7 +40,7 @@ const EditLearningSetPage = () => {
   useEffect(() => {
     const fetchLearningSet = async () => {
       if (setId) {
-        const docRef = doc(db as Firestore, "learningSets", setId);
+        const docRef = doc(db as Firestore, 'learningSets', setId);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -49,7 +49,7 @@ const EditLearningSetPage = () => {
             ...(docSnap.data() as LearningSet),
           });
         } else {
-          console.log("No such document!");
+          console.log('No such document!');
         }
       }
     };
@@ -61,7 +61,7 @@ const EditLearningSetPage = () => {
     const fetchFlashcards = async () => {
       if (setId) {
         const querySnapshot = await getDocs(
-          collection(db, "learningSets", setId, "cards")
+          collection(db, 'learningSets', setId, 'cards')
         );
         const cardsData = querySnapshot.docs.map((doc) => ({
           id: doc.id,

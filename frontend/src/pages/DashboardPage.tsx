@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { auth, db } from "../config/firebase";
+import { auth, db } from '../config/firebase';
 import {
   Firestore,
   collection,
@@ -13,7 +13,7 @@ import {
   updateDoc,
   arrayUnion,
   arrayRemove,
-} from "firebase/firestore";
+} from 'firebase/firestore';
 
 import {
   Box,
@@ -32,7 +32,7 @@ import {
   Checkbox,
   FormControlLabel,
   FormGroup,
-} from "@mui/material";
+} from '@mui/material';
 import {
   ModeCommentOutlined,
   ThumbUp,
@@ -41,9 +41,9 @@ import {
   MoreHoriz,
   FavoriteBorder,
   Favorite,
-} from "@mui/icons-material";
+} from '@mui/icons-material';
 
-import { LearningSet } from "../models/Learningset";
+import { LearningSet } from '../models/Learningset';
 
 export default function Dashboard() {
   const [learningSets, setLearningSets] = useState<LearningSet[]>([]);
@@ -61,11 +61,11 @@ export default function Dashboard() {
   const [selectedCategories, setSelectedCategories] = useState<{
     [key: string]: boolean;
   }>(initialCategories);
-  const [query, setQuery] = useState<string>("");
+  const [query, setQuery] = useState<string>('');
   const navigate = useNavigate();
   const [likedSets, setLikedSets] = useState<string[]>([]);
-  const [filter, setFilter] = useState<"public" | "private" | "favorites">(
-    "public"
+  const [filter, setFilter] = useState<'public' | 'private' | 'favorites'>(
+    'public'
   );
 
   const toggleFavorite = async (id: string) => {
@@ -91,7 +91,7 @@ export default function Dashboard() {
 
   const updateFavoritesInFirestore = async (updatedFavorites: string[]) => {
     if (currentUserId) {
-      const userDocRef = doc(db, "usersData", currentUserId);
+      const userDocRef = doc(db, 'usersData', currentUserId);
       await updateDoc(userDocRef, {
         favoritedSets: updatedFavorites,
       });
@@ -121,26 +121,26 @@ export default function Dashboard() {
 
   const handleDeleteSet = () => {
     if (selectedSetId) {
-      const docRef = doc(db, "learningSets", selectedSetId);
+      const docRef = doc(db, 'learningSets', selectedSetId);
       deleteDoc(docRef)
         .then(() => {
-          console.log("Document successfully deleted!");
+          console.log('Document successfully deleted!');
           setLearningSets(
             learningSets.filter((set) => set.id !== selectedSetId)
           );
         })
         .catch((error) => {
-          console.error("Error removing document: ", error);
+          console.error('Error removing document: ', error);
         });
     } else {
-      console.error("No set selected for deletion");
+      console.error('No set selected for deletion');
     }
     handleClose();
   };
 
   const handleFilterChange = (
     _event: React.MouseEvent<HTMLElement>,
-    newFilter: "public" | "private" | "favorites"
+    newFilter: 'public' | 'private' | 'favorites'
   ) => {
     if (newFilter !== null) {
       setFilter(newFilter);
@@ -173,13 +173,13 @@ export default function Dashboard() {
 
   const updateSetsInFirestore = async (setId: string, isLiked: boolean) => {
     if (currentUserId) {
-      const userDocRef = doc(db, "usersData", currentUserId);
+      const userDocRef = doc(db, 'usersData', currentUserId);
       await updateDoc(userDocRef, {
         likedSets: isLiked ? arrayUnion(setId) : arrayRemove(setId),
       });
     }
 
-    const setDocRef = doc(db, "learningSets", setId);
+    const setDocRef = doc(db, 'learningSets', setId);
     const setDocSnap = await getDoc(setDocRef);
     if (setDocSnap.exists()) {
       const data = setDocSnap.data();
@@ -201,7 +201,7 @@ export default function Dashboard() {
     const fetchFavoritesAndSets = async () => {
       let userFavoritedSets: string[] = [];
       if (currentUserId) {
-        const userDocRef = doc(db, "usersData", currentUserId);
+        const userDocRef = doc(db, 'usersData', currentUserId);
         const docSnap = await getDoc(userDocRef);
         if (docSnap.exists() && mounted) {
           const userData = docSnap.data();
@@ -210,21 +210,21 @@ export default function Dashboard() {
         }
       }
 
-      const docCollectionRef = collection(db as Firestore, "learningSets");
+      const docCollectionRef = collection(db as Firestore, 'learningSets');
       const querySnapshot = await getDocs(docCollectionRef);
       const fetchedLearningSets = querySnapshot.docs.map((doc) => ({
         id: doc.id,
-        ...(doc.data() as Omit<LearningSet, "id">),
+        ...(doc.data() as Omit<LearningSet, 'id'>),
       }));
 
       let filteredLearningSets = fetchedLearningSets.filter((learningSet) => {
-        const isFavorited = userFavoritedSets.includes(learningSet.id ?? "");
+        const isFavorited = userFavoritedSets.includes(learningSet.id ?? '');
         switch (filter) {
-          case "favorites":
+          case 'favorites':
             return isFavorited;
-          case "public":
+          case 'public':
             return learningSet.isPublic;
-          case "private":
+          case 'private':
             return (
               !learningSet.isPublic && learningSet.createdBy === currentUserId
             );
@@ -246,10 +246,10 @@ export default function Dashboard() {
       const filterBySearch = filteredLearningSets.filter((learningSet) => {
         return learningSet.title
           .toLowerCase()
-          .includes(query.toLowerCase() || "");
+          .includes(query.toLowerCase() || '');
       });
 
-      if (query !== "") {
+      if (query !== '') {
         setLearningSets(filterBySearch);
       }
     };
@@ -260,7 +260,7 @@ export default function Dashboard() {
 
       const fetchLikedSets = async () => {
         if (currentUserId) {
-          const userDocRef = doc(db, "usersData", currentUserId);
+          const userDocRef = doc(db, 'usersData', currentUserId);
           const userDocSnap = await getDoc(userDocRef);
           if (userDocSnap.exists()) {
             const userData = userDocSnap.data();
@@ -269,7 +269,7 @@ export default function Dashboard() {
             }
           }
         }
-        const setsDocRef = collection(db, "learningSets");
+        const setsDocRef = collection(db, 'learningSets');
         const setsDocSnap = await getDocs(setsDocRef);
         const likesPromises = setsDocSnap.docs.map(async (doc) => {
           const data = doc.data();
@@ -292,13 +292,13 @@ export default function Dashboard() {
   }, [currentUserId, filter, selectedCategories, query]);
 
   return (
-    <Container maxWidth="lg" sx={{ marginTop: "20px", marginBottom: "20px" }}>
+    <Container maxWidth="lg" sx={{ marginTop: '20px', marginBottom: '20px' }}>
       <Box
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: "20px",
-          minHeight: "50px",
+          display: 'flex',
+          justifyContent: 'space-between',
+          marginBottom: '20px',
+          minHeight: '50px',
         }}
       >
         <Typography variant="h4" fontWeight="bold" component="h1">
@@ -308,7 +308,7 @@ export default function Dashboard() {
         <Button
           variant="outlined"
           startIcon={<AddCircleOutline />}
-          onClick={() => navigate("/create-set")}
+          onClick={() => navigate('/create-set')}
         >
           Create new learning set
         </Button>
@@ -317,7 +317,7 @@ export default function Dashboard() {
           exclusive
           onChange={handleFilterChange}
           aria-label="learning set filter"
-          sx={{ bgcolor: "white", borderRadius: 1 }}
+          sx={{ bgcolor: 'white', borderRadius: 1 }}
         >
           <ToggleButton value="public" aria-label="public">
             Public
@@ -340,11 +340,11 @@ export default function Dashboard() {
         >
           <Box
             sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              bgcolor: "background.paper",
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              bgcolor: 'background.paper',
               boxShadow: 24,
               p: 4,
             }}
@@ -389,32 +389,32 @@ export default function Dashboard() {
               sm={6}
               md={4}
               key={learningSet.id}
-              sx={{ mb: "20px" }}
+              sx={{ mb: '20px' }}
             >
               <Paper
                 elevation={3}
                 sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
                   minHeight: 200,
                   padding: 2,
                   borderRadius: 2,
-                  "&:hover": {
-                    transform: "scale(1.02)",
-                    boxShadow: "0px 6px 15px rgba(0,0,0,0.1)",
+                  '&:hover': {
+                    transform: 'scale(1.02)',
+                    boxShadow: '0px 6px 15px rgba(0,0,0,0.1)',
                   },
-                  cursor: "pointer",
+                  cursor: 'pointer',
                 }}
                 onClick={() => navigate(`/viewcards/${learningSet.id}`)}
               >
                 <Box
                   sx={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    marginBottom: "10px",
-                    minHeight: "30px",
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    marginBottom: '10px',
+                    minHeight: '30px',
                   }}
                 >
                   <Box>
@@ -426,8 +426,8 @@ export default function Dashboard() {
                         }
                       }}
                     >
-                      {favoritedSets.includes(learningSet.id ?? "") ? (
-                        <Favorite sx={{ color: "#FFBF1F" }} />
+                      {favoritedSets.includes(learningSet.id ?? '') ? (
+                        <Favorite sx={{ color: '#FFBF1F' }} />
                       ) : (
                         <FavoriteBorder />
                       )}
@@ -439,11 +439,11 @@ export default function Dashboard() {
                         aria-controls="simple-menu"
                         aria-haspopup="true"
                         onClick={(e) =>
-                          handleMenuClick(e, learningSet.id || "")
+                          handleMenuClick(e, learningSet.id || '')
                         }
                         sx={{
-                          "&:focus": { outline: "none" },
-                          "&:hover": { backgroundColor: "#grey" },
+                          '&:focus': { outline: 'none' },
+                          '&:hover': { backgroundColor: '#grey' },
                         }}
                       >
                         <MoreHoriz />
@@ -453,8 +453,8 @@ export default function Dashboard() {
                 </Box>
                 <Typography
                   variant="h6"
-                  fontWeight={"bold"}
-                  sx={{ paddingBottom: "20px" }}
+                  fontWeight={'bold'}
+                  sx={{ paddingBottom: '20px' }}
                 >
                   {learningSet.title}
                 </Typography>
@@ -463,19 +463,19 @@ export default function Dashboard() {
                 </Typography>
                 <Box
                   sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    width: "50%",
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    width: '50%',
                     flexGrow: 1,
                   }}
                 >
                   <Box
                     sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginTop: "auto",
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      marginTop: 'auto',
                     }}
                   >
                     <IconButton
@@ -484,8 +484,8 @@ export default function Dashboard() {
                         learningSet.id && clickLikeButton(learningSet.id);
                       }}
                     >
-                      {likedSets.includes(learningSet.id ?? "") ? (
-                        <ThumbUp sx={{ color: "blue" }} />
+                      {likedSets.includes(learningSet.id ?? '') ? (
+                        <ThumbUp sx={{ color: 'blue' }} />
                       ) : (
                         <ThumbUpOutlined />
                       )}
@@ -493,17 +493,17 @@ export default function Dashboard() {
                     <Typography
                       variant="body2"
                       color="text.secondary"
-                      sx={{ paddingLeft: "5%" }}
+                      sx={{ paddingLeft: '5%' }}
                     >
                       {learningSet.numberOfLikes}
                     </Typography>
                   </Box>
                   <Box
                     sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginTop: "auto",
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      marginTop: 'auto',
                     }}
                   >
                     <IconButton
@@ -516,7 +516,7 @@ export default function Dashboard() {
                     <Typography
                       variant="body2"
                       color="text.secondary"
-                      sx={{ paddingLeft: "5%" }}
+                      sx={{ paddingLeft: '5%' }}
                     >
                       {learningSet.comments?.length || 0}
                     </Typography>
@@ -535,7 +535,7 @@ export default function Dashboard() {
         onClose={handleClose}
       >
         <MenuItem onClick={handleEditSet}>Edit</MenuItem>
-        <MenuItem onClick={handleDeleteSet} sx={{ color: "red" }}>
+        <MenuItem onClick={handleDeleteSet} sx={{ color: 'red' }}>
           Delete
         </MenuItem>
       </Menu>

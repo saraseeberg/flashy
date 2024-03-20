@@ -3,11 +3,11 @@
 
  */
 
-import React, { useEffect, useState } from "react";
-import { Box, Button, TextField } from "@mui/material";
-import { collection, addDoc, getDoc, doc } from "firebase/firestore";
-import { db } from "../config/firebase";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { Box, Button, TextField } from '@mui/material';
+import { collection, addDoc, getDoc, doc } from 'firebase/firestore';
+import { db } from '../config/firebase';
+import { useNavigate } from 'react-router-dom';
 
 interface CardFormProps {
   learningSetId: string;
@@ -15,16 +15,16 @@ interface CardFormProps {
 }
 
 const CardForm = ({ learningSetId, onSave }: CardFormProps) => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [front, setFront] = useState("");
-  const [back, setBack] = useState("");
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [front, setFront] = useState('');
+  const [back, setBack] = useState('');
   const [cardAdded, setCardAdded] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLearningSetDetails = async () => {
-      const docRef = doc(db, "learningSets", learningSetId);
+      const docRef = doc(db, 'learningSets', learningSetId);
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
@@ -32,7 +32,7 @@ const CardForm = ({ learningSetId, onSave }: CardFormProps) => {
         setTitle(data.title);
         setDescription(data.description);
       } else {
-        console.log("No such document!");
+        console.log('No such document!');
       }
     };
 
@@ -42,42 +42,42 @@ const CardForm = ({ learningSetId, onSave }: CardFormProps) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!front || !back) {
-      alert("Please fill in both the front and the back of the card.");
+      alert('Please fill in both the front and the back of the card.');
       return;
     }
 
     try {
-      await addDoc(collection(db, "learningSets", learningSetId, "cards"), {
+      await addDoc(collection(db, 'learningSets', learningSetId, 'cards'), {
         front,
         back,
       });
-      setFront("");
-      setBack("");
+      setFront('');
+      setBack('');
       onSave();
       setCardAdded(true); // Oppdaterer tilstanden til true når et kort er lagt til
-      console.log("Card added to learning set.");
+      console.log('Card added to learning set.');
     } catch (error) {
-      console.error("Error adding card to learning set: ", error);
+      console.error('Error adding card to learning set: ', error);
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
       {/* Tittel og beskrivelse */}
-      <h1 style={{ marginTop: "20px", marginBottom: "0" }}>
-        {title || "Loading title..."}
+      <h1 style={{ marginTop: '20px', marginBottom: '0' }}>
+        {title || 'Loading title...'}
       </h1>
       <h4
-        style={{ fontStyle: "italic", marginTop: "10px", marginBottom: "20px" }}
+        style={{ fontStyle: 'italic', marginTop: '10px', marginBottom: '20px' }}
       >
-        {description || "Loading description..."}
+        {description || 'Loading description...'}
       </h4>
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          paddingLeft: "20em",
-          paddingRight: "20em",
+          display: 'flex',
+          flexDirection: 'column',
+          paddingLeft: '20em',
+          paddingRight: '20em',
         }}
       >
         {/* Front og Back input felter */}
@@ -97,11 +97,11 @@ const CardForm = ({ learningSetId, onSave }: CardFormProps) => {
         />
         <Box
           sx={{
-            marginTop: "1em",
-            marginBottom: "1.5em",
-            display: "flex",
-            justifyContent: "center",
-            gap: "20px",
+            marginTop: '1em',
+            marginBottom: '1.5em',
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '20px',
           }}
         >
           {/* "Back"-knappen skjules eller deaktiveres basert på om et kort er lagt til */}
@@ -112,10 +112,10 @@ const CardForm = ({ learningSetId, onSave }: CardFormProps) => {
             variant="contained"
             color="primary"
             style={{
-              padding: "20px 45px",
-              backgroundColor: cardAdded ? "#9F70FD" : "#B0AEBE",
-              marginTop: "1em",
-              marginBottom: "1.5em",
+              padding: '20px 45px',
+              backgroundColor: cardAdded ? '#9F70FD' : '#B0AEBE',
+              marginTop: '1em',
+              marginBottom: '1.5em',
             }}
           >
             Back
@@ -125,10 +125,10 @@ const CardForm = ({ learningSetId, onSave }: CardFormProps) => {
             variant="contained"
             color="primary"
             style={{
-              padding: "20px 45px",
-              backgroundColor: "#9F70FD",
-              marginTop: "1em",
-              marginBottom: "1.5em",
+              padding: '20px 45px',
+              backgroundColor: '#9F70FD',
+              marginTop: '1em',
+              marginBottom: '1.5em',
             }}
           >
             Add
