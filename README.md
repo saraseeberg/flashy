@@ -1,128 +1,36 @@
-# flashy
-
-## Installasjon og kjøring av prosjektet
-
-For å kjøre prosjektet lokalt, følg disse stegene:
-
-1. Klon prosjektet fra GitLab
-2. Åpne prosjektet i VS Code
-3. Åpne terminalen i VS Code
-4. Naviger til frontend mappen ved å skrive `cd frontend` og trykke enter
-5. Skriv `yarn` og trykk enter for å laste inn avhengigheter
-6. Skriv `yarn dev` og trykk enter for å kjøre applikasjonen
-7. Klikk på linken som kommer opp i terminalen
-8. Du kan nå se prosjektet lokalt
-
-## Aktivere "Format on Save" i VS Code
-
-For å aktivere "Format on Save" i VS Code, følg disse stegene:
-
-1. Gå til settings i VS Code
-2. Søk etter "Format on Save"
-3. Huk av for "Format on Save"
-4. Trykk på "Edit in settings.json"
-5. Legg til `"editor.defaultFormatter": "esbenp.prettier-vscode"` i settings.json
-6. Lagre filen
-7. "Format on Save" er nå aktivert
-
-## Getting started
-
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://gitlab.stud.idi.ntnu.no/tdt4140-2024/produktomraade-3/gruppe-50/flashy.git
-git branch -M main
-git push -uf origin main
-```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://gitlab.stud.idi.ntnu.no/tdt4140-2024/produktomraade-3/gruppe-50/flashy/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
----
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-
-Choose a self-explaining name for your project.
+# ⚡️Flashy⚡️
 
 ## Description
 
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+Flashy is a dynamic and user-friendly flashcard app designed to enhance learning and memory. It is an intuitive application that allows users to create, manage, and engage with diverse learning sets, offering features like marking difficult cards, and interacting with others' sets through likes and comments. It also includes advanced search and filtering, favorites saving for later review, and admin privileges for content moderation, making it ideal for any learning scenario.
 
-## Badges
+## Technologies
 
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+This project uses [Vite](https://vitejs.dev/) as the build tool and [React](https://reactjs.org/) as the frontend framework with [TypeScript](https://www.typescriptlang.org/) for type safety. The backend is built with [Firebase](https://firebase.google.com/), and the database is Firestore.
 
 ## Installation
 
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+To run the project locally, you need to have Node.js and Yarn installed. If you don't have these installed, you can download them from the following links:
 
-## Usage
+- [Node.js](https://nodejs.org/en/)
+- [Yarn](https://yarnpkg.com/)
 
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+When you have Node.js and Yarn installed, you can follow these steps to run the project locally:
 
-## Support
+1. Clone the repository
+2. Open the terminal and navigate to the /flashy/frontend/ directory
+3. Run `yarn` to install the project dependencies
+4. Run `yarn dev` to start the development server
+5. Follow the instructions in the terminal to open the project in your browser
 
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+## Testing
 
-## Roadmap
+This project uses [Vitest](https://vitest.dev/) for testing. To run the tests, navigate to the frontend folder in the terminal and use the following command:
 
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+- `yarn test`
 
-## Contributing
+## Authors
 
-State if you are open to contributions and what your requirements are for accepting them.
+This project is authored by Group 50.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-
-Show your appreciation to those who have contributed to the project.
-
-## License
-
-For open source projects, say how it is licensed.
-
-## Project status
-
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+The group members are: Noel Fissahazion, Nora Borgenvik, Jayan Thayananthan, Kaveen Garthigayan, Sara Seeberg-Rommetveit, Amalie Johansen Vik and Christian Johan Andersen.
