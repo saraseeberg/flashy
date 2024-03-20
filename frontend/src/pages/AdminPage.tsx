@@ -9,21 +9,21 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Typography,
-} from "@mui/material";
-import { LearningSet } from "../models/Learningset";
-import { useEffect, useState } from "react";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+} from '@mui/material';
+import { LearningSet } from '../models/Learningset';
+import { useEffect, useState } from 'react';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import {
   collection,
   deleteDoc,
   doc,
   Firestore,
   getDocs,
-} from "firebase/firestore";
-import { db } from "../config/firebase";
-import { UserData } from "../models/UserData";
-import GroupAddIcon from "@mui/icons-material/GroupAdd";
-import { useNavigate } from "react-router-dom";
+} from 'firebase/firestore';
+import { db } from '../config/firebase';
+import { UserData } from '../models/UserData';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import { useNavigate } from 'react-router-dom';
 
 export default function AdminPage() {
   const [learningSets, setLearningSets] = useState<LearningSet[]>([]);
@@ -40,11 +40,11 @@ export default function AdminPage() {
   //LEARNING SETS
   useEffect(() => {
     const fetchLearningSets = async () => {
-      const docCollectionRef = collection(db as Firestore, "learningSets");
+      const docCollectionRef = collection(db as Firestore, 'learningSets');
       const querySnapshot = await getDocs(docCollectionRef);
       const fetchedLearningSets = querySnapshot.docs.map((doc) => ({
         id: doc.id,
-        ...(doc.data() as Omit<LearningSet, "id">),
+        ...(doc.data() as Omit<LearningSet, 'id'>),
       }));
       setLearningSets(fetchedLearningSets);
     };
@@ -55,27 +55,27 @@ export default function AdminPage() {
   //Delete learning set
   const handleDelete = () => {
     if (selectedId && showUsers) {
-      const docRef = doc(db, "usersData", selectedId);
+      const docRef = doc(db, 'usersData', selectedId);
       deleteDoc(docRef)
         .then(() => {
-          console.log("Document successfully deleted!");
+          console.log('Document successfully deleted!');
           setUsers(users.filter((user) => user.id !== selectedId));
         })
         .catch((error) => {
-          console.error("Error removing user: ", error);
+          console.error('Error removing user: ', error);
         });
     } else if (selectedId && !showUsers) {
-      const docRef = doc(db, "learningSets", selectedId);
+      const docRef = doc(db, 'learningSets', selectedId);
       deleteDoc(docRef)
         .then(() => {
-          console.log("Document successfully deleted!");
+          console.log('Document successfully deleted!');
           setLearningSets(learningSets.filter((set) => set.id !== selectedId));
         })
         .catch((error) => {
-          console.error("Error removing learningset: ", error);
+          console.error('Error removing learningset: ', error);
         });
     } else {
-      console.error("No object selected for deletion");
+      console.error('No object selected for deletion');
     }
     handleClose();
   };
@@ -97,14 +97,14 @@ export default function AdminPage() {
   //USERS
   useEffect(() => {
     const fetchUsers = async () => {
-      const docCollectionRef = collection(db as Firestore, "usersData");
+      const docCollectionRef = collection(db as Firestore, 'usersData');
       const querySnapshot = await getDocs(docCollectionRef);
       const fetchedUsers = querySnapshot.docs.map((doc) => ({
         id: doc.id,
-        ...(doc.data() as Omit<UserData, "id">),
+        ...(doc.data() as Omit<UserData, 'id'>),
       }));
       const filteredUsers = fetchedUsers.filter(
-        (user) => user.role != "superadmin"
+        (user) => user.role != 'superadmin'
       );
       setUsers(filteredUsers);
     };
@@ -113,33 +113,33 @@ export default function AdminPage() {
   }, []);
 
   return (
-    <Container maxWidth="lg" sx={{ marginTop: "20px", marginBottom: "20px" }}>
+    <Container maxWidth="lg" sx={{ marginTop: '20px', marginBottom: '20px' }}>
       <Box
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: "20px",
-          minHeight: "50px",
+          display: 'flex',
+          justifyContent: 'space-between',
+          marginBottom: '20px',
+          minHeight: '50px',
         }}
       >
         <Typography variant="h4" fontWeight="bold" component="h1">
-          {showUsers ? "Users" : "Learning sets"}
+          {showUsers ? 'Users' : 'Learning sets'}
         </Typography>
 
         <Button
           variant="outlined"
           startIcon={<GroupAddIcon />}
-          onClick={() => navigate("/create-adminUser")}
+          onClick={() => navigate('/create-adminUser')}
         >
           Register admin account
         </Button>
         <ToggleButtonGroup
-          value={showUsers ? "users" : "learningset"}
+          value={showUsers ? 'users' : 'learningset'}
           color="primary"
           exclusive
           onChange={handleShowSwitch}
           aria-label="contentDisplayed"
-          sx={{ bgcolor: "white", borderRadius: 1 }}
+          sx={{ bgcolor: 'white', borderRadius: 1 }}
         >
           <ToggleButton value="users" aria-label="users">
             Users
@@ -159,41 +159,41 @@ export default function AdminPage() {
                   sm={6}
                   md={4}
                   key={user.id}
-                  sx={{ mb: "20px" }}
+                  sx={{ mb: '20px' }}
                 >
                   <Paper
                     elevation={3}
                     sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
                       minHeight: 200,
                       padding: 2,
                       borderRadius: 2,
-                      "&:hover": {
-                        transform: "scale(1.02)",
-                        boxShadow: "0px 6px 15px rgba(0,0,0,0.1)",
+                      '&:hover': {
+                        transform: 'scale(1.02)',
+                        boxShadow: '0px 6px 15px rgba(0,0,0,0.1)',
                       },
-                      cursor: "pointer",
+                      cursor: 'pointer',
                     }}
                   >
                     <Box
                       sx={{
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        marginBottom: "10px",
-                        minHeight: "30px",
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        marginBottom: '10px',
+                        minHeight: '30px',
                       }}
                     >
                       <Box>
                         <Button
                           aria-controls="simple-menu"
                           aria-haspopup="true"
-                          onClick={(e) => handleMenuClick(e, user.id || "")}
+                          onClick={(e) => handleMenuClick(e, user.id || '')}
                           sx={{
-                            "&:focus": { outline: "none" },
-                            "&:hover": { backgroundColor: "#grey" },
+                            '&:focus': { outline: 'none' },
+                            '&:hover': { backgroundColor: '#grey' },
                           }}
                         >
                           <MoreHorizIcon />
@@ -202,13 +202,13 @@ export default function AdminPage() {
                     </Box>
                     <Typography
                       variant="h6"
-                      fontWeight={"bold"}
-                      sx={{ paddingBottom: "20px" }}
+                      fontWeight={'bold'}
+                      sx={{ paddingBottom: '20px' }}
                     >
                       {user.username}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      {user.firstName + " " + user.lastName}
+                      {user.firstName + ' ' + user.lastName}
                     </Typography>
                   </Paper>
                 </Grid>
@@ -220,31 +220,31 @@ export default function AdminPage() {
                   sm={6}
                   md={4}
                   key={learningSet.id}
-                  sx={{ mb: "20px" }}
+                  sx={{ mb: '20px' }}
                 >
                   <Paper
                     elevation={3}
                     sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
                       minHeight: 200,
                       padding: 2,
                       borderRadius: 2,
-                      "&:hover": {
-                        transform: "scale(1.02)",
-                        boxShadow: "0px 6px 15px rgba(0,0,0,0.1)",
+                      '&:hover': {
+                        transform: 'scale(1.02)',
+                        boxShadow: '0px 6px 15px rgba(0,0,0,0.1)',
                       },
-                      cursor: "pointer",
+                      cursor: 'pointer',
                     }}
                   >
                     <Box
                       sx={{
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        marginBottom: "10px",
-                        minHeight: "30px",
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        marginBottom: '10px',
+                        minHeight: '30px',
                       }}
                     >
                       <Box>
@@ -252,11 +252,11 @@ export default function AdminPage() {
                           aria-controls="simple-menu"
                           aria-haspopup="true"
                           onClick={(e) =>
-                            handleMenuClick(e, learningSet.id || "")
+                            handleMenuClick(e, learningSet.id || '')
                           }
                           sx={{
-                            "&:focus": { outline: "none" },
-                            "&:hover": { backgroundColor: "#grey" },
+                            '&:focus': { outline: 'none' },
+                            '&:hover': { backgroundColor: '#grey' },
                           }}
                         >
                           <MoreHorizIcon />
@@ -265,8 +265,8 @@ export default function AdminPage() {
                     </Box>
                     <Typography
                       variant="h6"
-                      fontWeight={"bold"}
-                      sx={{ paddingBottom: "20px" }}
+                      fontWeight={'bold'}
+                      sx={{ paddingBottom: '20px' }}
                     >
                       {learningSet.title}
                     </Typography>
@@ -285,7 +285,7 @@ export default function AdminPage() {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleDelete} sx={{ color: "red" }}>
+        <MenuItem onClick={handleDelete} sx={{ color: 'red' }}>
           Delete
         </MenuItem>
       </Menu>

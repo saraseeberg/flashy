@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { useAuth } from "../hooks/useAuth";
-import { auth, db } from "../config/firebase";
-import { Firestore, doc, getDoc } from "firebase/firestore";
+import { useEffect, useState } from 'react';
+import { useAuth } from '../hooks/useAuth';
+import { auth, db } from '../config/firebase';
+import { Firestore, doc, getDoc } from 'firebase/firestore';
 
 function useUserRole() {
   const { isAuthenticated } = useAuth();
@@ -11,7 +11,7 @@ function useUserRole() {
   useEffect(() => {
     const fetchUserRole = async () => {
       if (currentUserId) {
-        const userDocRef = doc(db as Firestore, "usersData", currentUserId);
+        const userDocRef = doc(db as Firestore, 'usersData', currentUserId);
         const userDocSnapshot = await getDoc(userDocRef);
 
         if (userDocSnapshot.exists()) {
@@ -19,7 +19,7 @@ function useUserRole() {
           const role = userData?.role;
           setUserRole(role);
         } else {
-          console.error("User document not found.");
+          console.error('User document not found.');
         }
       }
     };

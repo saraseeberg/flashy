@@ -1,14 +1,14 @@
-import { useState } from "react";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../config/firebase";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import { Box } from "@mui/material";
-import loginLogo from "../assets/bilde-Flashy.png";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
+import { useState } from 'react';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../config/firebase';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import { Box } from '@mui/material';
+import loginLogo from '../assets/bilde-Flashy.png';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 export default function Login() {
   const [error, setError] = useState<string>();
@@ -32,19 +32,19 @@ export default function Login() {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
 
     if (!email || !password) {
-      setError("Please fill in all fields.");
+      setError('Please fill in all fields.');
       return;
     }
     try {
       setError(undefined);
       await signInWithEmailAndPassword(auth, email, password);
       login();
-      navigate("/dashboard");
-      console.log("Logged in successfully");
+      navigate('/dashboard');
+      console.log('Logged in successfully');
     } catch (error) {
       setError((error as AuthError).message);
     }
@@ -55,16 +55,16 @@ export default function Login() {
    * Routes to the registration page.
    */
   const handleNewAccountClick = () => {
-    navigate("/register");
+    navigate('/register');
   };
 
   return (
     <Container component="main" maxWidth="md">
       <Box
         sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
           mt: 16,
           gap: 10,
         }}
@@ -72,18 +72,23 @@ export default function Login() {
         <img
           src={loginLogo}
           alt="logo"
-          style={{ maxWidth: "50%", marginBottom: "1em", border: "5px solid #9F70FD", borderRadius: "10px"}}
+          style={{
+            maxWidth: '50%',
+            marginBottom: '1em',
+            border: '5px solid #9F70FD',
+            borderRadius: '10px',
+          }}
         />
         <Box>
           <Typography
             component="h1"
             variant="h6"
-            fontWeight={"bold"}
-            style={{ textAlign: "center", marginBottom: "2em" }}
+            fontWeight={'bold'}
+            style={{ textAlign: 'center', marginBottom: '2em' }}
           >
             Flash your way to academic success!
           </Typography>
-          <form onSubmit={handleSubmit} noValidate style={{ width: "100%" }}>
+          <form onSubmit={handleSubmit} noValidate style={{ width: '100%' }}>
             <TextField
               required
               fullWidth
@@ -93,7 +98,7 @@ export default function Login() {
               autoComplete="email"
               autoFocus
               variant="outlined"
-              style={{ marginBottom: "1em" }}
+              style={{ marginBottom: '1em' }}
             />
             <TextField
               required
@@ -104,7 +109,7 @@ export default function Login() {
               id="password"
               autoComplete="current-password"
               variant="outlined"
-              style={{ marginBottom: "2em" }}
+              style={{ marginBottom: '2em' }}
             />
 
             <Button type="submit" fullWidth variant="contained" sx={{ mb: 2 }}>
@@ -113,7 +118,7 @@ export default function Login() {
             {error && (
               <Typography
                 variant="body2"
-                style={{ color: "red", textAlign: "center" }}
+                style={{ color: 'red', textAlign: 'center' }}
               >
                 {error}
               </Typography>

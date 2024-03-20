@@ -3,21 +3,21 @@ import {
   Routes,
   Route,
   Navigate,
-} from "react-router-dom";
-import Login from "./pages/LoginPage";
-import Register from "./pages/RegisterPage";
-import Dashboard from "./pages/DashboardPage";
-import { useAuth } from "./hooks/useAuth";
-import CreateSet from "./pages/CreateLearningsetPage";
-import EditSet from "./pages/EditLearningSetPage";
-import ViewCards from "./pages/ViewCardsPage";
-import NotFound from "./pages/NotFoundPage";
-import Settings from "./pages/SettingsPage";
-import App from "./App";
-import AdminPage from "./pages/AdminPage";
-import ErrorPopup from "./components/ErrorPopup";
-import CreateAdminUserPage from "./pages/CreateAdminUserPage";
-import useUserRole from "./hooks/useRole";
+} from 'react-router-dom';
+import Login from './pages/LoginPage';
+import Register from './pages/RegisterPage';
+import Dashboard from './pages/DashboardPage';
+import { useAuth } from './hooks/useAuth';
+import CreateSet from './pages/CreateLearningsetPage';
+import EditSet from './pages/EditLearningSetPage';
+import ViewCards from './pages/ViewCardsPage';
+import NotFound from './pages/NotFoundPage';
+import Settings from './pages/SettingsPage';
+import App from './App';
+import AdminPage from './pages/AdminPage';
+import ErrorPopup from './components/ErrorPopup';
+import CreateAdminUserPage from './pages/CreateAdminUserPage';
+import useUserRole from './hooks/useRole';
 
 function AppRouter() {
   const { isAuthenticated } = useAuth();
@@ -49,8 +49,8 @@ function AppRouter() {
           <Route
             path="adminpage"
             element={
-              (isAuthenticated && userRole === "superadmin") ||
-              (isAuthenticated && userRole === "admin") ? (
+              (isAuthenticated && userRole === 'superadmin') ||
+              (isAuthenticated && userRole === 'admin') ? (
                 <AdminPage />
               ) : (
                 <ErrorPopup
@@ -63,7 +63,7 @@ function AppRouter() {
           <Route
             path="create-adminUser"
             element={
-              isAuthenticated && userRole === "superadmin" ? (
+              isAuthenticated && userRole === 'superadmin' ? (
                 <CreateAdminUserPage />
               ) : (
                 <ErrorPopup

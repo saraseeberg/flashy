@@ -1,7 +1,7 @@
-import { Button, Card, CardContent, Typography } from "@mui/material";
-import { db } from "../config/firebase";
-import { doc, deleteDoc } from "firebase/firestore";
-import { CardData } from "../models/Flashcard";
+import { Button, Card, CardContent, Typography } from '@mui/material';
+import { db } from '../config/firebase';
+import { doc, deleteDoc } from 'firebase/firestore';
+import { CardData } from '../models/Flashcard';
 
 interface FlashcardProps {
   card: CardData;
@@ -10,9 +10,9 @@ interface FlashcardProps {
 
 const Flashcard = ({ card, learningSetId }: FlashcardProps) => {
   const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete this card?")) {
-      await deleteDoc(doc(db, "learningSets", learningSetId, "cards", card.id));
-      console.log("Card deleted");
+    if (window.confirm('Are you sure you want to delete this card?')) {
+      await deleteDoc(doc(db, 'learningSets', learningSetId, 'cards', card.id));
+      console.log('Card deleted');
     }
   };
 

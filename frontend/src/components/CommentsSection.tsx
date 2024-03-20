@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState } from 'react';
 import {
   Box,
   Button,
@@ -7,7 +7,7 @@ import {
   ListItem,
   TextField,
   Typography,
-} from "@mui/material";
+} from '@mui/material';
 
 interface CommentsSectionProps {
   existingComments: string[];
@@ -18,7 +18,7 @@ const CommentsSection = ({
   existingComments,
   addComment,
 }: CommentsSectionProps) => {
-  const [newComment, setNewComment] = useState("");
+  const [newComment, setNewComment] = useState('');
 
   const handleNewCommentChange = (event: ChangeEvent<HTMLInputElement>) => {
     setNewComment(event.target.value);
@@ -26,31 +26,31 @@ const CommentsSection = ({
 
   const handleSubmitComment = () => {
     addComment(newComment);
-    setNewComment("");
+    setNewComment('');
   };
 
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-start",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
       }}
     >
-      <Typography variant="h6" fontWeight="bold" sx={{ marginBottom: "2%" }}>
+      <Typography variant="h6" fontWeight="bold" sx={{ marginBottom: '2%' }}>
         Comments
       </Typography>
       <FormControl
         fullWidth
         sx={{
-          display: "flex",
-          flexDirection: "row",
+          display: 'flex',
+          flexDirection: 'row',
         }}
       >
         <TextField
           sx={{
-            marginBottom: "2%",
-            marginRight: "1%",
+            marginBottom: '2%',
+            marginRight: '1%',
           }}
           fullWidth
           required
@@ -62,7 +62,7 @@ const CommentsSection = ({
           variant="contained"
           type="submit"
           onClick={handleSubmitComment}
-          sx={{ height: "56px" }}
+          sx={{ height: '56px' }}
           disabled={!newComment.trim()}
         >
           Submit
@@ -71,7 +71,7 @@ const CommentsSection = ({
       <List>
         {existingComments.map((comment, index) => (
           <ListItem key={index}>
-            <Typography sx={{ marginBottom: "2%" }}>{comment}</Typography>
+            <Typography sx={{ marginBottom: '2%' }}>{comment}</Typography>
           </ListItem>
         ))}
       </List>
