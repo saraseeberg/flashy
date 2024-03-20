@@ -3,8 +3,8 @@ import { describe, it, expect } from "vitest";
 const calculateProgress = (
   seenCards: Set<string>,
   seenDifficultCards: Set<string>,
-  cards: string | any[],
-  difficultCards: string | any[],
+  cards: { id: string }[],
+  difficultCards: { id: string }[],
   inDifficultMode: boolean
 ) => {
   const totalSeen =
