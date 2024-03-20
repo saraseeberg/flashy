@@ -21,18 +21,14 @@ test('Renders FlashcardEditor and handles edit mode correctly', async () => {
     <FlashcardEditor card={cardData} learningSetId="1" onSave={mockOnSave} />
   );
 
-  // Check that the card data is rendered
   expect(screen.getByText('Front of card')).toBeInTheDocument();
   expect(screen.getByText('Back of card')).toBeInTheDocument();
 
-  // Simulate clicking on the Edit button
   fireEvent.click(screen.getByText('Edit'));
 
-  // Check that the text fields for editing the card are displayed
   expect(screen.getByLabelText('Front of the card')).toBeInTheDocument();
   expect(screen.getByLabelText('Back of the card')).toBeInTheDocument();
 
-  // Simulate clicking on the save button, adding the flashcard
   await act(async () => {
     fireEvent.click(screen.getByText('Save'));
   });
