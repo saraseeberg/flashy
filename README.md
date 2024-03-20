@@ -31,6 +31,6 @@ This project uses [Vitest](https://vitest.dev/) for testing. To run the tests, n
 
 ## Authors
 
-This project is authored by Group 50 in the subject TDT4140 at NTNU.
+This project is authored by Group 50.
 
 The group members are: Noel Fissahazion, Nora Borgenvik, Jayan Thayananthan, Kaveen Garthigayan, Sara Seeberg-Rommetveit, Amalie Johansen Vik and Christian Johan Andersen.
