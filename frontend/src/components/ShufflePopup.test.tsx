@@ -5,7 +5,6 @@ test('ShufflePopup renders correctly and handles events', async () => {
   const onShuffle = vi.fn();
   const onNoShuffle = vi.fn();
 
-  // Render the component
   render(
     <ShufflePopup
       open={true}

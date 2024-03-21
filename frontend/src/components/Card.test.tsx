@@ -12,7 +12,6 @@ test('Renders card as unflipped and checks that front of the card is displayed',
     isFlipped: false,
   };
   render(<Card {...cardData} onDifficultyChange={mockOnDifficultyChange} />);
-
   expect(screen.getByText('Front of card')).toBeInTheDocument();
   expect(screen.getByText('Question')).toBeInTheDocument();
 });
@@ -28,7 +27,6 @@ test('Renders card as flipped and checks that back of the card is displayed', as
     isFlipped: true,
   };
   render(<Card {...cardData} onDifficultyChange={mockOnDifficultyChange} />);
-
   expect(screen.getByText('Back of card')).toBeInTheDocument();
   expect(screen.getByText('Answer')).toBeInTheDocument();
 });

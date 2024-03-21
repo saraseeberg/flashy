@@ -17,10 +17,8 @@ vi.mock('firebase/firestore', async (importOriginal) => {
 });
 
 test('renders LearningsetForm and handles form submission correctly', async () => {
-  // Render the component
   render(<LearningsetForm />);
 
-  // Simulate filling in the form
   fireEvent.change(screen.getByPlaceholderText('Title'), {
     target: { value: 'Test Title' },
   });
@@ -28,7 +26,6 @@ test('renders LearningsetForm and handles form submission correctly', async () =
     target: { value: 'Test Description' },
   });
 
-  // Simulate submitting the form and creating a learningset
   fireEvent.click(screen.getByText('Create Learningset'));
   expect(setDoc).toHaveBeenCalled();
 });

@@ -1,5 +1,3 @@
-import { describe, it, expect } from 'vitest';
-
 const calculateProgress = (
   seenCards: Set<string>,
   seenDifficultCards: Set<string>,

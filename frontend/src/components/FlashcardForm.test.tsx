@@ -20,10 +20,8 @@ vi.mock('firebase/firestore', async (importOriginal) => {
 test('Renders FlashcardForm and handles form submission correctly', async () => {
   const mockOnSave = vi.fn();
 
-  // Render the component
   render(<FlashcardForm learningSetId="1" onSave={mockOnSave} />);
 
-  // Simulate filling in the form
   fireEvent.change(screen.getByLabelText('Front of the card'), {
     target: { value: 'Front of card' },
   });

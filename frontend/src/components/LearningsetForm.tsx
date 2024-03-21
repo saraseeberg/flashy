@@ -46,7 +46,6 @@ const LearningsetForm = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Sjekker om "Title" og "Description" er tomme og viser en alert hvis de er det
     if (
       learningset.title.trim() === '' ||
       learningset.description.trim() === ''

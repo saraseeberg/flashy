@@ -54,7 +54,7 @@ const CardForm = ({ learningSetId, onSave }: CardFormProps) => {
       setFront('');
       setBack('');
       onSave();
-      setCardAdded(true); // Oppdaterer tilstanden til true når et kort er lagt til
+      setCardAdded(true);
       console.log('Card added to learning set.');
     } catch (error) {
       console.error('Error adding card to learning set: ', error);
@@ -63,7 +63,6 @@ const CardForm = ({ learningSetId, onSave }: CardFormProps) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      {/* Tittel og beskrivelse */}
       <h1 style={{ marginTop: '20px', marginBottom: '0' }}>
         {title || 'Loading title...'}
       </h1>
@@ -80,7 +79,6 @@ const CardForm = ({ learningSetId, onSave }: CardFormProps) => {
           paddingRight: '20em',
         }}
       >
-        {/* Front og Back input felter */}
         <TextField
           label="Front of the card"
           value={front}
@@ -104,7 +102,6 @@ const CardForm = ({ learningSetId, onSave }: CardFormProps) => {
             gap: '20px',
           }}
         >
-          {/* "Back"-knappen skjules eller deaktiveres basert på om et kort er lagt til */}
           <Button
             onClick={() => navigate(-1)}
             disabled={!cardAdded}
