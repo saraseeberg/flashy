@@ -1,10 +1,8 @@
-import { describe, it, expect } from "vitest";
-
 const calculateProgress = (
   seenCards: Set<string>,
   seenDifficultCards: Set<string>,
-  cards: string | any[],
-  difficultCards: string | any[],
+  cards: { id: string }[],
+  difficultCards: { id: string }[],
   inDifficultMode: boolean
 ) => {
   const totalSeen =
@@ -14,17 +12,17 @@ const calculateProgress = (
   return (totalSeen / totalCards) * 100;
 };
 
-describe("calculateProgress", () => {
-  it("beregner riktig fremdriftsprosent", () => {
-    const seenCards = new Set(["card1", "card2"]);
-    const seenDifficultCards = new Set([""]);
+describe('calculateProgress', () => {
+  it('beregner riktig fremdriftsprosent', () => {
+    const seenCards = new Set(['card1', 'card2']);
+    const seenDifficultCards = new Set(['']);
     const cards = [
-      { id: "card1" },
-      { id: "card2" },
-      { id: "card3" },
-      { id: "card4" },
+      { id: 'card1' },
+      { id: 'card2' },
+      { id: 'card3' },
+      { id: 'card4' },
     ];
-    const difficultCards = [{ id: "card1" }, { id: "card2" }];
+    const difficultCards = [{ id: 'card1' }, { id: 'card2' }];
     const inDifficultMode = false;
 
     const progress = calculateProgress(

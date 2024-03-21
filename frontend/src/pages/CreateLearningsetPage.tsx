@@ -2,14 +2,10 @@
  * Page for creating a new learning set
  */
 
-import LearningSetForm from "../components/LearningsetForm";
+import LearningSetForm from '../components/LearningsetForm';
 
 function CreateLearningSetPage() {
-  return (
-    <div>
-      <LearningSetForm />
-    </div>
-  );
+  return <LearningSetForm />;
 }
 
 export default CreateLearningSetPage;

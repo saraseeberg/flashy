@@ -4,17 +4,17 @@
  * Can be used to edit the front and back of a flashcard, and to delete the flashcard.
  */
 
-import React, { useState } from "react";
+import { useState } from 'react';
 import {
   Button,
   TextField,
   Card,
   CardContent,
   Typography,
-} from "@mui/material";
-import { db } from "../config/firebase";
-import { doc, updateDoc, deleteDoc } from "firebase/firestore";
-import { CardData } from "../models/Flashcard";
+} from '@mui/material';
+import { db } from '../config/firebase';
+import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { CardData } from '../models/Flashcard';
 
 interface FlashcardEditorProps {
   card: CardData;
@@ -22,27 +22,27 @@ interface FlashcardEditorProps {
   onSave: () => void;
 }
 
-const FlashcardEditor: React.FC<FlashcardEditorProps> = ({
+const FlashcardEditor = ({
   card,
   learningSetId,
   onSave,
-}) => {
+}: FlashcardEditorProps) => {
   const [editMode, setEditMode] = useState(false);
   const [front, setFront] = useState(card.front);
   const [back, setBack] = useState(card.back);
 
   const handleSave = async () => {
-    const cardRef = doc(db, "learningSets", learningSetId, "cards", card.id);
+    const cardRef = doc(db, 'learningSets', learningSetId, 'cards', card.id);
     await updateDoc(cardRef, { front, back });
-    console.log("Card updated");
+    console.log('Card updated');
     setEditMode(false);
     onSave();
   };
 
   const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete this card?")) {
-      await deleteDoc(doc(db, "learningSets", learningSetId, "cards", card.id));
-      console.log("Card deleted");
+    if (window.confirm('Are you sure you want to delete this card?')) {
+      await deleteDoc(doc(db, 'learningSets', learningSetId, 'cards', card.id));
+      console.log('Card deleted');
       onSave();
     }
   };
@@ -77,11 +77,11 @@ const FlashcardEditor: React.FC<FlashcardEditorProps> = ({
             <Typography color="text.secondary">{back}</Typography>
             <Button
               onClick={() => setEditMode(true)}
-              style={{ color: "#7F27FF" }}
+              style={{ color: '#7F27FF' }}
             >
               Edit
             </Button>
-            <Button onClick={handleDelete} style={{ color: "#7F27FF" }}>
+            <Button onClick={handleDelete} style={{ color: '#7F27FF' }}>
               Delete
             </Button>
           </>

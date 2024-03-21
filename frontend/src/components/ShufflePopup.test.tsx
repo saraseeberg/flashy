@@ -1,11 +1,10 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import ShufflePopup from "./ShufflePopup";
+import { fireEvent, render, screen } from '@testing-library/react';
+import ShufflePopup from './ShufflePopup';
 
-test("ShufflePopup renders correctly and handles events", async () => {
+test('ShufflePopup renders correctly and handles events', async () => {
   const onShuffle = vi.fn();
   const onNoShuffle = vi.fn();
 
-  // Render the component
   render(
     <ShufflePopup
       open={true}
@@ -16,12 +15,12 @@ test("ShufflePopup renders correctly and handles events", async () => {
   );
 
   expect(
-    screen.getByText("Do you want the cards to be shuffled?")
+    screen.getByText('Do you want the cards to be shuffled?')
   ).toBeInTheDocument();
 
-  fireEvent.click(screen.getByText("No shuffle!"));
+  fireEvent.click(screen.getByText('No shuffle!'));
   expect(onNoShuffle).toHaveBeenCalled();
 
-  fireEvent.click(screen.getByText("Shuffle!"));
+  fireEvent.click(screen.getByText('Shuffle!'));
   expect(onShuffle).toHaveBeenCalled();
 });

@@ -5,26 +5,26 @@ import {
   Container,
   Divider,
   Box,
-} from "@mui/material";
-import CommentsSection from "../components/CommentsSection";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import Card from "../components/Card";
-import { useCallback, useEffect, useState } from "react";
-import styles from "./ViewCardsStyle.module.css";
-import { firestore } from "../config/firebase";
+} from '@mui/material';
+import CommentsSection from '../components/CommentsSection';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import Card from '../components/Card';
+import { useCallback, useEffect, useState } from 'react';
+import styles from './ViewCardsStyle.module.css';
+import { firestore } from '../config/firebase';
 import {
   collection,
   getDocs,
   doc,
   getDoc,
   updateDoc,
-} from "firebase/firestore";
-import { useParams } from "react-router-dom";
-import { CardData } from "../models/Flashcard";
-import CompleteSetPopup from "../components/CompleteSetPopup";
-import ShufflePopup from "../components/ShufflePopup";
-import { useNavigate } from "react-router-dom";
+} from 'firebase/firestore';
+import { useParams } from 'react-router-dom';
+import { CardData } from '../models/Flashcard';
+import CompleteSetPopup from '../components/CompleteSetPopup';
+import ShufflePopup from '../components/ShufflePopup';
+import { useNavigate } from 'react-router-dom';
 
 export default function ViewCards() {
   const [cards, setCards] = useState<CardData[]>([]);
@@ -32,7 +32,7 @@ export default function ViewCards() {
   const [loading, setLoading] = useState(true);
   const [completedSet, setCompletedSet] = useState(false);
   const [flipped, setFlipped] = useState(false);
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState('');
   const [shufflePopupOpen, setShufflePopupOpen] = useState(true);
   const [difficultCards, setDifficultCards] = useState<CardData[]>([]);
   const [inDifficultMode, setInDifficultMode] = useState(false);
@@ -40,8 +40,6 @@ export default function ViewCards() {
   const [seenDifficultCards, setSeenDifficultCards] = useState<Set<string>>(
     new Set()
   );
-  const [completedCards, setCompletedCards] = useState<Set<string>>(new Set());
-  const [progress, setProgress] = useState(0); // Ny tilstand for fremdriftsbarens verdi
   const [existingComments, setExistingComments] = useState<string[]>([]);
 
   const { setId } = useParams<{ setId?: string }>();
@@ -69,24 +67,12 @@ export default function ViewCards() {
   const resetProgress = () => {
     setSeenCards(new Set());
     setSeenDifficultCards(new Set());
-    setCompletedCards(new Set());
-    setProgress(0);
   };
-  /* Get the current index of the card */
-  function getCurrentIndex() {
-    return currentCardIndex + 1;
-  }
-
-  /* Get the length of the current set */
-  function getCurrentSetLength() {
-    const length = inDifficultMode ? difficultCards.length : cards.length;
-    return length;
-  }
 
   /* Fetch the learning set from the database, based on the ID in the URL */
   const fetchCards = useCallback(async () => {
     if (!setId) {
-      console.error("No learning set ID provided");
+      console.error('No learning set ID provided');
       return;
     }
 
@@ -94,7 +80,7 @@ export default function ViewCards() {
 
     try {
       const learningSetDoc = await getDoc(
-        doc(firestore, "learningSets", setId)
+        doc(firestore, 'learningSets', setId)
       );
 
       if (learningSetDoc.exists()) {
@@ -102,17 +88,17 @@ export default function ViewCards() {
         setExistingComments(learningSetDoc.data().comments);
 
         const querySnapshot = await getDocs(
-          collection(firestore, "learningSets", setId, "cards")
+          collection(firestore, 'learningSets', setId, 'cards')
         );
         const cardsData = querySnapshot.docs.map(
           (doc) => ({ id: doc.id, ...doc.data() }) as CardData
         );
         setCards(cardsData);
       } else {
-        console.log("No such document!");
+        console.log('No such document!');
       }
     } catch (error) {
-      console.error("Error fetching cards:", error);
+      console.error('Error fetching cards:', error);
     }
 
     setLoading(false);
@@ -223,17 +209,17 @@ export default function ViewCards() {
   const saveComments = async (updatedComments: string[]) => {
     try {
       if (!setId) {
-        console.error("No learning set ID provided");
+        console.error('No learning set ID provided');
         return;
       }
 
-      const learningSetRef = doc(firestore, "learningSets", setId);
+      const learningSetRef = doc(firestore, 'learningSets', setId);
       await updateDoc(learningSetRef, {
         comments: updatedComments,
       });
       setExistingComments(updatedComments);
     } catch (error) {
-      console.error("Error adding comment:", error);
+      console.error('Error adding comment:', error);
     }
   };
 
@@ -288,7 +274,7 @@ export default function ViewCards() {
           />
         ) : (
           <div id={styles.outerDiv}>
-            <h2>{title || "Loading title..."}</h2>
+            <h2>{title || 'Loading title...'}</h2>
             <div id={styles.innerDiv}>
               <Card
                 key={currentCard.id}
@@ -301,19 +287,19 @@ export default function ViewCards() {
               />
               <div
                 style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  padding: "20px",
+                  display: 'flex',
+                  justifyContent: 'center',
+                  padding: '20px',
                 }}
               >
-                <div style={{ width: "40em" }}>
+                <div style={{ width: '40em' }}>
                   <LinearProgress
                     variant="determinate"
                     value={progressPercentage}
                     style={{
-                      height: "20px",
-                      borderRadius: "10px",
-                      margin: "auto",
+                      height: '20px',
+                      borderRadius: '10px',
+                      margin: 'auto',
                     }}
                   />
                 </div>
@@ -337,7 +323,7 @@ export default function ViewCards() {
               </div>
               <div id={styles.backButtonDiv}>
                 <Button
-                  onClick={() => navigate("/dashboard")}
+                  onClick={() => navigate('/dashboard')}
                   id={styles.backButton}
                   type="button"
                   fullWidth
@@ -350,7 +336,7 @@ export default function ViewCards() {
           </div>
         )}
       </Box>
-      <Divider sx={{ marginTop: "1%", marginBottom: "1%" }} />
+      <Divider sx={{ marginTop: '1%', marginBottom: '1%' }} />
       <CommentsSection
         existingComments={existingComments}
         addComment={(newComment: string) => {

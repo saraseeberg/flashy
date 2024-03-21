@@ -1,41 +1,36 @@
-
-
 #outerDiv {
-    padding: 2em;
+  padding: 2em;
 }
 
-
 #innerDiv {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
 }
 
 #flipButtonDiv {
-    display: flex;
-    flex-Direction: row;
-    width: 100%;
-    padding: 1em;
-    max-width: 20em;
-    
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 1em;
+  max-width: 20em;
 }
 #flipButton {
-    background: #d3d3d3;
-    opacity: 0.5;
-    color: black;
+  background: #d3d3d3;
+  opacity: 0.5;
+  color: black;
 }
 
 #backButtonDiv {
-    width: 100%;
-    padding: 1em;
-    max-Width: 10em;
+  width: 100%;
+  padding: 1em;
+  max-width: 10em;
 }
 
 #backButton {
-    background: #d3d3d3;
-    max-Width: 20em;
-    opacity: 0.5;
-    color: black;
-    
+  background: #d3d3d3;
+  max-width: 20em;
+  opacity: 0.5;
+  color: black;
 }

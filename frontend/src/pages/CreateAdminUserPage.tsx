@@ -1,14 +1,14 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { auth, db } from "../config/firebase";
-import { createUserWithEmailAndPassword, AuthError } from "firebase/auth";
-import TextField from "@mui/material/TextField";
-import { Box, Button, CircularProgress } from "@mui/material";
-import { doc, setDoc } from "firebase/firestore";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { auth, db } from '../config/firebase';
+import { createUserWithEmailAndPassword, AuthError } from 'firebase/auth';
+import TextField from '@mui/material/TextField';
+import { Box, Button, CircularProgress } from '@mui/material';
+import { doc, setDoc } from 'firebase/firestore';
 
 function CreateAdminUser() {
   const [registering, setRegistering] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>('');
 
   const navigate = useNavigate();
 
@@ -17,12 +17,12 @@ function CreateAdminUser() {
 
     const form = event.currentTarget;
     const formData = new FormData(form);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const confirm = formData.get("confirm") as string;
-    const firstName = formData.get("firstName") as string;
-    const lastName = formData.get("lastName") as string;
-    const username = formData.get("username") as string;
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+    const confirm = formData.get('confirm') as string;
+    const firstName = formData.get('firstName') as string;
+    const lastName = formData.get('lastName') as string;
+    const username = formData.get('username') as string;
 
     // Sjekk at alle felt er fylt ut
     if (
@@ -33,12 +33,12 @@ function CreateAdminUser() {
       !lastName ||
       !username
     ) {
-      setError("All fields are required");
+      setError('All fields are required');
       return;
     }
 
     if (password !== confirm) {
-      setError("Passwords do not match");
+      setError('Passwords do not match');
       return;
     }
 
@@ -51,20 +51,20 @@ function CreateAdminUser() {
         password
       );
 
-      const userDocRef = doc(db, "usersData", userCredential.user.uid);
+      const userDocRef = doc(db, 'usersData', userCredential.user.uid);
 
       await setDoc(userDocRef, {
         firstName: firstName,
         lastName: lastName,
         username: username,
-        role: "admin",
+        role: 'admin',
       });
 
-      console.log("User registered successfully:", userCredential.user);
-      navigate("/adminpage");
+      console.log('User registered successfully:', userCredential.user);
+      navigate('/adminpage');
     } catch (error) {
       const e = error as AuthError;
-      console.error("Registration failed:", e.message);
+      console.error('Registration failed:', e.message);
       setError(e.message);
     } finally {
       setRegistering(false);
@@ -74,10 +74,10 @@ function CreateAdminUser() {
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
         p: 2,
       }}
     >
@@ -88,11 +88,11 @@ function CreateAdminUser() {
         autoComplete="off"
         onSubmit={handleRegister}
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          maxWidth: "400px",
-          width: "100%",
-          "& .MuiTextField-root": { mb: 2 },
+          display: 'flex',
+          flexDirection: 'column',
+          maxWidth: '400px',
+          width: '100%',
+          '& .MuiTextField-root': { mb: 2 },
         }}
       >
         <TextField
@@ -132,11 +132,11 @@ function CreateAdminUser() {
           required
         />
 
-        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
           <Button
             variant="contained"
             color="secondary"
-            onClick={() => navigate("/adminpage")}
+            onClick={() => navigate('/adminpage')}
           >
             Back
           </Button>
@@ -146,11 +146,11 @@ function CreateAdminUser() {
             type="submit"
             disabled={registering}
           >
-            {registering ? <CircularProgress size={24} /> : "Register"}
+            {registering ? <CircularProgress size={24} /> : 'Register'}
           </Button>
         </Box>
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {error && <p style={{ color: 'red' }}>{error}</p>}
       </Box>
     </Box>
   );
