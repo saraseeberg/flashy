@@ -4,6 +4,16 @@
 
 Flashy is a dynamic and user-friendly flashcard app designed to enhance learning and memory. It is an intuitive application that allows users to create, manage, and engage with diverse learning sets, offering features like marking difficult cards, and interacting with others' sets through likes and comments. It also includes advanced search and filtering, favorites saving for later review, and admin privileges for content moderation, making it ideal for any learning scenario.
 
+## Want to try it out?
+
+**Visit**: https://flashy-git-main-saras-projects-221b8742.vercel.app
+
+You can log in with the guest-user or register your own user!
+
+**Email**: guestuser@gmail.com
+
+**Password**: guest!
+
 ## Technologies
 
 This project uses [Vite](https://vitejs.dev/) as the build tool and [React](https://reactjs.org/) as the frontend framework with [TypeScript](https://www.typescriptlang.org/) for type safety. The backend is built with [Firebase](https://firebase.google.com/), and the database is Firestore.
